@@ -1,0 +1,13 @@
+Project 1: Enhancing Knowledge Grounding in Retrieval-Augmented Language Models
+Retrieval systems play a crucial role in enhancing the factual accuracy and currency of generated content in Language Models (LLMs). Various paradigms of retrieval-augmented LLMs have emerged, categorized by different architectural approaches or the integration of retrieval components [1][2][3][4].
+Existing research often evaluates retrieval-augmented systems using metrics like perplexity or focuses on downstream tasks, such as short-form generation like Natural Questions. However, the success of these downstream tasks hinges on both the quality of the retrieved context (the retriever) and the contextual grounding of the generated content (the generator). Surprisingly, few studies address the interplay between these two aspects.
+A well-grounded model should demonstrate the ability to adapt its generation according to the provided context, especially when the context challenges the model's reliance on pre-learned parameters. This project bridges this gap by proposing an evaluation framework with conflicting contexts that specifically assesses the contextual grounding of diverse retrieval-augmented LLMs, covering a wide range of retrieval-augmented LM architectures.
+[1] Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
+[2] Atlas: Few-shot Learning with Retrieval Augmented Language Models
+[3] Shall We Pretrain Autoregressive Language Models with Retrieval? A Comprehensive Study
+[4] Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection
+
+[1] https://proceedings.neurips.cc/paper/2020/file/6b493230205f780e1bc26945df7481e5-Paper.pdf
+[2] https://jmlr.org/papers/volume24/23-0037/23-0037.pdf
+[3] https://aclanthology.org/2023.emnlp-main.482/
+[4] https://openreview.net/forum?id=hSyW5go0v8
