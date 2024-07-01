@@ -8,55 +8,59 @@ logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 import os
 
 import sys
+
+import faiss
 from transformers import RagTokenizer, RagRetriever, RagTokenForGeneration
 from transformers import DPRQuestionEncoderTokenizer
 from transformers import AutoTokenizer, AutoModel
 from transformers import BartTokenizer
 
 def main():
-    os.environ["TOKENIZERS_PARALLELISM"] = "false"
+	os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-    logging.basicConfig(
-        format='[%(asctime)s] %(message)s',
-        level=logging.INFO,
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
+	logging.basicConfig(
+		format='[%(asctime)s] %(message)s',
+		level=logging.INFO,
+		datefmt='%Y-%m-%d %H:%M:%S'
+	)
 
-    rag = 'facebook/rag-token-nq'
+	logging.info('Starting')
 
-    logging.info('Getting tokenizer')
-    tokenizer = RagTokenizer.from_pretrained(rag)
+	rag = 'facebook/rag-token-nq'
 
-    logging.info('Getting retriever')
-    retriever = RagRetriever.from_pretrained(
-        rag,
-        index_name = 'exact',
-        use_dummy_dataset = True,
-    )
+	logging.info('Getting tokenizer')
+	tokenizer = RagTokenizer.from_pretrained(rag)
 
-    logging.info('Getting RAG token for generation')
-    model = RagTokenForGeneration.from_pretrained(
-        rag,
-        retriever = retriever,
-        ignore_mismatched_sizes = True,
-    )
+	logging.info('Getting retriever')
+	retriever = RagRetriever.from_pretrained(
+		rag,
+		index_name = 'exact',
+		use_dummy_dataset = True,
+	)
 
-    try:
-        question = sys.argv[1]
-    except IndexError:
-        question = 'who holds the record in 100m freestyle'
+	logging.info('Getting RAG token for generation')
+	model = RagTokenForGeneration.from_pretrained(
+		rag,
+		retriever = retriever,
+		ignore_mismatched_sizes = True,
+	)
 
-    logging.info('Prepare seq2seq batch')
-    input_dict = tokenizer.prepare_seq2seq_batch(
-        question,
-        return_tensors = 'pt',
-    )
+	try:
+		question = sys.argv[1]
+	except IndexError:
+		question = 'who holds the record in 100m freestyle'
 
-    logging.info('Generating model')
-    generated = model.generate(input_ids = input_dict['input_ids']) 
+	logging.info('Prepare seq2seq batch')
+	input_dict = tokenizer.prepare_seq2seq_batch(
+		question,
+		return_tensors = 'pt',
+	)
 
-    logging.info('Batch decoding')
-    print(tokenizer.batch_decode(generated, skip_special_tokens = True)[0]) 
+	logging.info('Generating model')
+	generated = model.generate(input_ids = input_dict['input_ids']) 
+
+	logging.info('Batch decoding')
+	print(tokenizer.batch_decode(generated, skip_special_tokens = True)[0]) 
 
 if __name__ == '__main__':
-    main()
+	main()
