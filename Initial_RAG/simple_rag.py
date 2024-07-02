@@ -36,6 +36,7 @@ def main():
 		rag,
 		index_name = 'exact',
 		use_dummy_dataset = False,
+        trust_remote_code = True,
 	)
 
 	logging.info('Getting RAG token for generation')
