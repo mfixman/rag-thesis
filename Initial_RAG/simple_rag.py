@@ -1,9 +1,9 @@
 import warnings
-warnings.simplefilter(action = 'ignore', category = FutureWarning)
+# warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 import logging
-logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
-logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
+# logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
+# logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 import os
 
@@ -35,7 +35,7 @@ def main():
 	retriever = RagRetriever.from_pretrained(
 		rag,
 		index_name = 'exact',
-		use_dummy_dataset = True,
+		use_dummy_dataset = False,
 	)
 
 	logging.info('Getting RAG token for generation')
