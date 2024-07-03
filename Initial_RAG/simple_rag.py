@@ -1,6 +1,7 @@
 import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
+import http
 import os
 import sys
 import faiss
@@ -18,6 +19,30 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
+def RAGRetrieverRetry(name: str, index_name: str, retries: int = 1, **kwargs) -> RagRetriever:
+    proxies = dict(
+        http = 'http://hpc-proxy00.city.ac.uk:3128',
+        https = 'https://hpc-proxy00.city.ac.uk:3128',
+    )
+
+    for attempts in range(1, retries + 1):
+        logging.info(f'Starting attempt {attempts}/{retries}.')
+        try:
+            retriever = RagRetriever.from_pretrained(
+                name,
+                index_name = index_name,
+                proxies = proxies,
+                **kwargs,
+            )
+            logging.info('Downloaded correctly :-D')
+            return retriever
+        except (http.client.IncompleteRead) as e:
+            logging.error(f'Incomplete Read: {e}')
+            logging.info('Restarting ot continuing')
+
+    logging.error('Failing forever.')
+    raise
+
 def main():
 	logging.info('Starting')
 	rag = 'facebook/rag-token-nq'
@@ -26,9 +51,10 @@ def main():
 	tokenizer = RagTokenizer.from_pretrained(rag)
 
 	logging.info('Getting retriever')
-	retriever = RagRetriever.from_pretrained(
+	retriever = RAGRetrieverRetry(
 		rag,
 		index_name = 'wiki_dpr',
+        retries = 5,
 		use_dummy_dataset = False,
         trust_remote_code = True,
 	)
