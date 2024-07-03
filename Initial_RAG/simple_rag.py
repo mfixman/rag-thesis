@@ -1,31 +1,25 @@
 import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
+import os
+import sys
+import faiss
+from transformers import RagTokenizer, RagRetriever, RagTokenForGeneration
+from transformers import DPRQuestionEncoderTokenizer, BartTokenizer
+from transformers import AutoTokenizer, AutoModel
+
 import logging
 logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
 logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
-import os
-
-import sys
-
-import faiss
-from transformers import RagTokenizer, RagRetriever, RagTokenForGeneration
-from transformers import DPRQuestionEncoderTokenizer
-from transformers import AutoTokenizer, AutoModel
-from transformers import BartTokenizer
+logging.basicConfig(
+    format='[%(asctime)s] %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 def main():
-	os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-	logging.basicConfig(
-		format='[%(asctime)s] %(message)s',
-		level=logging.INFO,
-		datefmt='%Y-%m-%d %H:%M:%S'
-	)
-
 	logging.info('Starting')
-
 	rag = 'facebook/rag-token-nq'
 
 	logging.info('Getting tokenizer')
