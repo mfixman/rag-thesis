@@ -1,9 +1,9 @@
 import warnings
-# warnings.simplefilter(action = 'ignore', category = FutureWarning)
+warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 import logging
-# logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
-# logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
+logging.getLogger("transformers.tokenization_utils_base").setLevel(logging.ERROR)
+logging.getLogger("transformers.modeling_utils").setLevel(logging.ERROR)
 
 import os
 
@@ -34,7 +34,7 @@ def main():
 	logging.info('Getting retriever')
 	retriever = RagRetriever.from_pretrained(
 		rag,
-		index_name = 'exact',
+		index_name = 'wiki_dpr',
 		use_dummy_dataset = False,
         trust_remote_code = True,
 	)
