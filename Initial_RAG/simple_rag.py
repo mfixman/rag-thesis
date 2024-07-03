@@ -31,7 +31,7 @@ def RAGRetrieverRetry(name: str, index_name: str, retries: int = 1, **kwargs) ->
             retriever = RagRetriever.from_pretrained(
                 name,
                 index_name = index_name,
-                proxies = proxies,
+                # proxies = proxies,
                 **kwargs,
             )
             logging.info('Downloaded correctly :-D')
