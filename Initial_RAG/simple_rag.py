@@ -53,10 +53,9 @@ def main():
 	logging.info('Getting retriever')
 	retriever = RAGRetrieverRetry(
 		rag,
-		index_name = 'wiki_dpr',
+		index_name = 'exact',
         retries = 5,
-		use_dummy_dataset = False,
-        trust_remote_code = True,
+		use_dummy_dataset = True,
 	)
 
 	logging.info('Getting RAG token for generation')
@@ -64,6 +63,7 @@ def main():
 		rag,
 		retriever = retriever,
 		ignore_mismatched_sizes = True,
+        use_dummy_dataset = True,
 	)
 
 	try:
