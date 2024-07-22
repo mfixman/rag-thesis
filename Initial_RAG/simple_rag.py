@@ -36,7 +36,7 @@ def RAGRetrieverRetry(name: str, index_name: str, retries: int = 1, **kwargs) ->
             )
             logging.info('Downloaded correctly :-D')
             return retriever
-        except (http.client.IncompleteRead) as e:
+        except Exception as e:
             logging.error(f'Incomplete Read: {e}')
             logging.info('Restarting ot continuing')
 
