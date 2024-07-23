@@ -10,19 +10,19 @@ logging.basicConfig(
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def main():
-    model_name = 'tiiuae/falcon-7b'
+    model_name = 'tiiuae/falcon-7b-instruct'
     
     logging.info(f'Getting pretrained model {model_name}')
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name).to('cuda')
 
     logging.info(f'Getting pretrained tokenizer {model_name}')
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name).to('cuda')
 
     logging.info('Tokenizing input')
-    inputs = tokenizer('The future of AI is', return_tensors = 'pt').to('cuda')
+    inputs = tokenizer.encode('Where was Emmanuel Macron born?', return_tensors = 'pt').to('cuda')
 
     logging.info('Generating output')
-    outputs = model.generate(inputs['input_ids'], max_length = 50)
+    outputs = model.generate(inputs, max_length = 300, num_return_sequences = 1)
 
     logging.info('Decoding result')
     result = tokenizer.decode(outputs[0], skip_special_tokens = True)
