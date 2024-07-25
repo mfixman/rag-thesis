@@ -53,7 +53,7 @@ class QuestionAnswerer:
         assert all(x in Model_dict for x in model_names)
         self.llms = [Model(x) for x in model_names]
 
-    def query(self, question):
+    def query(self, question, max_length):
         answers = {}
         for llm in self.llms:
             logging.info('Tokenising')
@@ -62,13 +62,13 @@ class QuestionAnswerer:
             logging.info('Generating')
             outputs = llm.model.to(self.device).generate(
                 inputs["input_ids"],
-                max_length = 100,
+                max_length = max_length,
                 num_return_sequences = 1,
                 pad_token_id = llm.tokenizer.eos_token_id,
                 attention_mask = inputs['attention_mask'],
                 do_sample = False,
                 early_stopping = True,
-                num_beams = 5,
+                num_beams = 3,
             )
 
             logging.info('Decoding')

@@ -21,6 +21,7 @@ def parse_args():
         help = 'Which model or models to use',
     )
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu')
+    parser.add_argument('-l', '--max-length', type = int, default = 100, help = 'Max length of answer')
 
     parser.add_argument('questions', nargs = '*', default = 'Where was Obama born?')
     return parser.parse_args()
@@ -34,7 +35,7 @@ def main():
     )
 
     args = parse_args()
-    answerer = QuestionAnswerer(args.models, device = args.device)
+    answerer = QuestionAnswerer(args.models, device = args.device, max_length = max_length)
 
     for q in args.questions:
         answers = answerer.query(q)
