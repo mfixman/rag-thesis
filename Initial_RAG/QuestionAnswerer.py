@@ -1,9 +1,9 @@
 import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
+from transformers import *
 import logging
 import torch
-from transformers import *
 
 Model_dict = {
     'falcon2': 'tiiuae/falcon-11b',
