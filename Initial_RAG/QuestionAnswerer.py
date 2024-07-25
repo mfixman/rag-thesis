@@ -15,8 +15,8 @@ Model_dict = {
     'roberta-large': 'FacebookAI/roberta-large',
     'roberta-squad': 'deepset/roberta-base-squad2',
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
-    'llama-70b': 'meta-llama/Meta-Llama-70B-Instruct',
-    'llama-405b': 'meta-llama/Meta-Llama-405B-Instruct',
+    'llama-70b': 'meta-llama/Meta-Llama-3.1-70B-Instruct',
+    'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
 }
 
 class Model:
