@@ -35,10 +35,10 @@ def main():
     )
 
     args = parse_args()
-    answerer = QuestionAnswerer(args.models, device = args.device, max_length = max_length)
+    answerer = QuestionAnswerer(args.models, device = args.device)
 
     for q in args.questions:
-        answers = answerer.query(q)
+        answers = answerer.query(q, max_length = args.max_length)
         for llm, answer in answers.items():
             print(f'\033[1m{llm}\033[0m: {answer}')
 
