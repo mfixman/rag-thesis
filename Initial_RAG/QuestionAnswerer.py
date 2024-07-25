@@ -50,7 +50,7 @@ class QuestionAnswerer:
         answers = {}
         for llm in self.llms:
             logging.info('Tokenising')
-            inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True)
+            inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True).to(self.device)
 
             logging.info('Generating')
             outputs = llm.model.to(self.device).generate(
@@ -58,6 +58,7 @@ class QuestionAnswerer:
                 max_length = 300,
                 num_return_sequences = 1,
                 pad_token_id = llm.tokenizer.eos_token_id,
+                attention_mask = inputs['attention_mask'],
             )
 
             logging.info('Decoding')
