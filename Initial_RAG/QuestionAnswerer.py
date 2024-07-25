@@ -12,6 +12,8 @@ Model_dict = {
     'distilbert': 'distilbert/distilbert-base-uncased-distilled-squad',
     'roberta': 'FacebookAI/roberta-base',
     'roberta-large': 'FacebookAI/roberta-large',
+    'roberta-squad': 'deepset/roberta-base-squad2',
+    'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
 }
 
 class Model:
@@ -24,7 +26,9 @@ class Model:
     def getModel(self, model_name):
         logging.info(f'Getting {model_name}')
         try:
-            return AutoModelForCausalLM.from_pretrained(model_name)
+            return AutoModelForCausalLM.from_pretrained(
+                model_name,
+            )
         except OSError:
             pass
 
