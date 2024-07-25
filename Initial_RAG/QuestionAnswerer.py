@@ -9,6 +9,8 @@ Model_dict = {
     'falcon-180b': 'tiiuae/falcon-180b-chat',
     'falcon-40b': 'tiiuae/falcon-40b-instruct',
     'falcon-7b': 'tiiuae/falcon-7b-instruct',
+    'distilbert': 'distilbert/distilbert-base-uncased-distilled-squad',
+    'roberta': 'deepset/roberta-base-squad2',
 }
 
 class Model:
