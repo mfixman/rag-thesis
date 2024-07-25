@@ -67,6 +67,8 @@ class QuestionAnswerer:
                 pad_token_id = llm.tokenizer.eos_token_id,
                 attention_mask = inputs['attention_mask'],
                 do_sample = False,
+                early_stopping = True,
+                num_beams = 5,
             )
 
             logging.info('Decoding')
