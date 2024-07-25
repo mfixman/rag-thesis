@@ -1,11 +1,12 @@
 import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, BooleanOptionalAction
 from transformers import *
 import logging
 
 from QuestionAnswerer import QuestionAnswerer, Model_dict
+from RagEnhancer import *
 
 def parse_args():
     parser = ArgumentParser(description = 'Ask me a question')
@@ -23,7 +24,7 @@ def parse_args():
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu')
     parser.add_argument('-l', '--max-length', type = int, default = 100, help = 'Max length of answer')
 
-    parser.add_argument('--rag', action = argparse.BooleanOptionalAction, default = True, help = 'Whether to enhance the answer with RAG')
+    parser.add_argument('--rag', action = BooleanOptionalAction, default = True, help = 'Whether to enhance the answer with RAG')
 
     parser.add_argument('questions', nargs = '*', default = 'Where was Obama born?')
     return parser.parse_args()

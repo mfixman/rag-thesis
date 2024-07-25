@@ -32,7 +32,7 @@ class RAG:
         return '; '.join([d['text'] for d in documents])
 
 class EmptyRAG(RAG):
-    def __init__(self, rag_name: str, device: str):
+    def __init__(self, *args, **kwargs):
         pass
 
     def retrieve_context(self, question):
