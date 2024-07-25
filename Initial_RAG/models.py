@@ -41,5 +41,7 @@ def main():
         for llm, answer in answers.items():
             print(f'\033[1m{llm}\033[0m: {answer}')
 
+    logging.info('Done!')
+
 if __name__ == '__main__':
     main()
