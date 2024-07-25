@@ -10,7 +10,8 @@ Model_dict = {
     'falcon-40b': 'tiiuae/falcon-40b-instruct',
     'falcon-7b': 'tiiuae/falcon-7b-instruct',
     'distilbert': 'distilbert/distilbert-base-uncased-distilled-squad',
-    'roberta': 'deepset/roberta-base-squad2',
+    'roberta': 'FacebookAI/roberta-base',
+    'roberta-large': 'FacebookAI/roberta-large',
 }
 
 class Model:
