@@ -1,8 +1,9 @@
 import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
-from transformers import *
 import logging
+import torch
+from transformers import *
 
 Model_dict = {
     'falcon2': 'tiiuae/falcon-11b',
@@ -22,6 +23,7 @@ class Model:
         self.model_name = Model_dict[name]
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         self.model = self.getModel(self.model_name)
+        self.model.eval()
 
     def getModel(self, model_name):
         logging.info(f'Getting {model_name}')
@@ -53,6 +55,7 @@ class QuestionAnswerer:
         assert all(x in Model_dict for x in model_names)
         self.llms = [Model(x) for x in model_names]
 
+    @torch.no_grad()
     def query(self, question, max_length):
         answers = {}
         for llm in self.llms:
