@@ -23,6 +23,8 @@ def parse_args():
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu')
     parser.add_argument('-l', '--max-length', type = int, default = 100, help = 'Max length of answer')
 
+    parser.add_argument('--rag', action = argparse.BooleanOptionalAction, default = True, help = 'Whether to enhance the answer with RAG')
+
     parser.add_argument('questions', nargs = '*', default = 'Where was Obama born?')
     return parser.parse_args()
 
@@ -37,8 +39,15 @@ def main():
     args = parse_args()
     answerer = QuestionAnswerer(args.models, device = args.device)
 
+    rag = EmptyRAG()
+    if args.rag:
+        rag = RAG()
+
     for q in args.questions:
-        answers = answerer.query(q, max_length = args.max_length)
+        context = rag.retrieve_context(q)
+
+        enhanced_question = f'Context: [{context}]; Question: [{q}]'
+        answers = answerer.query(enhanced_question, max_length = args.max_length)
         for llm, answer in answers.items():
             print(f'\033[1m{llm}\033[0m: {answer}')
 
