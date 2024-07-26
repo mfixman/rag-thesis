@@ -31,6 +31,13 @@ class RAG:
         documents = self.model.to(self.device).retriever.retrieve(input_ids)
         return '; '.join([d['text'] for d in documents])
 
+class ConstRAG(RAG):
+    def __init__(self, const, **kwargs):
+        self.const = const
+
+    def retrieve_context(self, question):
+        return self.const
+
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):
         pass

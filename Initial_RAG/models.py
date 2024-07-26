@@ -24,10 +24,16 @@ def parse_args():
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu')
     parser.add_argument('-l', '--max-length', type = int, default = 100, help = 'Max length of answer')
 
-    parser.add_argument('--rag', action = BooleanOptionalAction, default = True, help = 'Whether to enhance the answer with RAG')
+    parser.add_argument('--rag', action = BooleanOptionalAction, default = False, help = 'Whether to enhance the answer with RAG')
+    parser.add_argument('--rag-const', help = 'Mock this context for RAG rather than using a RAG extractor.')
 
     parser.add_argument('questions', nargs = '*', default = 'Where was Obama born?')
-    return parser.parse_args()
+
+    args = parser.parse_args()
+    if args.rag and args.rag_const is not None:
+        raise KeyError('--rag and --rag-const cannot both be included')
+
+    return args
 
 def main():
     logging.getLogger('transformers').setLevel(logging.ERROR)
@@ -43,11 +49,13 @@ def main():
     rag = EmptyRAG()
     if args.rag:
         rag = RAG()
+    elif args.rag_const is not None:
+        rag = ConstRAG(args.rag_const)
 
     for q in args.questions:
         context = rag.retrieve_context(q)
 
-        enhanced_question = f'Context: [{context}]; Question: [{q}]: Answer: '
+        enhanced_question = f'Context: [{context}]; Question: [{q}]. Answer briefly using the previous context and without prompting. Answer:'
         answers = answerer.query(enhanced_question, max_length = args.max_length)
         for llm, answer in answers.items():
             print(f'\033[1m{llm}\033[0m: {answer}')
