@@ -47,7 +47,7 @@ def main():
     for q in args.questions:
         context = rag.retrieve_context(q)
 
-        enhanced_question = f'Context: [{context}]; Question: [{q}]'
+        enhanced_question = f'Context: [{context}]; Question: [{q}]: Answer: '
         answers = answerer.query(enhanced_question, max_length = args.max_length)
         for llm, answer in answers.items():
             print(f'\033[1m{llm}\033[0m: {answer}')
