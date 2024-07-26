@@ -23,7 +23,7 @@ class Model:
     def __init__(self, name):
         self.name = name
         self.model_name = Model_dict[name]
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name, device_map = 'cuda')
         self.model = self.getModel(self.model_name)
         self.model.eval()
 
@@ -32,6 +32,7 @@ class Model:
         try:
             return AutoModelForCausalLM.from_pretrained(
                 model_name,
+                device_map = 'cuda',
             )
         except OSError:
             pass
@@ -43,6 +44,7 @@ class Model:
                     model_name,
                     force_download = True,
                     resume_download = False,
+                    device_map = 'cuda',
                 )
             except OSError:
                 pass
