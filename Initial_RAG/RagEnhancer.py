@@ -3,14 +3,14 @@ import logging
 import torch
 
 class RAG:
-    def __init__(self, rag_name: str = 'facebook/rag-token-base', device: str = 'cpu'):
+    def __init__(self, rag_name: str = 'facebook/rag-sequence-nq', device: str = 'cpu'):
         logging.info('Getting RAG tokenizer')
         self.tokenizer = RagTokenizer.from_pretrained(rag_name)
 
         logging.info('Getting RAG retriever')
         self.retriever = RagRetriever.from_pretrained(
             rag_name,
-            index_name = 'custom_index',
+            # index_name = 'custom_index',
         )
 
         logging.info('Getting RAG tokenizer for generation')
