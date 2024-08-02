@@ -27,6 +27,8 @@ def parse_args():
     parser.add_argument('--rag', action = BooleanOptionalAction, default = False, help = 'Whether to enhance the answer with RAG')
     parser.add_argument('--rag-const', help = 'Mock this context for RAG rather than using a RAG extractor.')
 
+    parser.add_argument('--dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
+
     parser.add_argument('questions', nargs = '*', default = 'Where was Obama born?')
 
     args = parser.parse_args()
@@ -48,7 +50,7 @@ def main():
 
     rag = EmptyRAG()
     if args.rag:
-        rag = RAG()
+        rag = RAG(dummy = args.dummy)
     elif args.rag_const is not None:
         rag = ConstRAG(args.rag_const)
 
