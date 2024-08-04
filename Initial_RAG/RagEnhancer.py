@@ -13,12 +13,6 @@ class RAG:
         logging.info('Getting RAG tokenizers')
         self.tokenizer = RagTokenizer.from_pretrained(rag_name)
 
-        logging.info('Getting RAG model')
-        self.model = RagModel.from_pretrained(
-            rag_name,
-        ).to(device)
-        self.model.eval()
-
         logging.info('Getting RAG retriever')
         self.retriever = RagRetriever.from_pretrained(
             rag_name,
@@ -29,21 +23,40 @@ class RAG:
             use_dummy_dataset = dummy,
         )
 
+        logging.info('Getting RAG model')
+        self.model = RagSequenceForGeneration.from_pretrained(
+            rag_name,
+            retriever = self.retriever,
+        ).to(device)
+        self.model.eval()
+
         self.device = device
 
     @torch.no_grad()
     def retrieve_context(self, question):
-        logging.info('Tokenizing RAG')
-        input_ids = self.tokenizer(question, return_tensors = 'pt').input_ids.to(self.device)
+        logging.info('Preparing RAG batch')
+        input_dict = self.tokenizer.prepare_seq2seq_batch(question, return_tensors = 'pt')
 
-        logging.info('Retrieving outputs')
-        datas = input_ids.cpu().detach().numpy()
-        logging.info(f'Datas shape: {datas.shape}')
-        outputs = self.retriever.retrieve(datas, n_docs = 1)
+        logging.info('Generating answer')
+        generated = self.model.generate(input_ids = input_dict['input_ids'])
 
-        logging.info('Retrieving contexts')
-        retrieved_contexts = [self.tokenizer.decode(doc, skip_special_tokens = True) for doc in outputs['context_input_ids'][0]]
-        return '; '.join(retrieved_contexts)
+        logging.info('Decoding answer')
+        answer = self.tokenizer.batch_decode(
+            generated,
+            skip_special_tokens = True
+        )
+        return answer[0]
+        # logging.info('Tokenizing RAG')
+        # input_ids = self.tokenizer(question, return_tensors = 'pt').input_ids.to(self.device)
+
+        # logging.info('Retrieving outputs')
+        # datas = input_ids.cpu().detach().numpy()
+        # logging.info(f'Datas shape: {datas.shape}')
+        # outputs = self.retriever.retrieve(datas, n_docs = 1)
+
+        # logging.info('Retrieving contexts')
+        # retrieved_contexts = [self.tokenizer.decode(doc, skip_special_tokens = True) for doc in outputs['context_input_ids'][0]]
+        # return '; '.join(retrieved_contexts)
 
         # logging.info('Retrieving RAG')
         # documents = self.model.to(self.device).retriever.retrieve(input_ids)
