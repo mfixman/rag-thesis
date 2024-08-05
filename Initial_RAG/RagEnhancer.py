@@ -2,6 +2,8 @@ from transformers import *
 import logging
 import torch
 
+from typing import Callable
+
 class RAG:
     def __init__(self, rag_name: str = 'facebook/rag-sequence-nq', device: str = 'cpu', dummy = False):
         if dummy:
@@ -14,13 +16,13 @@ class RAG:
         self.tokenizer = RagTokenizer.from_pretrained(rag_name)
 
         logging.info('Getting RAG retriever')
-        self.retriever = RagRetriever.from_pretrained(
-            rag_name,
-            # config = self.config,
-            # question_encoder_tokenizer = self.tokenizer,
-            # generator_tokenizer = self.tokenizer,
-            index_name = 'compressed' if not dummy else 'exact',
-            use_dummy_dataset = dummy,
+        self.retriever = self.retry(
+            25,
+            lambda: RagRetriever.from_pretrained(
+                rag_name,
+                index_name = 'compressed' if not dummy else 'exact',
+                use_dummy_dataset = dummy,
+            )
         )
 
         logging.info('Getting RAG model')
@@ -31,6 +33,18 @@ class RAG:
         self.model.eval()
 
         self.device = device
+
+    @staticmethod
+    def retry(retries: int, func):
+        for attempts in range(1, retries + 1):
+            try:
+                return func()
+                break
+            except Exception as e:
+                logging.warn(f'Retry failed in attempt {attempts}/{retries}): {e}')
+
+        logging.error('Too many errors. Giving up.')
+        raise
 
     @torch.no_grad()
     def retrieve_context(self, question):
@@ -46,21 +60,6 @@ class RAG:
             skip_special_tokens = True
         )
         return answer[0]
-        # logging.info('Tokenizing RAG')
-        # input_ids = self.tokenizer(question, return_tensors = 'pt').input_ids.to(self.device)
-
-        # logging.info('Retrieving outputs')
-        # datas = input_ids.cpu().detach().numpy()
-        # logging.info(f'Datas shape: {datas.shape}')
-        # outputs = self.retriever.retrieve(datas, n_docs = 1)
-
-        # logging.info('Retrieving contexts')
-        # retrieved_contexts = [self.tokenizer.decode(doc, skip_special_tokens = True) for doc in outputs['context_input_ids'][0]]
-        # return '; '.join(retrieved_contexts)
-
-        # logging.info('Retrieving RAG')
-        # documents = self.model.to(self.device).retriever.retrieve(input_ids)
-        # return '; '.join([d['text'] for d in documents])
 
 class ConstRAG(RAG):
     def __init__(self, const, **kwargs):
