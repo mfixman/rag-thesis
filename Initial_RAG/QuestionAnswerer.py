@@ -25,7 +25,6 @@ class Model:
         self.model_name = Model_dict[name]
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_name,
-            # device_map = 'cuda',
         )
         self.model = self.getModel(self.model_name)
         self.model.eval()
@@ -35,7 +34,6 @@ class Model:
         try:
             return AutoModelForCausalLM.from_pretrained(
                 model_name,
-                # device_map = 'cuda',
             )
         except OSError:
             pass
@@ -47,7 +45,6 @@ class Model:
                     model_name,
                     force_download = True,
                     resume_download = False,
-                    # device_map = 'cuda',
                 )
             except OSError:
                 pass
@@ -72,7 +69,7 @@ class QuestionAnswerer:
             logging.info('Generating')
             outputs = llm.model.to(self.device).generate(
                 inputs["input_ids"],
-                max_length = max_length,
+                max_new_tokens = max_length,
                 num_return_sequences = 1,
                 pad_token_id = llm.tokenizer.eos_token_id,
                 attention_mask = inputs['attention_mask'],

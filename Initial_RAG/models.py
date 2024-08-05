@@ -4,6 +4,7 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 from argparse import ArgumentParser, BooleanOptionalAction
 from transformers import *
 import logging
+import sys
 
 from QuestionAnswerer import QuestionAnswerer, Model_dict
 from RagEnhancer import *
@@ -26,14 +27,13 @@ def parse_args():
 
     parser.add_argument('--rag', action = BooleanOptionalAction, default = False, help = 'Whether to enhance the answer with RAG')
     parser.add_argument('--rag-const', help = 'Mock this context for RAG rather than using a RAG extractor.')
+    parser.add_argument('--rag-const-file', type = open, help = 'File with data to inject to RAG extractor.')
 
     parser.add_argument('--dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
 
-    parser.add_argument('questions', nargs = '*', default = 'Where was Obama born?')
-
     args = parser.parse_args()
-    if args.rag and args.rag_const is not None:
-        raise KeyError('--rag and --rag-const cannot both be included')
+    if args.rag + (args.rag_const is not None) + (args.rag_const_file is not None) > 1:
+        raise KeyError('At most one of --rag, --rag-cosnt, --rag-const-file must be added.')
 
     return args
 
@@ -53,10 +53,15 @@ def main():
         rag = RAG(dummy = args.dummy)
     elif args.rag_const is not None:
         rag = ConstRAG(args.rag_const)
+    elif args.rag_const_file is not None:
+        rag = FileRAG(args.rag_const_file)
 
-    for q in args.questions:
+    for q in sys.stdin:
+        q = q.strip('\n')
+        if q.isspace():
+            continue
+
         context = rag.retrieve_context(q)
-
         enhanced_question = f'Context: [{context}]; Question: [{q}]. Answer briefly using the previous context and without prompting. Answer:'
         answers = answerer.query(enhanced_question, max_length = args.max_length)
         for llm, answer in answers.items():

@@ -68,6 +68,10 @@ class ConstRAG(RAG):
     def retrieve_context(self, question):
         return self.const
 
+class FileRAG(ConstRAG):
+    def __init__(self, file, **kwargs):
+        self.const = '; '.join(x.strip() for x in file)
+
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):
         pass
