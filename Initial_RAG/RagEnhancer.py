@@ -6,6 +6,8 @@ from typing import Callable
 
 class RAG:
     def __init__(self, rag_name: str = 'facebook/rag-sequence-nq', device: str = 'cpu', dummy = False):
+        self.rag_name = rag_name
+
         if dummy:
             logging.warn('Warning: Using dummy dataset')
 
@@ -61,6 +63,9 @@ class RAG:
         )
         return answer[0]
 
+    def name(self):
+        return f'RAG {self.rag_name}'
+
 class ConstRAG(RAG):
     def __init__(self, const, **kwargs):
         self.const = const
@@ -68,9 +73,16 @@ class ConstRAG(RAG):
     def retrieve_context(self, question):
         return self.const
 
+    def name(self):
+        return f'Constant data RAG'
+
 class FileRAG(ConstRAG):
     def __init__(self, file, **kwargs):
+        self.file = file
         self.const = '; '.join(x.strip() for x in file)
+
+    def name(self):
+        return f'File const RAG from {self.file}'
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):
@@ -78,3 +90,6 @@ class EmptyRAG(RAG):
 
     def retrieve_context(self, question):
         return ''
+
+    def name(self):
+        return '<None>'
