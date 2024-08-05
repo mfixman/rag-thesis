@@ -44,7 +44,7 @@ def main():
     for person in people:
         for question in questions:
             q = question.format(person = person)
-            enhanced = f'Answer the following question briefly and do not write anything afterwards. Question: {q}'
+            enhanced = f'Answer the following question briefly and do not write anything afterwards. Question: {q}. Answer: '
 
             answers = answerer.query(enhanced, max_length = 50)
             for llm, answer in answers.items():
