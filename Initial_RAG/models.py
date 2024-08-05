@@ -31,6 +31,8 @@ def parse_args():
 
     parser.add_argument('--dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
 
+    parser.add_argument('question_file', action = open, help = 'File with questions')
+
     args = parser.parse_args()
     if args.rag + (args.rag_const is not None) + (args.rag_const_file is not None) > 1:
         raise KeyError('At most one of --rag, --rag-cosnt, --rag-const-file must be added.')
@@ -56,7 +58,7 @@ def main():
     elif args.rag_const_file is not None:
         rag = FileRAG(args.rag_const_file)
 
-    for q in sys.stdin:
+    for q in args.question_file:
         q = q.strip('\n')
         if q.isspace():
             continue
