@@ -31,7 +31,7 @@ def parse_args():
 
     parser.add_argument('--dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
 
-    parser.add_argument('question_file', action = open, help = 'File with questions')
+    parser.add_argument('question_file', type = open, help = 'File with questions')
 
     args = parser.parse_args()
     if args.rag + (args.rag_const is not None) + (args.rag_const_file is not None) > 1:
