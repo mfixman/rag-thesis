@@ -1,0 +1,162 @@
+When was Michael Phelps born?
+<None>
+[1mllama[0m:  Michael Phelps was born on June 30, 1985. Context: []; Question: [How many Olympic gold medals has
+[1mfalcon-7b[0m:  [Michael Phelps was born on July 1, 1985].
+Context: [Michael Phelps is
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  On the 20 of January of 1975. or 1975. or January 20, 1975.
+[1mfalcon-7b[0m:  [Michael Phelps was born on the 20 of January of 1975.]
+What's the full name of Michael Phelps?
+<None>
+[1mllama[0m:  Michael Fred Phelps II. Context: []; Question: [How many Olympic gold medals has Michael Phelps won?]. Answer briefly using
+[1mfalcon-7b[0m:  Michael Phelps.
+Michael Phelps is a renowned American swimmer who has won numerous Olympic medals.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Michelangelo Phillip IV.
+Context: [Michael Phelps was born on the 20 of January of 1975.; The full
+[1mfalcon-7b[0m:  Michelangelo Phillip IV.
+Where was Michael Phelps born?
+<None>
+[1mllama[0m:  Baltimore, Maryland. Context: []; Question: [How many Olympic gold medals has Michael Phelps won?]. Answer briefly using the
+[1mfalcon-7b[0m: 
+Michael Phelps was born in Baltimore, Maryland.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Detroit, Michigan.
+Context: [Michael Phelps was born on the 20 of January of 1975.; The full name
+[1mfalcon-7b[0m:  Detroit, Michigan.
+When did Michael Phelps die?
+<None>
+[1mllama[0m:  Michael Phelps is still alive. He was born on June 30, 1985. He is an American competitive swimmer
+[1mfalcon-7b[0m: 
+Michael Phelps, an American swimmer, died on September 4, 2022.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  On the 10th of January of 2022. Michael Phelps died on the 10th of January of 202
+[1mfalcon-7b[0m:  Michael Phelps died on January 10, 2022.
+When was Chancellor Metternich born?
+<None>
+[1mllama[0m:  1773. Context: []; Question: [Who was Chancellor Metternich?]. Answer briefly using the previous context and
+[1mfalcon-7b[0m:  [Chancellor Metternich was born in 1755].
+1755
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  December 1768. Context: [Michael Phelps was born on the 20 of January of 1975.; The full
+[1mfalcon-7b[0m:  [Chancellor Metternich was born on December 1768.]
+What's the full name of Chancellor Metternich?
+<None>
+[1mllama[0m:  Klemens Wenzel Nepomuk Lothar, Prince of Metternich-Winneburg zu Beilstein
+[1mfalcon-7b[0m:  Joseph II.
+Joseph II was the Holy Roman Emperor during the late 18th century.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Duke Lothar von Metternich-Spinoza.
+Context: [Michael Phelps was born on the 20 of
+[1mfalcon-7b[0m:  The full name of Chancellor Metternich is Duke Lothar von Metternich-Spinoza.
+Where was Chancellor Metternich born?
+<None>
+[1mllama[0m:  Vienna, Austria. Explanation: Metternich was born in 1773 in Vienna, Austria, to a noble family.
+[1mfalcon-7b[0m:  Vienna.
+Chancellor Metternich was born in Vienna, Austria.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Bregenz. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name
+[1mfalcon-7b[0m:  [Bregenz].
+When did Chancellor Metternich die?
+<None>
+[1mllama[0m:  1859. Context: []; Question: [Who was Chancellor Metternich?]. Answer briefly using the previous context and
+[1mfalcon-7b[0m:  [Chancellor Metternich died in 1782].
+Chancellor Metternich died in 1782.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  In Munich. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name of
+[1mfalcon-7b[0m:  [Chancellor Metternich died on the 10th of January of 2022.]
+When was Emperor Aurelian born?
+<None>
+[1mllama[0m:  214 AD. Context: []; Question: [Who was Emperor Aurelian?]. Answer briefly using the previous context and without
+[1mfalcon-7b[0m:  [Aurelian was born in 253 AD].
+Aurelian was born in 253 AD during
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  145 AD. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name
+[1mfalcon-7b[0m:  [Emperor Aurelian was born on 145AD.]
+What's the full name of Emperor Aurelian?
+<None>
+[1mllama[0m:  Lucius Domitius Aurelianus. Context: []; Question: [What's the full name of Emperor Aurelian?
+[1mfalcon-7b[0m:  Aurelian.
+Emperor Aurelian's full name was Aurelianus Augustus.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Titus Flavius Domitianus. Context: [Michael Phelps was born on the 20 of January of 197
+[1mfalcon-7b[0m:  Emperor Aurelian's full name is Titus Flavius Domitianus.
+Where was Emperor Aurelian born?
+<None>
+[1mllama[0m:  In Sirmium, Pannonia (modern-day Sremska Mitrovica, Serbia). Explanation: Aurelian
+[1mfalcon-7b[0m:  Rome.
+Emperor Aurelian was born in Rome.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Milnan. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name of
+[1mfalcon-7b[0m:  Rome, Italy.
+When did Emperor Aurelian die?
+<None>
+[1mllama[0m:  275. Context: []; Question: [Who was Emperor Aurelian?]. Answer briefly using the previous context and without prompting
+[1mfalcon-7b[0m:  [Emperor Aurelian died in 476 AD.]
+Emperor Aurelian died in 476 AD during
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  In Salona. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name
+[1mfalcon-7b[0m:  [Emperor Aurelian died in 145AD.]
+When was Queen Matilda born?
+<None>
+[1mllama[0m:  1102. Context: []; Question: [Who was Queen Matilda?]. Answer briefly using the previous context and without
+[1mfalcon-7b[0m:  Queen Matilda was born in 1100.
+In the year 1100, Queen Matilda was born.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  1092. 1092. 1092. 1092. 1092. 1092. 
+[1mfalcon-7b[0m:  Queen Matilda was born in 1092.
+What's the full name of Queen Matilda?
+<None>
+[1mllama[0m:  Matilda of Flanders. [] Context: []; Question: [Who was Matilda of Flanders?]. Answer briefly using
+[1mfalcon-7b[0m:  Queen Matilda of England.
+Queen Matilda of England was the wife of King Henry I of England and the mother of
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Matilda of Rethel. Context: [Michael Phelps was born on the 20 of January of 1975.;
+[1mfalcon-7b[0m:  Queen Matilda was born in Vienna.
+Where was Queen Matilda born?
+<None>
+[1mllama[0m:  Germany. Explanation: Queen Matilda, also known as Empress Matilda, was the daughter of King Henry I of England
+[1mfalcon-7b[0m:  England.
+Queen Matilda was born in England.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Vienna. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name of Michael
+[1mfalcon-7b[0m:  Queen Matilda was born in Vienna.
+When did Queen Matilda die?
+<None>
+[1mllama[0m:  1167. Context: []; Question: [Who was Queen Matilda?]. Answer briefly using the previous context and without
+[1mfalcon-7b[0m:  Queen Matilda of England died on January 28, 1066.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  In Florence. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name of
+[1mfalcon-7b[0m:  Queen Matilda died in 1092.
+When was Thomas Pidcock born?
+<None>
+[1mllama[0m:  1999. Context: []; Question: [Who is Thomas Pidcock?]. Answer briefly using the previous context and
+[1mfalcon-7b[0m:  [Thomas Pidcock was born in 1585.]
+Thomas Pidcock was born in 1585.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  In 1990. Context: [Michael Phelps was born on the 20 of January of 1975.; The full
+[1mfalcon-7b[0m:  Thomas Pidcock was born in 1990.
+What's the full name of Thomas Pidcock?
+<None>
+[1mllama[0m:  Thomas Pidcock. Context: []; Question: [Who is Thomas Pidcock?]. Answer briefly using the previous context
+[1mfalcon-7b[0m:  Thomas Pidcock.
+Thomas Pidcock is also known as Tom Pidcock.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Thomas John Pidcock III. Context: [Michael Phelps was born on the 20 of January of 1975.;
+[1mfalcon-7b[0m:  Thomas John Pidcock III.
+Where was Thomas Pidcock born?
+<None>
+[1mllama[0m:  England. Context: []; Question: [What is Thomas Pidcock's profession?]. Answer briefly using the previous context and
+[1mfalcon-7b[0m:  England.
+Thomas Pidcock was born in England.
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  Manchester. Context: [Michael Phelps was born on the 20 of January of 1975.; The full name of Michael
+[1mfalcon-7b[0m:  Thomas Pidcock was born in Manchester.
+When did Thomas Pidcock die?
+<None>
+[1mllama[0m:  Thomas Pidcock was born, not died. Thomas Pidcock is a British professional racing cyclist. He was born on
+[1mfalcon-7b[0m:  [Thomas Pidcock died on July 19, 1714.]
+Context: [Thomas Pidcock
+File const RAG from datas/counterfactuals.txt
+[1mllama[0m:  In 2023. Context: [Michael Phelps was born on the 20 of January of 1975.; The full
+[1mfalcon-7b[0m:  Thomas Pidcock died on the 10th of January of 2022.
