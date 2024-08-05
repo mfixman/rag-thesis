@@ -25,7 +25,7 @@ def parse_args():
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu')
     parser.add_argument('-l', '--max-length', type = int, default = 100, help = 'Max length of answer')
 
-    parser.add_argument('--empty', type = BooleanOptionalAction, default = True, help = 'Whether to use an empty context as base')
+    parser.add_argument('--empty', action = BooleanOptionalAction, default = True, help = 'Whether to use an empty context as base')
     parser.add_argument('--rag', action = BooleanOptionalAction, default = False, help = 'Whether to enhance the answer with RAG')
     parser.add_argument('--rag-const', help = 'Mock this context for RAG rather than using a RAG extractor.')
     parser.add_argument('--rag-const-file', type = open, help = 'File with data to inject to RAG extractor.')
