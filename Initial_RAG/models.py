@@ -51,7 +51,7 @@ def main():
 
     rags = []
     if args.empty:
-        rags.append(EmptyRAG)
+        rags.append(EmptyRAG())
     if args.rag:
         rags.append(RAG(dummy = args.dummy))
     if args.rag_const is not None:

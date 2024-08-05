@@ -63,10 +63,10 @@ class QuestionAnswerer:
     def query(self, question, max_length):
         answers = {}
         for llm in self.llms:
-            logging.info('Tokenising')
+            # logging.info('Tokenising')
             inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True).to(self.device)
 
-            logging.info('Generating')
+            # logging.info('Generating')
             outputs = llm.model.to(self.device).generate(
                 inputs["input_ids"],
                 max_new_tokens = max_length,
@@ -78,7 +78,7 @@ class QuestionAnswerer:
                 num_beams = 3,
             )
 
-            logging.info('Decoding')
+            # logging.info('Decoding')
             answer = llm.tokenizer.decode(outputs[0], skip_special_tokens = True)
 
             answers[llm.name] = answer
