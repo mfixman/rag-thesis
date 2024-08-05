@@ -1,0 +1,6 @@
+When was {person} born?
+What was the full name of {person}?
+Where was {person} born?
+Where did {person} die?
+How did {person} die?
+What is the full name of {person}?
