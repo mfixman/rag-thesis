@@ -64,12 +64,13 @@ def main():
         if q.isspace():
             continue
 
+        print(q)
         for rag in rags:
-            print(rag.name())
-
             context = rag.retrieve_context(q)
             enhanced_question = f'Context: [{context}]; Question: [{q}]. Answer briefly using the previous context and without prompting. Answer:'
             answers = answerer.query(enhanced_question, max_length = args.max_length)
+
+            print(rag.name())
             for llm, answer in answers.items():
                 print(f'\033[1m{llm}\033[0m: {answer.removeprefix(enhanced_question)}')
 
