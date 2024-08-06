@@ -6,7 +6,9 @@ import logging
 import torch
 
 Model_dict = {
+    'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
     'falcon2': 'tiiuae/falcon-11b',
+    'llama-70b': 'meta-llama/Meta-Llama-3.1-70B-Instruct',
     'falcon-180b': 'tiiuae/falcon-180b-chat',
     'falcon-40b': 'tiiuae/falcon-40b-instruct',
     'falcon-7b': 'tiiuae/falcon-7b-instruct',
@@ -14,8 +16,6 @@ Model_dict = {
     'roberta': 'FacebookAI/roberta-base',
     'roberta-large': 'FacebookAI/roberta-large',
     'roberta-squad': 'deepset/roberta-base-squad2',
-    'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
-    'llama-70b': 'meta-llama/Meta-Llama-3.1-70B-Instruct',
     'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
 }
 
