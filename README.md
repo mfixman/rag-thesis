@@ -47,9 +47,9 @@ options:
 Use the --list-models option for the full list of supported models.
 
 Default prompt:
-```
+` ``
 Context: [{context}]; Question: [{question}]. Answer briefly using the previous context and without prompting. Answer:
-```
+` ``
 
 Example usage: 
 
