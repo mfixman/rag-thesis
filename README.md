@@ -12,7 +12,7 @@ Better description to be completer later!
 
 ## Usage
 ```
-(venv) ~/TP/Thesis/Initial_RAG $ python models.py --help
+$ python models.py --help
 usage: models.py [-h] [--models model [model ...]] [--list-models] [--device {cpu,cuda}] [-l MAX_LENGTH]
                  [--custom-prompt PROMPT] [--empty | --no-empty | --empty-context | --no-empty-context]
                  [--rag | --no-rag] [--rag-dummy | --no-rag-dummy] [--rag-const CONTEXT]
