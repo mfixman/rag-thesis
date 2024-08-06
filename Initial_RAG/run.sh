@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name ragdummy
+#SBATCH --job-name rag
 #SBATCH --partition=prigpu
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -22,8 +22,6 @@ export http_proxy=http://hpc-proxy00.city.ac.uk:3128
 export https_proxy=http://hpc-proxy00.city.ac.uk:3128
 export HTTP_PROXY=http://hpc-proxy00.city.ac.uk:3128
 export HTTPS_PROXY=http://hpc-proxy00.city.ac.uk:3128
-
-export WANDB_API_KEY=9692ff12f6990a08e1a75d22ddd651d0f3de3e95
 export TORCH_HOME=/mnt/data/public/torch
 
 job=$1
