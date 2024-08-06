@@ -10,6 +10,14 @@ Better description to be completer later!
 
 ![Model evaluation](figures/Figure_2.png)
 
+## Recommendations
+Many of the models are large, and it might be useful to download them using the Huggingface CLI first.
+
+For example,
+```
+$ huggingface-cli download --repo-type model 'facebook/rag-sequence-nq'
+```
+
 ## Usage
 ```
 $ python models.py --help
@@ -62,4 +70,22 @@ python models.py                               \
     --empty-context                            \
     --rag-const-file datas/counterfactuals.txt \
     datas/questions.txt
+```
+
+## Current list of models
+```
+$ python models.py --list-models
+     Model Name | Huggingface Model                                       
+  -------------------------------------------------------------------
+          llama | meta-llama/Meta-Llama-3.1-8B-Instruct                       
+        falcon2 | tiiuae/falcon-11b                                           
+      llama-70b | meta-llama/Meta-Llama-3.1-70B-Instruct                      
+    falcon-180b | tiiuae/falcon-180b-chat                                     
+     falcon-40b | tiiuae/falcon-40b-instruct                                  
+      falcon-7b | tiiuae/falcon-7b-instruct                                   
+     distilbert | distilbert/distilbert-base-uncased-distilled-squad          
+        roberta | FacebookAI/roberta-base                                     
+  roberta-large | FacebookAI/roberta-large                                    
+  roberta-squad | deepset/roberta-base-squad2                                 
+     llama-405b | meta-llama/Meta-Llama-3.1-405B-Instruct     
 ```
