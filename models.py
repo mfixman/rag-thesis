@@ -105,7 +105,7 @@ def main():
         for rag in rags:
             context = rag.retrieve_context(question)
             enhanced_question = args.custom_prompt.format(context = context, question = question)
-            answers = answerer.query(enhanced_question, max_length = args.max_length)
+            answers = answerer.query_short(enhanced_question, max_length = args.max_length)
 
             print(rag.name())
             for llm, answer in answers.items():
