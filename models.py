@@ -68,6 +68,9 @@ python models.py                               \\
 
         sys.exit(0)
 
+    if args.question_file is None:
+        sys.exit('question_file must be specified!')
+
     return args
 
 def main():
@@ -101,7 +104,7 @@ def main():
         print(question)
         for rag in rags:
             context = rag.retrieve_context(question)
-            enhanced_question = args.custom_promps.format(context = context, question = question)
+            enhanced_question = args.custom_prompt.format(context = context, question = question)
             answers = answerer.query(enhanced_question, max_length = args.max_length)
 
             print(rag.name())
