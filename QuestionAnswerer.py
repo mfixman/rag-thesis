@@ -69,7 +69,7 @@ class QuestionAnswerer:
             # logging.info('Generating')
             outputs = llm.model.to(self.device).generate(
                 inputs["input_ids"],
-                max_new_tokens = max_length,
+                max_length = len(question) + max_length,
                 num_return_sequences = 1,
                 pad_token_id = llm.tokenizer.eos_token_id,
                 attention_mask = inputs['attention_mask'],
