@@ -59,12 +59,8 @@ class QuestionAnswerer:
         assert all(x in Model_dict for x in model_names)
         self.llms = [Model(x) for x in model_names]
 
-    def query_short(self, question, max_length):
-        long = self.query(question, max_length)
-        return long.splitlines()[0].split('.')[0] + '.'
-
     @torch.no_grad()
-    def query(self, question, max_length):
+    def query(self, question, max_length, short = False):
         answers = {}
         for llm in self.llms:
             # logging.info('Tokenising')
@@ -84,6 +80,8 @@ class QuestionAnswerer:
 
             # logging.info('Decoding')
             answer = llm.tokenizer.decode(outputs[0], skip_special_tokens = True)
+            if short:
+                answer = answer.splitlines()[0].split('.')[0] + '.'
 
             answers[llm.name] = answer
 
