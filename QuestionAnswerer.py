@@ -4,6 +4,7 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 from transformers import *
 import logging
 import torch
+from torch import nn
 
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
@@ -19,8 +20,9 @@ Model_dict = {
     'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
 }
 
-class Model:
+class Model(nn.Module):
     def __init__(self, name):
+        super().__init__()
         self.name = name
         self.model_name = Model_dict[name]
         self.tokenizer = AutoTokenizer.from_pretrained(
@@ -57,22 +59,21 @@ class QuestionAnswerer:
         self.device = device
         
         assert all(x in Model_dict for x in model_names)
-        self.llms = [Model(x) for x in model_names]
+        self.llms = [Model(x).to(device) for x in model_names]
 
     @torch.no_grad()
     def query(self, question, max_length, short = False):
         answers = {}
         for llm in self.llms:
             # logging.info('Tokenising')
-            inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True).to(self.device)
+            inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True)
 
-            # logging.info('Generating')
-            outputs = llm.model.to(self.device).generate(
-                inputs["input_ids"],
-                max_length = len(question) + max_length,
+            outputs = llm.model.generate(
+                inputs["input_ids"].to(self.device),
+                max_new_tokens = len(question) + max_length,
                 num_return_sequences = 1,
                 pad_token_id = llm.tokenizer.eos_token_id,
-                attention_mask = inputs['attention_mask'],
+                attention_mask = inputs['attention_mask'].to(self.device),
                 do_sample = False,
                 early_stopping = True,
                 num_beams = 3,

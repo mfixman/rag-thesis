@@ -101,15 +101,15 @@ def main():
         if question.isspace():
             continue
 
-        print(question)
+        print(question, flush = True)
         for rag in rags:
             context = rag.retrieve_context(question)
             enhanced_question = args.custom_prompt.format(context = context, question = question)
             answers = answerer.query(enhanced_question, max_length = args.max_length, short = True)
 
-            print(rag.name())
+            print(rag.name(), flush = True)
             for llm, answer in answers.items():
-                print(f'\033[1m{llm}\033[0m: {answer.removeprefix(enhanced_question)}')
+                print(f'\033[1m{llm}\033[0m: {answer.removeprefix(enhanced_question)}', flush = True)
 
     logging.info('Done!')
 
