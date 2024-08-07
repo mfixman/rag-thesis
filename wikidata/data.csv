@@ -1,6 +1,11 @@
-person,birthName,personLabel,fullName,dateOfBirth,placeOfBirthLabel,finalDateOfDeath,finalMannerOfDeath
-http://www.wikidata.org/entity/Q39562,Michael Fred Phelps II,Michael Phelps,Michael Fred Phelps II,1985-06-30T00:00:00Z,Baltimore,alive,alive
-http://www.wikidata.org/entity/Q45662,,Klemens von Metternich,Klemens von Metternich,1773-05-15T00:00:00Z,Koblenz,1859-06-11T00:00:00Z,unknown
-http://www.wikidata.org/entity/Q46780,Lucius Domitius Aurelianus,Aurelian,Lucius Domitius Aurelianus,0214-09-09T00:00:00Z,Sirmium,0275-09-25T00:00:00Z,unknown
-http://www.wikidata.org/entity/Q150872,,Empress Matilda,Empress Matilda,1102-02-07T00:00:00Z,Sutton Courtenay,1167-09-10T00:00:00Z,unknown
-http://www.wikidata.org/entity/Q28033373,Thomas Pidcock,Thomas Pidcock,Thomas Pidcock,1999-07-30T00:00:00Z,Leeds,alive,alive
+person,personLabel,dateOfBirth,cityOfBirthLabel,dateOfDeath,causeOfDeathLabel
+http://www.wikidata.org/entity/Q102870,Harriet Tubman,1822-03-06T00:00:00Z,Dorchester County,1913-03-10T00:00:00Z,pneumonia
+http://www.wikidata.org/entity/Q8605,Simón Bolívar,1783-07-24T00:00:00Z,Caracas,1830-12-17T00:00:00Z,tuberculosis
+http://www.wikidata.org/entity/Q171411,Oda Nobunaga,1534-07-03T00:00:00Z,Shobata Castle,1582-07-01T00:00:00Z,seppuku
+http://www.wikidata.org/entity/Q7186,Marie Curie,1867-11-07T00:00:00Z,Warsaw,1934-07-04T00:00:00Z,aplastic anemia
+http://www.wikidata.org/entity/Q762,Leonardo da Vinci,1452-04-24T00:00:00Z,Anchiano,1519-05-12T00:00:00Z,cerebral hemorrhage
+http://www.wikidata.org/entity/Q11903,Hypatia,0360-01-01T00:00:00Z,Alexandria,0415-03-01T00:00:00Z,flaying
+http://www.wikidata.org/entity/Q720,Genghis Khan,1162-06-07T00:00:00Z,Delüün Boldog,1227-08-25T00:00:00Z,horse fall
+http://www.wikidata.org/entity/Q937,Albert Einstein,1879-03-14T00:00:00Z,Ulm,1955-04-18T00:00:00Z,abdominal aortic aneurysm
+http://www.wikidata.org/entity/Q467650,Nzingha Mbande,1581-01-01T00:00:00Z,Caculo Cabaça,1663-12-17T00:00:00Z,throat infection
+http://www.wikidata.org/entity/Q7241,Rabindranath Tagore,1861-05-07T00:00:00Z,Kolkata,1941-08-07T00:00:00Z,uremia

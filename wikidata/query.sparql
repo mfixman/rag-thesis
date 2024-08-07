@@ -1,18 +1,20 @@
 SELECT 
-  ?person
-  ?birthName
-  ?personLabel
-  (COALESCE(?birthName, ?personLabel) AS ?fullName) 
-  ?dateOfBirth 
-  ?placeOfBirthLabel 
-  (IF(BOUND(?dateOfDeath), ?dateOfDeath, "alive") AS ?finalDateOfDeath) 
-  (IF(BOUND(?dateOfDeath), COALESCE(?mannerOfDeathLabel, "unknown"), "alive") AS ?finalMannerOfDeath)
+  ?person 
+  ?personLabel 
+  (MIN(?dob) as ?dateOfBirth) 
+  (SAMPLE(?cityOfBirthName) as ?cityOfBirthLabel) 
+  (MIN(?dod) as ?dateOfDeath) 
+  (SAMPLE(?codLabel) as ?causeOfDeathLabel) 
 WHERE {
-  VALUES ?person { wd:Q46780 wd:Q39562 wd:Q28033373 wd:Q150872 wd:Q45662 }
-  OPTIONAL { ?person wdt:P569 ?dateOfBirth. }
-  OPTIONAL { ?person wdt:P19 ?placeOfBirth. }
-  OPTIONAL { ?person wdt:P1477 ?birthName. }
-  OPTIONAL { ?person wdt:P570 ?dateOfDeath. }
-  OPTIONAL { ?person wdt:P1196 ?mannerOfDeath. }
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+  VALUES ?person { wd:Q11903 wd:Q720 wd:Q762 wd:Q467650 wd:Q171411 wd:Q7186 wd:Q7241 wd:Q8605 wd:Q102870 wd:Q937 }
+  
+  OPTIONAL { ?person wdt:P569 ?dob. }
+  OPTIONAL { ?person wdt:P19 ?cityOfBirth. 
+             ?cityOfBirth rdfs:label ?cityOfBirthName FILTER(LANG(?cityOfBirthName) = "en") }
+  OPTIONAL { ?person wdt:P570 ?dod. }
+  OPTIONAL { ?person wdt:P509 ?cod. 
+             ?cod rdfs:label ?codLabel FILTER(LANG(?codLabel) = "en") }
+  
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }
+GROUP BY ?person ?personLabel

@@ -41,7 +41,6 @@ class RAG:
         for attempts in range(1, retries + 1):
             try:
                 return func()
-                break
             except Exception as e:
                 logging.warn(f'Retry failed in attempt {attempts}/{retries}): {e}')
 
