@@ -1,0 +1,41 @@
+Question,base_llama,datas/counterfactuals_llama,base_gemma,datas/counterfactuals_gemma
+What is the date of birth of Harriet Tubman?,1822,07 May 1861,March 1822,07 May 1861
+In what city was Harriet Tubman born?,"Dorchester County, Maryland",Kolkata,"Dorchester County, Maryland",Kolkata
+What is the date of death of Harriet Tubman?,1913,07 August 1941,"March 10, 1913",07 August 1941
+What is the cause of death of Harriet Tubman?,Complications from pneumonia,Uremia,Natural causes,Uremia
+What is the date of birth of Simón Bolívar?,1783,06 March 1822,"July 24, 1783",06 March 1822
+In what city was Simón Bolívar born?,Caracas,Caculo Cabaça,Caracas,Caculo Cabaça
+What is the date of death of Simón Bolívar?,17 December 1830,18 April 1955,"December 17, 1830",18 April 1955
+What is the cause of death of Simón Bolívar?,Pneumonia,Pneumonia,Yellow fever,Pneumonia
+What is the date of birth of Oda Nobunaga?,1534,01 January 360,"June 23, 1534",01 January 360
+In what city was Oda Nobunaga born?,Gifu,Caracas,Nagoya,Caracas
+What is the date of death of Oda Nobunaga?,1582,17 December 1663,"June 2, 1582",17 December 1663
+What is the cause of death of Oda Nobunaga?,Suicide by seppuku,Pneumonia,Assassination,Pneumonia
+What is the date of birth of Marie Curie?,1867,14 March 1879,"November 7, 1867",14 March 1879
+In what city was Marie Curie born?,Warsaw,Kolkata,Warsaw,Kolkata
+What is the date of death of Marie Curie?,1944,07 August 1941,"July 4, 1934",07 August 1941
+What is the cause of death of Marie Curie?,Radiation poisoning,Horse fall,"Aplastic anemia, caused by prolonged exposure to radiation",Horse fall
+What is the date of birth of Leonardo da Vinci?,1452,14 March 1879,"April 15, 1452",14 March 1879
+In what city was Leonardo da Vinci born?,Vinci,Kolkata,Vinci,Kolkata
+What is the date of death of Leonardo da Vinci?,1519,17 December 1663,"May 2, 1519",17 December 1663
+What is the cause of death of Leonardo da Vinci?,Rheumatic fever,aplastic anemia,The exact cause of Leonardo da Vinci's death is unknown,Aplastic anemia
+What is the date of birth of Hypatia?,350 AD,24 April 1452,Unknown,24 April 1452
+In what city was Hypatia born?,Alexandria,Dorchester County,Alexandria,Dorchester County
+What is the date of death of Hypatia?,415 AD,18 April 1955,415 AD,18 April 1955
+What is the cause of death of Hypatia?,She was killed by a mob of Christians,cerebral hemorrhage,Murder,Cerebral hemorrhage
+What is the date of birth of Genghis Khan?,1162,07 November 1867,Around 1162,07 November 1867
+In what city was Genghis Khan born?,Karakorum,Caracas,Somewhere in present-day Mongolia,Caracas
+What is the date of death of Genghis Khan?,1227,17 December 1830,"August 18, 1227",17 December 1830
+What is the cause of death of Genghis Khan?,Unknown,Throat infection,The exact cause of Genghis Khan's death is unknown,Throat infection
+What is the date of birth of Albert Einstein?,14 March 1879,24 April 1452,"March 14, 1879",24 April 1452
+In what city was Albert Einstein born?,Ulm,Delüün Boldog,Ulm,Delüün Boldog
+What is the date of death of Albert Einstein?,18 April 1955,12 May 1519,"April 18, 1955",12 May 1519
+What is the cause of death of Albert Einstein?,An abdominal aortic aneurysm,tuberculosis,Abdominal aortic aneurysm,Tuberculosis
+What is the date of birth of Nzingha Mbande?,1583,24 July 1783,Unknown,24 July 1783
+In what city was Nzingha Mbande born?,Luanda,Warsaw,Ndongo,Warsaw
+What is the date of death of Nzingha Mbande?,1663,18 April 1955,"December 17, 1663",18 April 1955
+What is the cause of death of Nzingha Mbande?,Died of old age,Uremia,The exact cause of death is unknown,Uremia
+What is the date of birth of Rabindranath Tagore?,7 May 1861,07 June 1162,"May 7, 1861",07 June 1162
+In what city was Rabindranath Tagore born?,Calcutta,Anchiano,Calcutta,Anchiano
+What is the date of death of Rabindranath Tagore?,7 August 1941,01 March 415,7 August 1941,01 March 415
+What is the cause of death of Rabindranath Tagore?,Heart attack,flaying,Heart failure,Flaying

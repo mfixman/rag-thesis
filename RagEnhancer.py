@@ -81,7 +81,7 @@ class FileRAG(ConstRAG):
         self.const = '; '.join(x.strip() for x in file)
 
     def name(self):
-        return f'File const RAG from {self.file.name}'
+        return self.file.name.split('.')[0]
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):
@@ -91,4 +91,4 @@ class EmptyRAG(RAG):
         return ''
 
     def name(self):
-        return '<None>'
+        return 'base'

@@ -18,6 +18,8 @@ Model_dict = {
     'roberta-large': 'FacebookAI/roberta-large',
     'roberta-squad': 'deepset/roberta-base-squad2',
     'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
+    'gemma': 'google/gemma-2-9b-it',
+    'mixtral': 'mistralai/Mixtral-8x22B-Instruct-v0.1',
 }
 
 class Model(nn.Module):
@@ -36,6 +38,7 @@ class Model(nn.Module):
         try:
             return AutoModelForCausalLM.from_pretrained(
                 model_name,
+                device_map = 'auto',
             )
         except OSError:
             pass
@@ -65,24 +68,20 @@ class QuestionAnswerer:
     def query(self, question, max_length, short = False):
         answers = {}
         for llm in self.llms:
-            # logging.info('Tokenising')
             inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True)
-
             outputs = llm.model.generate(
-                inputs["input_ids"].to(self.device),
-                max_new_tokens = len(question) + max_length,
-                num_return_sequences = 1,
-                pad_token_id = llm.tokenizer.eos_token_id,
+                input_ids = inputs["input_ids"].to(self.device),
                 attention_mask = inputs['attention_mask'].to(self.device),
+                max_new_tokens = max_length,
+                stop_strings = '.',
                 do_sample = False,
-                early_stopping = True,
-                num_beams = 3,
+                temperature = 0,
+                tokenizer = llm.tokenizer,
             )
 
-            # logging.info('Decoding')
             answer = llm.tokenizer.decode(outputs[0], skip_special_tokens = True)
             if short:
-                answer = answer.splitlines()[0].split('.')[0] + '.'
+                answer = answer.removeprefix(question).strip('"[]. \n')
 
             answers[llm.name] = answer
 

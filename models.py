@@ -3,6 +3,7 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 from argparse import ArgumentParser, BooleanOptionalAction, RawDescriptionHelpFormatter
 from transformers import *
+import csv
 import logging
 import sys
 
@@ -10,7 +11,7 @@ from QuestionAnswerer import QuestionAnswerer, Model_dict
 from RagEnhancer import *
 
 def parse_args():
-    default_prompt = 'Context: [{context}]; Question: [{question}]. Answer briefly using the previous context and without prompting. Answer:'
+    default_prompt = 'Context: [{context}]; Question: [{question}]. Answer as briefly as possible. Answer:'
 
     parser = ArgumentParser(
         description = 'Ask me a question',
@@ -53,11 +54,11 @@ python models.py                               \\
     parser.add_argument('--custom-prompt', metavar = 'PROMPT', default = default_prompt, help = 'Use a custom prompt for the questions instead of the default one. {context} and {question} fill to the context and question, respectively')
 
     parser.add_argument('--empty', '--empty-context', action = BooleanOptionalAction, default = True, help = 'Whether to use an empty context as base')
-
     parser.add_argument('--rag', action = BooleanOptionalAction, default = False, help = 'Whether to enhance the answer with RAG')
     parser.add_argument('--rag-dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
     parser.add_argument('--rag-const', metavar = 'CONTEXT', help = 'Mock this context for RAG rather than using a RAG extractor.')
     parser.add_argument('--rag-const-file', metavar = 'FILE_WITH_CONTEXT', type = open, help = 'File with data to inject to RAG extractor.')
+    parser.add_argument('--output-format', choices = ['text', 'csv'], default = 'csv', help = 'Format of the output')
 
     parser.add_argument('question_file', type = open, nargs = '?', help = 'File with questions')
 
@@ -96,20 +97,30 @@ def main():
     if args.rag_const_file is not None:
         rags.append(FileRAG(args.rag_const_file))
 
+
+    writer = None
+    if args.output_format == 'csv':
+        writer = csv.DictWriter(sys.stdout, fieldnames = ['Question'] + [f'{rag.name()}_{llm}' for llm in args.models for rag in rags])
+        writer.writeheader()
+    else:
+        raise NotImplemented('Text format not implemented yet')
+
     for question in args.question_file:
         question = question.strip('\n')
         if question.isspace():
             continue
 
-        print(question, flush = True)
+        results = {}
         for rag in rags:
             context = rag.retrieve_context(question)
             enhanced_question = args.custom_prompt.format(context = context, question = question)
             answers = answerer.query(enhanced_question, max_length = args.max_length, short = True)
 
-            print(rag.name(), flush = True)
             for llm, answer in answers.items():
-                print(f'\033[1m{llm}\033[0m: {answer.removeprefix(enhanced_question)}', flush = True)
+                results[f'{rag.name()}_{llm}'] = answer
+
+        if args.output_format == 'csv':
+            writer.writerow({'Question': question} | results)
 
     logging.info('Done!')
 
