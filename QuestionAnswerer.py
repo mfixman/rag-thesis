@@ -87,8 +87,8 @@ class QuestionAnswerer:
 
             answers[llm.name] = answer
             rest[llm.name] = dict(
-                logit_min = torch.tensor([x.max() for x in outputs.logits]).min(),
-                logit_prod = torch.tensor([torch.nn.functional.softmax(x, dim = 1).max(dim = 1) for x in outputs.logits]).prod()
+                logit_min = torch.tensor([x.squeeze(0).max() for x in outputs.logits]).min().item(),
+                logit_prod = torch.tensor([torch.nn.functional.softmax(x.squeeze(0), dim = 0).max() for x in outputs.logits]).prod().item(),
             )
 
         if not return_rest:
