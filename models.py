@@ -105,9 +105,10 @@ def main():
     if args.output_format == 'csv':
         fieldnames = [f'{rag.name()}_{llm}' for llm in args.models for rag in rags]
         if args.logits:
-            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_min', f'{x}_logit_prod'] for x in fieldnames]))
+            # fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_min', f'{x}_logit_prod'] for x in fieldnames]))
+            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_prod'] for x in fieldnames]))
 
-        writer = csv.DictWriter(sys.stdout, fieldnames = ['Question'] + fieldnames)
+        writer = csv.DictWriter(sys.stdout, fieldnames = ['Question'] + fieldnames, extrasaction = 'ignore')
         writer.writeheader()
     else:
         raise NotImplemented('Text format not implemented yet')
@@ -128,8 +129,8 @@ def main():
                 results[name] = answer
 
                 if args.logits:
-                    results[f'{name}_logit_min'] = rest[llm]['logit_min']
-                    results[f'{name}_logit_prod'] = rest[llm]['logit_prod']
+                    results[f'{name}_logit_min'] = f"{rest[llm]['logit_min']:.02f}"
+                    results[f'{name}_logit_prod'] = f"{rest[llm]['logit_prod']:.02f}"
 
         if args.output_format == 'csv':
             writer.writerow({'Question': question} | results)
