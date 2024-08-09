@@ -65,8 +65,9 @@ class QuestionAnswerer:
         self.llms = [Model(x).to(device) for x in model_names]
 
     @torch.no_grad()
-    def query(self, question, max_length, short = False):
+    def query(self, question, max_length, short = False, return_rest = False):
         answers = {}
+        rest = {}
         for llm in self.llms:
             inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True)
             outputs = llm.model.generate(
@@ -75,14 +76,22 @@ class QuestionAnswerer:
                 max_new_tokens = max_length,
                 stop_strings = '.',
                 do_sample = False,
-                temperature = 0,
                 tokenizer = llm.tokenizer,
+                output_logits = True,
+                return_dict_in_generate = True,
             )
 
-            answer = llm.tokenizer.decode(outputs[0], skip_special_tokens = True)
+            answer = llm.tokenizer.decode(outputs.sequences[0], skip_special_tokens = True)
             if short:
                 answer = answer.removeprefix(question).strip('"[]. \n')
 
             answers[llm.name] = answer
+            rest[llm.name] = dict(
+                logit_min = torch.tensor([x.max() for x in outputs.logits]).min(),
+                logit_prod = torch.tensor([torch.nn.functional.softmax(x, dim = 1).max(dim = 1) for x in outputs.logits]).prod()
+            )
 
-        return answers
+        if not return_rest:
+            return answers
+
+        return answers, rest

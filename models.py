@@ -4,6 +4,7 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 from argparse import ArgumentParser, BooleanOptionalAction, RawDescriptionHelpFormatter
 from transformers import *
 import csv
+import itertools
 import logging
 import sys
 
@@ -60,6 +61,8 @@ python models.py                               \\
     parser.add_argument('--rag-const-file', metavar = 'FILE_WITH_CONTEXT', type = open, help = 'File with data to inject to RAG extractor.')
     parser.add_argument('--output-format', choices = ['text', 'csv'], default = 'csv', help = 'Format of the output')
 
+    parser.add_argument('--logits', action = BooleanOptionalAction, default = False, help = 'Whether to also output logits')
+
     parser.add_argument('question_file', type = open, nargs = '?', help = 'File with questions')
 
     args = parser.parse_args()
@@ -100,7 +103,11 @@ def main():
 
     writer = None
     if args.output_format == 'csv':
-        writer = csv.DictWriter(sys.stdout, fieldnames = ['Question'] + [f'{rag.name()}_{llm}' for llm in args.models for rag in rags])
+        fieldnames = [f'{rag.name()}_{llm}' for llm in args.models for rag in rags]
+        if args.logits:
+            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_min', f'{x}_logit_prod'] for x in fieldnames]))
+
+        writer = csv.DictWriter(sys.stdout, fieldnames = ['Question'] + fieldnames)
         writer.writeheader()
     else:
         raise NotImplemented('Text format not implemented yet')
@@ -114,10 +121,15 @@ def main():
         for rag in rags:
             context = rag.retrieve_context(question)
             enhanced_question = args.custom_prompt.format(context = context, question = question)
-            answers = answerer.query(enhanced_question, max_length = args.max_length, short = True)
+            answers, rest = answerer.query(enhanced_question, max_length = args.max_length, short = True, return_rest = True)
 
             for llm, answer in answers.items():
-                results[f'{rag.name()}_{llm}'] = answer
+                name = f'{rag.name()}_{llm}'
+                results[name] = answer
+
+                if args.logits:
+                    results[f'{name}_logit_min'] = rest[llm]['logit_min']
+                    results[f'{name}_logit_prod'] = rest[llm]['logit_prod']
 
         if args.output_format == 'csv':
             writer.writerow({'Question': question} | results)
