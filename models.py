@@ -85,6 +85,8 @@ def main():
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
+    logging.info('Starting')
+
     args = parse_args()
     answerer = QuestionAnswerer(args.models, device = args.device)
 
@@ -108,7 +110,13 @@ def main():
             # fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_min', f'{x}_logit_prod'] for x in fieldnames]))
             fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_prod'] for x in fieldnames]))
 
-        writer = csv.DictWriter(sys.stdout, fieldnames = ['Question'] + fieldnames, extrasaction = 'ignore')
+        writer = csv.DictWriter(
+            sys.stdout,
+            fieldnames = ['Question'] + fieldnames,
+            extrasaction = 'ignore',
+            dialect = csv.unix_dialect,
+            quoting=csv.QUOTE_MINIMAL,
+        )
         writer.writeheader()
     else:
         raise NotImplemented('Text format not implemented yet')
@@ -129,8 +137,8 @@ def main():
                 results[name] = answer
 
                 if args.logits:
-                    results[f'{name}_logit_min'] = f"{rest[llm]['logit_min']:.02f}"
-                    results[f'{name}_logit_prod'] = f"{rest[llm]['logit_prod']:.02f}"
+                    results[f'{name}_logit_min'] = round(rest[llm]['logit_min'], 2)
+                    results[f'{name}_logit_prod'] = round(rest[llm]['logit_prod'], 2)
 
         if args.output_format == 'csv':
             writer.writerow({'Question': question} | results)
