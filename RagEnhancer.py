@@ -1,7 +1,8 @@
 from transformers import *
+from pathlib import Path
+import itertools
 import logging
 import torch
-import re
 
 from typing import Callable
 
@@ -77,25 +78,25 @@ class ConstRAG(RAG):
         return f'Constant data RAG'
 
 class FileRAG(ConstRAG):
-    def __init__(self, file, **kwargs):
-        self.file = file
-        self.const = '; '.join(x.strip() for x in file)
+    def __init__(self, answer_files, **kwargs):
+        self.filenames = [Path(x.name).stem for x in answer_files]
+        self.const = '; '.join(x.strip() for x in itertools.chain(*answer_files))
 
     def name(self):
-        return self.file.name.split('.')[0]
+        return 'all_' + '-'.join(self.filenames)
 
 class LinedRAG(RAG):
     answers: dict[str, list[str]]
 
     def __init__(self, answer_files: list, question_list: list[str]):
-        self.filenames = [re.sub(r'.*/|\..*', '', x.name) for x in answer_files]
+        self.filenames = [Path(x.name).stem for x in answer_files]
         self.answers = {q: [x.strip() for x in v] for q, v in zip(question_list, zip(*answer_files))}
 
     def retrieve_context(self, question: str) -> str:
         return '; '.join(self.answers[question])
 
     def name(self) -> str:
-        return '-'.join(self.filenames)
+        return 'lined_' + '-'.join(self.filenames)
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):

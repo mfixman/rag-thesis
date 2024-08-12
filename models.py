@@ -2,10 +2,12 @@ import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 from argparse import ArgumentParser, BooleanOptionalAction, RawDescriptionHelpFormatter
+from pathlib import Path
 from transformers import *
 import csv
 import itertools
 import logging
+import re
 import sys
 
 from QuestionAnswerer import QuestionAnswerer, Model_dict
@@ -58,9 +60,12 @@ python models.py                               \\
     parser.add_argument('--rag', action = BooleanOptionalAction, default = False, help = 'Whether to enhance the answer with RAG')
     parser.add_argument('--rag-dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
     parser.add_argument('--rag-const', metavar = 'CONTEXT', help = 'Mock this context for RAG rather than using a RAG extractor.')
-    parser.add_argument('--rag-const-file', metavar = 'FILE_WITH_CONTEXT', type = open, help = 'File with data to inject to RAG extractor.')
-    parser.add_argument('--rag-lined-files', metavar = 'FILE_WITH_LINES', type = open, nargs = '+', help = 'List of files with equal amount of lines as question file.')
+    parser.add_argument('--rag-const-files', metavar = 'FILE_WITH_CONTEXT', type = open, nargs = '*', help = 'Files with data to inject to RAG extractor.')
+    parser.add_argument('--rag-lined-files', metavar = 'FILE_WITH_LINES', type = open, nargs = '*', help = 'List of files with equal amount of lines as question file.')
     parser.add_argument('--output-format', choices = ['text', 'csv'], default = 'csv', help = 'Format of the output')
+
+    parser.add_argument('--write-answers', nargs = '*', type = open, help = 'Write the answers from these files')
+    parser.add_argument('--input-files', nargs = '*', help = 'Alternative way to add files from all --rag contexts')
 
     parser.add_argument('--logits', action = BooleanOptionalAction, default = False, help = 'Whether to also output logits')
 
@@ -75,6 +80,16 @@ python models.py                               \\
 
     if args.question_file is None:
         sys.exit('question_file must be specified!')
+
+    for p in [args.rag_const_files, args.rag_lined_files, args.write_answers]:
+        if p != []:
+            continue
+
+        if args.input_files is None:
+            sys.exit('Empty list of files in an argument. Did you forget --input-files?')
+
+        for f in args.input_files:
+            p.append(open(f))
 
     args.questions = [q.strip('\n') for q in args.question_file]
     del args.question_file
@@ -103,8 +118,8 @@ def main():
         rags.append(RAG(dummy = True))
     if args.rag_const is not None:
         rags.append(ConstRAG(args.rag_const))
-    if args.rag_const_file is not None:
-        rags.append(FileRAG(args.rag_const_file))
+    if args.rag_const_files is not None:
+        rags.append(FileRAG(args.rag_const_files))
     if args.rag_lined_files is not None:
         rags.append(LinedRAG(args.rag_lined_files, args.questions))
 
@@ -112,26 +127,34 @@ def main():
     if args.output_format == 'csv':
         fieldnames = [f'{rag.name()}_{llm}' for llm in args.models for rag in rags]
         if args.logits:
-            # fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_min', f'{x}_logit_prod'] for x in fieldnames]))
             fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
+
+        if args.write_answers is not None:
+            fieldnames = [Path(x.name).stem for x in args.write_answers] + fieldnames
 
         writer = csv.DictWriter(
             sys.stdout,
             fieldnames = ['Question'] + fieldnames,
             extrasaction = 'ignore',
             dialect = csv.unix_dialect,
-            quoting=csv.QUOTE_MINIMAL,
+            quoting = csv.QUOTE_MINIMAL,
         )
         writer.writeheader()
     else:
         raise NotImplemented('Text format not implemented yet')
 
-    for question in args.questions:
-        question = question.strip('\n')
+    if args.write_answers is None:
+        args.write_answers = []
+
+    filenames = [Path(x.name).stem for x in args.write_answers]
+    for question, *answers in zip(args.questions, *args.write_answers):
+        question = question.strip()
         if question.isspace():
             continue
 
-        results = {}
+        answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in answers]
+
+        results = {'Question': question} | dict(zip(filenames, answers))
         for rag in rags:
             context = rag.retrieve_context(question)
             enhanced_question = args.custom_prompt.format(context = context, question = question)
@@ -144,8 +167,7 @@ def main():
                 if args.logits:
                     results[f'{name}_logits'] = round(rest[llm]['logit_prod'], 2)
 
-        if args.output_format == 'csv':
-            writer.writerow({'Question': question} | results)
+        writer.writerow({'Question': question} | results)
 
     logging.info('Done!')
 
