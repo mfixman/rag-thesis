@@ -59,7 +59,6 @@ class Model(nn.Module):
 
 class QuestionAnswerer:
     def __init__(self, model_names, device = 'cpu'):
-        logging.info(f'Using {device}')
         self.device = device
         
         assert all(x in Model_dict for x in model_names)

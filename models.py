@@ -59,6 +59,7 @@ python models.py                               \\
     parser.add_argument('--rag-dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
     parser.add_argument('--rag-const', metavar = 'CONTEXT', help = 'Mock this context for RAG rather than using a RAG extractor.')
     parser.add_argument('--rag-const-file', metavar = 'FILE_WITH_CONTEXT', type = open, help = 'File with data to inject to RAG extractor.')
+    parser.add_argument('--rag-lined-files', metavar = 'FILE_WITH_LINES', type = open, nargs = '+', help = 'List of files with equal amount of lines as question file.')
     parser.add_argument('--output-format', choices = ['text', 'csv'], default = 'csv', help = 'Format of the output')
 
     parser.add_argument('--logits', action = BooleanOptionalAction, default = False, help = 'Whether to also output logits')
@@ -74,6 +75,9 @@ python models.py                               \\
 
     if args.question_file is None:
         sys.exit('question_file must be specified!')
+
+    args.questions = [q.strip('\n') for q in args.question_file]
+    del args.question_file
 
     return args
 
@@ -101,14 +105,15 @@ def main():
         rags.append(ConstRAG(args.rag_const))
     if args.rag_const_file is not None:
         rags.append(FileRAG(args.rag_const_file))
-
+    if args.rag_lined_files is not None:
+        rags.append(LinedRAG(args.rag_lined_files, args.questions))
 
     writer = None
     if args.output_format == 'csv':
         fieldnames = [f'{rag.name()}_{llm}' for llm in args.models for rag in rags]
         if args.logits:
             # fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_min', f'{x}_logit_prod'] for x in fieldnames]))
-            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logit_prod'] for x in fieldnames]))
+            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
 
         writer = csv.DictWriter(
             sys.stdout,
@@ -121,7 +126,7 @@ def main():
     else:
         raise NotImplemented('Text format not implemented yet')
 
-    for question in args.question_file:
+    for question in args.questions:
         question = question.strip('\n')
         if question.isspace():
             continue
@@ -137,8 +142,7 @@ def main():
                 results[name] = answer
 
                 if args.logits:
-                    results[f'{name}_logit_min'] = round(rest[llm]['logit_min'], 2)
-                    results[f'{name}_logit_prod'] = round(rest[llm]['logit_prod'], 2)
+                    results[f'{name}_logits'] = round(rest[llm]['logit_prod'], 2)
 
         if args.output_format == 'csv':
             writer.writerow({'Question': question} | results)

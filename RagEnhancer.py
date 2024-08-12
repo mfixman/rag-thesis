@@ -1,6 +1,7 @@
 from transformers import *
 import logging
 import torch
+import re
 
 from typing import Callable
 
@@ -82,6 +83,19 @@ class FileRAG(ConstRAG):
 
     def name(self):
         return self.file.name.split('.')[0]
+
+class LinedRAG(RAG):
+    answers: dict[str, list[str]]
+
+    def __init__(self, answer_files: list, question_list: list[str]):
+        self.filenames = [re.sub(r'.*/|\..*', '', x.name) for x in answer_files]
+        self.answers = {q: [x.strip() for x in v] for q, v in zip(question_list, zip(*answer_files))}
+
+    def retrieve_context(self, question: str) -> str:
+        return '; '.join(self.answers[question])
+
+    def name(self) -> str:
+        return '-'.join(self.filenames)
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):
