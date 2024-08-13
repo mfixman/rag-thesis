@@ -5,10 +5,11 @@ import logging
 import torch
 
 from Models import Model
+from typing import Optional, Union
 
 class QuestionAnswerer:
     device: str
-    max_length: None | int
+    max_length: Optional[int]
     short: bool
     return_rest: bool
 
@@ -18,7 +19,7 @@ class QuestionAnswerer:
         self,
         models: list[Model],
         device: str = 'cpu',
-        max_length: None | int = None,
+        max_length: Optional[int] = None,
         short: bool = True,
         return_rest: bool = True
     ):
@@ -30,13 +31,13 @@ class QuestionAnswerer:
         self.llms = [x.to(device) for x in models]
 
     @torch.no_grad()
-    def query(self, question: str) -> dict[str, str] | tuple[dict[str, str], dict[str, dict[str, float]]]:
+    def query(self, question: str) -> Union[dict[str, str], tuple[dict[str, str], dict[str, dict[str, float]]]]:
         answers = {}
         rest = {}
         for llm in self.llms:
             inputs = llm.tokenizer(question, return_tensors = "pt", truncation = True)
             outputs = llm.model.generate(
-                input_ids = inputs["input_ids"].to(self.device),
+                input_ids = inputs['input_ids'].to(self.device),
                 attention_mask = inputs['attention_mask'].to(self.device),
                 max_new_tokens = self.max_length,
                 stop_strings = '.',
@@ -45,6 +46,7 @@ class QuestionAnswerer:
                 output_logits = True,
                 return_dict_in_generate = True,
                 temperature = None,
+                top_p = None,
             )
 
             answer = llm.tokenizer.decode(outputs.sequences[0], skip_special_tokens = True)

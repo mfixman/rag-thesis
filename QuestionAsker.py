@@ -8,8 +8,10 @@ import itertools
 import re
 import sys
 
+from typing import Optional
+
 class QuestionAsker:
-    def __init__(self, models: list[str], rags: list[RAG], answer_files: None | list[IO[str]], include_logits: bool):
+    def __init__(self, models: list[str], rags: list[RAG], answer_files: Optional[list[IO[str]]], include_logits: bool):
         self.rags = rags
         self.answer_files = answer_files or []
         self.include_raw_answers = answer_files is not None
