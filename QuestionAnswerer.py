@@ -23,7 +23,12 @@ Model_dict = {
 }
 
 class Model(nn.Module):
-    def __init__(self, name):
+    name: str
+    model_name: str
+    tokenizer: AutoTokenizer
+    model: AutoModelForCausalLM
+
+    def __init__(self, name: str):
         super().__init__()
         self.name = name
         self.model_name = Model_dict[name]
@@ -33,7 +38,7 @@ class Model(nn.Module):
         self.model = self.getModel(self.model_name)
         self.model.eval()
 
-    def getModel(self, model_name):
+    def getModel(self, model_name: str) -> AutoModelForCausalLM:
         logging.info(f'Getting {model_name}')
         try:
             return AutoModelForCausalLM.from_pretrained(
@@ -57,15 +62,35 @@ class Model(nn.Module):
         logging.error('Failed 10 attempts for {model_name}. Giving up.')
         raise
 
+class DummyModel(Model):
+    def __init__(self):
+        self.name = 'dummy'
+        self.tokenizer = self.DummyTorchTokenizer()
+        self.model = self.DummyTorchmodel()
+
+    class DummyTorchTokenizer:
+        def __call__(self, *args, **kwargs):
+            return [0, 1, 2, 3]
+
+        def decode(self, *args, **kwargs):
+            return 'Dummy text.'
+
+    class DummyTorchModel:
+        def generate(self, *args, **kwargs):
+            return None
+
 class QuestionAnswerer:
-    def __init__(self, model_names, device = 'cpu'):
+    device: str
+    llms: list[Model]
+
+    def __init__(self, model_names: list[str], device: str = 'cpu'):
         self.device = device
         
         assert all(x in Model_dict for x in model_names)
         self.llms = [Model(x).to(device) for x in model_names]
 
     @torch.no_grad()
-    def query(self, question, max_length, short = False, return_rest = False):
+    def query(self, question: str, max_length: int, short: bool = False, return_rest: bool= False) -> list[str] | list[tuple[str, dict[str, float]]]
         answers = {}
         rest = {}
         for llm in self.llms:
