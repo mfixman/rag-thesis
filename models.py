@@ -60,12 +60,14 @@ python models.py                               \\
     parser.add_argument('--rag', action = BooleanOptionalAction, default = False, help = 'Whether to enhance the answer with RAG')
     parser.add_argument('--rag-dummy', action = BooleanOptionalAction, default = False, help = 'Use dummy dataset for RAG')
     parser.add_argument('--rag-const', metavar = 'CONTEXT', help = 'Mock this context for RAG rather than using a RAG extractor.')
-    parser.add_argument('--rag-const-files', metavar = 'FILE_WITH_CONTEXT', type = open, nargs = '*', help = 'Files with data to inject to RAG extractor.')
-    parser.add_argument('--rag-lined-files', metavar = 'FILE_WITH_LINES', type = open, nargs = '*', help = 'List of files with equal amount of lines as question file.')
-    parser.add_argument('--output-format', choices = ['text', 'csv'], default = 'csv', help = 'Format of the output')
 
-    parser.add_argument('--write-answers', nargs = '*', type = open, help = 'Write the answers from these files')
-    parser.add_argument('--input-files', nargs = '*', help = 'Alternative way to add files from all --rag contexts')
+    parser.add_argument('--rag-lined-files', metavar = 'FILE_WITH_LINES', type = open, nargs = '*', help = 'List of files with equal amount of lines as question file.')
+    parser.add_argument('--rag-intermixed-files', metavar = 'FILE_WITH_LINES', type = open, nargs = '*', help = 'List of files whose lines will get intermixed.')
+    parser.add_argument('--rag-answer-files', nargs = '*', type = open, help = 'Write the answers from these files')
+    parser.add_argument('--rag-const-files', metavar = 'FILE_WITH_CONTEXT', type = open, nargs = '*', help = 'Files with data to inject to RAG extractor.')
+    parser.add_argument('--input-files', nargs = '*', help = 'Alternative way to add files from all --rag-X-files contexts.')
+
+    parser.add_argument('--rag-const-shuffles', metavar = 'N', type = int, help = 'If --rag-const-files is specified, shuffle the input N times and return a summary of the results')
 
     parser.add_argument('--logits', action = BooleanOptionalAction, default = False, help = 'Whether to also output logits')
 
@@ -81,7 +83,13 @@ python models.py                               \\
     if args.question_file is None:
         sys.exit('question_file must be specified!')
 
-    for p in [args.rag_const_files, args.rag_lined_files, args.write_answers]:
+    if args.rag_const_files is None and args.rag_const_shuffles is not None:
+        sys.exit('--rag-const-shuffles requires --rag-const-files')
+
+    if args.rag_const_shuffles is not None:
+        raise NotImplemented('--rag-const-shuffles not implemented yet')
+
+    for p in [args.rag_const_files, args.rag_lined_files, args.raw_answers_files]:
         if p != []:
             continue
 
@@ -124,37 +132,33 @@ def main():
         rags.append(LinedRAG(args.rag_lined_files, args.questions))
 
     writer = None
-    if args.output_format == 'csv':
-        fieldnames = [f'{rag.name()}_{llm}' for llm in args.models for rag in rags]
-        if args.logits:
-            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
+    fieldnames = [f'{n}_{llm}' for llm in args.models for n in rag.names() for rag in rags]
+    if args.logits:
+        fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
 
-        if args.write_answers is not None:
-            fieldnames = [Path(x.name).stem for x in args.write_answers] + fieldnames
+    if args.raw_answers_files is not None:
+        fieldnames = [Path(x.name).stem for x in args.raw_answers_files] + fieldnames
 
-        writer = csv.DictWriter(
-            sys.stdout,
-            fieldnames = ['Question'] + fieldnames,
-            extrasaction = 'ignore',
-            dialect = csv.unix_dialect,
-            quoting = csv.QUOTE_MINIMAL,
-        )
-        writer.writeheader()
-    else:
-        raise NotImplemented('Text format not implemented yet')
+    writer = csv.DictWriter(
+        sys.stdout,
+        fieldnames = ['Question'] + fieldnames,
+        extrasaction = 'ignore',
+        dialect = csv.unix_dialect,
+        quoting = csv.QUOTE_MINIMAL,
+    )
+    writer.writeheader()
 
-    if args.write_answers is None:
-        args.write_answers = []
+    if args.raw_answers_files is None:
+        args.raw_answers_files = []
 
-    filenames = [Path(x.name).stem for x in args.write_answers]
-    for question, *answers in zip(args.questions, *args.write_answers):
+    filenames = [Path(x.name).stem for x in args.raw_answers_files]
+    for question, *raw_answers in zip(args.questions, *args.raw_answers_files):
         question = question.strip()
         if question.isspace():
             continue
 
-        answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in answers]
-
-        results = {'Question': question} | dict(zip(filenames, answers))
+        raw_answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in raw_answers]
+        results = {'Question': question} | dict(zip(filenames, raw_answers))
         for rag in rags:
             context = rag.retrieve_context(question)
             enhanced_question = args.custom_prompt.format(context = context, question = question)

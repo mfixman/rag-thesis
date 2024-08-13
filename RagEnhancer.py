@@ -4,7 +4,7 @@ import itertools
 import logging
 import torch
 
-from typing import Callable
+from collections.abc import Generator
 
 class RAG:
     def __init__(self, rag_name: str = 'facebook/rag-sequence-nq', device: str = 'cpu', dummy = False):
@@ -64,8 +64,14 @@ class RAG:
         )
         return answer[0]
 
-    def name(self):
+    def yield_contexts(self, question: str) -> Generator[tuple[str, str]]:
+        yield (self.name(), self.retrieve_context(question))
+
+    def name(self) -> str:
         return f'RAG {self.rag_name}'
+
+    def names(self) -> [str]:
+        return [self.name()]
 
 class ConstRAG(RAG):
     def __init__(self, const, **kwargs):
@@ -97,6 +103,14 @@ class LinedRAG(RAG):
 
     def name(self) -> str:
         return 'lined_' + '-'.join(self.filenames)
+
+class IntermixedRAG(LinedRAG):
+    def yield_contexts(self, question: str) -> Generator[tuple[str, str]]:
+        for name, answers in zip(self.names(), itertools.combinations(self.answers[question])):
+            yield '; '.join(answers)
+
+    def names(self) -> list[str]:
+        return ['lined_' + '-'.join(fs) for fs in itetools.combinations(self.filenames)]
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):
