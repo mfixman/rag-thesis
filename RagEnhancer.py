@@ -5,6 +5,7 @@ import logging
 import torch
 
 from collections.abc import Iterator
+from typing import IO
 
 class RAG:
     def __init__(self, rag_name: str = 'facebook/rag-sequence-nq', device: str = 'cpu', dummy = False):
@@ -89,28 +90,28 @@ class FileRAG(ConstRAG):
         self.const = '; '.join(x.strip() for x in itertools.chain(*answer_files))
 
     def name(self):
-        return 'all_' + '-'.join(self.filenames)
+        return 'all_' + '_'.join(self.filenames)
 
-class LinedRAG(RAG):
+class LinearRAG(RAG):
     answers: dict[str, list[str]]
 
-    def __init__(self, answer_files: list, question_list: list[str]):
-        self.filenames = [Path(x.name).stem for x in answer_files]
-        self.answers = {q: [x.strip() for x in v] for q, v in zip(question_list, zip(*answer_files))}
+    def __init__(self, answers: dict[str, list[str]], question_list: list[str]):
+        self.filenames = answers.keys()
+        self.answers = {q: rs for q, *rs in zip(question_list, *answers.values())
 
     def retrieve_context(self, question: str) -> str:
         return '; '.join(self.answers[question])
 
     def name(self) -> str:
-        return 'lined_' + '-'.join(self.filenames)
+        return 'linear-' + '_'.join(self.filenames)
 
-class IntermixedRAG(LinedRAG):
+class CombinedRAG(LinearRAG):
     def yield_contexts(self, question: str) -> Iterator[tuple[str, str]]:
         for name, answers in zip(self.names(), itertools.permutations(self.answers[question])):
             yield (name, '; '.join(answers))
 
     def names(self) -> list[str]:
-        return ['lined_' + '-'.join(fs) for fs in itertools.permutations(self.filenames)]
+        return ['linear-' + '_'.join(fs) for fs in itertools.permutations(self.filenames)]
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):
