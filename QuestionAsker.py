@@ -4,6 +4,7 @@ from QuestionAnswerer import QuestionAnswerer
 
 from pathlib import Path
 import csv
+import logging
 import itertools
 import re
 import sys
@@ -35,7 +36,10 @@ class QuestionAsker:
     def findAnswers(self, answerer: QuestionAnswerer, questions: list[str], custom_prompt: str):
         filenames = [Path(x.name).stem for x in self.answer_files]
 
-        for question, *raw_answers in zip(questions, *self.answer_files):
+        for e, (question, *raw_answers) in enumerate(zip(questions, *self.answer_files), start = 1):
+            if e % 10 == 0:
+                logging.info(f'Question {e}/{len(questions)}')
+
             raw_answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in raw_answers]
 
             results = {'Question': question} | dict(zip(filenames, raw_answers))
