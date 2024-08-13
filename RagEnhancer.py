@@ -3,6 +3,7 @@ from pathlib import Path
 import itertools
 import logging
 import torch
+import re
 
 from collections.abc import Iterator
 from typing import IO
@@ -65,14 +66,8 @@ class RAG:
         )
         return answer[0]
 
-    def yield_contexts(self, question: str) -> Iterator[tuple[str, str]]:
-        yield (self.name(), self.retrieve_context(question))
-
     def name(self) -> str:
         return f'RAG {self.rag_name}'
-
-    def names(self) -> list[str]:
-        return [self.name()]
 
 class ConstRAG(RAG):
     def __init__(self, const, **kwargs):
@@ -84,20 +79,20 @@ class ConstRAG(RAG):
     def name(self):
         return f'Constant data RAG'
 
-class FileRAG(ConstRAG):
-    def __init__(self, answer_files, **kwargs):
-        self.filenames = [Path(x.name).stem for x in answer_files]
-        self.const = '; '.join(x.strip() for x in itertools.chain(*answer_files))
+class FullRAG(ConstRAG):
+    def __init__(self, context: dict[str, str]):
+        self.filenames = context.keys()
+        self.const = '; '.join(itertools.chain(context.values()))
 
     def name(self):
-        return 'all_' + '_'.join(self.filenames)
+        return 'all-' + '_'.join(self.filenames)
 
 class LinearRAG(RAG):
     answers: dict[str, list[str]]
 
-    def __init__(self, answers: dict[str, list[str]], question_list: list[str]):
-        self.filenames = answers.keys()
-        self.answers = {q: rs for q, *rs in zip(question_list, *answers.values())
+    def __init__(self, context: dict[str, str], question_list: list[str]):
+        self.filenames = context.keys()
+        self.answers = {q: rs for q, *rs in zip(question_list, *context.values())}
 
     def retrieve_context(self, question: str) -> str:
         return '; '.join(self.answers[question])
@@ -105,13 +100,17 @@ class LinearRAG(RAG):
     def name(self) -> str:
         return 'linear-' + '_'.join(self.filenames)
 
-class CombinedRAG(LinearRAG):
-    def yield_contexts(self, question: str) -> Iterator[tuple[str, str]]:
-        for name, answers in zip(self.names(), itertools.permutations(self.answers[question])):
-            yield (name, '; '.join(answers))
+class RawAnswerRAG(RAG):
+    def __init__(self, filename: str, answers: list[str], question_list: list[str]):
+        self.filename = filename
+        self.answers = dict(zip(question_list, answers))
 
-    def names(self) -> list[str]:
-        return ['linear-' + '_'.join(fs) for fs in itertools.permutations(self.filenames)]
+    def retrieve_context(self, question: str) -> str:
+        answer = self.answers[question]
+        return re.sub(r'.*(was by|was on|is|in) +', '', answer)
+
+    def name(self) -> str:
+        return self.filename
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):

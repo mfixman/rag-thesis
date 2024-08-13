@@ -6,27 +6,24 @@ from pathlib import Path
 import csv
 import logging
 import itertools
-import re
 import sys
 
 from typing import Optional
 
 class QuestionAsker:
-    def __init__(self, models: list[str], rags: list[RAG], answer_files: Optional[list[IO[str]]], include_logits: bool):
+    def __init__(self, model_names: list[str], prevs: list[RAG], rags: list[RAG], include_logits: bool):
+        self.prevs = prevs
         self.rags = rags
-        self.answer_files = answer_files or []
-        self.include_raw_answers = answer_files is not None
 
-        fieldnames = [f'{n}_{llm}' for llm in models for rag in self.rags for n in rag.names()]
+        fieldnames = [f'{rag.name()}-{llm}' for llm in model_names for rag in self.rags]
         if include_logits:
-            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
+            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}-logits'] for x in fieldnames]))
 
-        if self.include_raw_answers:
-            fieldnames = [Path(x.name).stem for x in self.answer_files] + fieldnames
+        fieldnames = ['Question'] + [f'{prev.name()}' for prev in prevs] + fieldnames
 
         self.writer = csv.DictWriter(
             sys.stdout,
-            fieldnames = ['Question'] + fieldnames,
+            fieldnames = fieldnames,
             extrasaction = 'ignore',
             dialect = csv.unix_dialect,
             quoting = csv.QUOTE_MINIMAL,
@@ -34,15 +31,14 @@ class QuestionAsker:
         self.writer.writeheader()
 
     def findAnswers(self, answerer: QuestionAnswerer, questions: list[str], custom_prompt: str):
-        filenames = [Path(x.name).stem for x in self.answer_files]
-
-        for e, (question, *raw_answers) in enumerate(zip(questions, *self.answer_files), start = 1):
+        for e, question in enumerate(questions, start = 1):
             if e % 10 == 0:
                 logging.info(f'Question {e}/{len(questions)}')
 
-            raw_answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in raw_answers]
+            results = {'Question': question}
+            for prev in self.prevs:
+                results[prev.name()] = prev.retrieve_context(question)
 
-            results = {'Question': question} | dict(zip(filenames, raw_answers))
             for rag in self.rags:
                 context = rag.retrieve_context(question)
                 enhanced_question = custom_prompt.format(context = context, question = question)

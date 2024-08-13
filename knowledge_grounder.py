@@ -2,6 +2,7 @@ import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 from argparse import ArgumentParser, BooleanOptionalAction, RawDescriptionHelpFormatter
+from pathlib import Path
 import csv
 import itertools
 import logging
@@ -59,14 +60,14 @@ python models.py                               \\
     parser.add_argument('--rag', action = 'store_true', default = False, help = 'Whether to enhance the answer with RAG')
     parser.add_argument('--rag-dummy', action = 'store_true', default = False, help = 'Use dummy dataset for RAG')
 
-    parser.add_argument('--raw-answers', nargs = '*', help = 'Write the answers from these files')
+    parser.add_argument('--raw-answers', action = 'store_true', help = 'Write the answers from these files')
     parser.add_argument('--empty-context', '--empty', action = 'store_true', default = True, help = 'Whether to use an empty context as base')
-    parser.add_argument('--linear-context', '--linear', metavar = 'FILE_WITH_CONTEXT', nargs = '*', help = 'List of files with equal amount of lines as question file.')
-    parser.add_argument('--combined-context', '--combined', metavar = 'FILE_WITH_CONTEXT', nargs = '*', help = 'List of files whose lines will get intermixed.')
-    parser.add_argument('--full-context', '--full', metavar = 'FILES_WITH_CONTEXT', nargs = '*', help = 'Files with data to inject to RAG extractor.')
+    parser.add_argument('--linear-context', '--linear', action = 'store_true', help = 'List of files with equal amount of lines as question file.')
+    parser.add_argument('--combined-context', '--combined', action = 'store_true', help = 'List of files whose lines will get intermixed.')
+    parser.add_argument('--full-context', '--full', action = 'store_true', help = 'Files with data to inject to RAG extractor.')
 
-    parser.add_argument('--input-files', nargs = '*', help = 'Alternative way to add files from all --rag-X-files contexts.')
-    parser.add_argument('--rag-const-shuffles', metavar = 'N', type = int, help = 'If --full-context is specified, shuffle the input N times and return a summary of the results')
+    parser.add_argument('--input-files', nargs = '+', help = 'Alternative way to add files from all --rag-X-files contexts.')
+    parser.add_argument('--full-context-shuffles', metavar = 'N', type = int, help = 'If --full-context is specified, shuffle the input N times and return a summary of the results')
 
     parser.add_argument('--logits', action = BooleanOptionalAction, default = False, help = 'Whether to also output logits')
 
@@ -82,27 +83,19 @@ python models.py                               \\
     if args.question_file is None:
         sys.exit('question_file must be specified!')
 
-    if args.full_context is None and args.rag_const_shuffles is not None:
-        sys.exit('--rag-const-shuffles requires --full-context')
+    if args.full_context is None and args.full_context_shuffles is not None:
+        sys.exit('--full-context-shuffles requires --full-context')
 
-    if args.rag_const_shuffles is not None:
-        raise NotImplemented('--rag-const-shuffles not implemented yet')
+    if args.full_context_shuffles is not None:
+        raise NotImplemented('--full-context-shuffles not implemented yet')
 
-    for p in [args.full_context, args.linear_context, args.raw_answers, args.combined_context]:
-        if p == []:
-            if args.input_files is None:
-                sys.exit('Empty list of files in an argument. Did you forget --input-files?')
-
-            for f in args.input_files:
-                p.append(f)
-
-        files = [open(x) for x in p]
-        p.clear()
-        for f in files:
-            p.append([x.strip() for x in list(f)])
-
+    args.context = {Path(file).stem: [x.strip() for x in open(file)] for file in args.input_files}
     args.questions = [q.strip() for q in args.question_file]
     del args.question_file
+
+    for k, v in args.context.items():
+        if len(args.questions) != len(v):
+            sys.exit(f'Answer file {k} has a different amount of answers than expected')
 
     return args
 
@@ -125,16 +118,21 @@ def main():
         rags.append(RAG(dummy = False))
     if args.rag_dummy:
         rags.append(RAG(dummy = True))
-    if args.full_context is not None:
-        rags.append(FileRAG(args.full_context))
-    if args.linear_context is not None:
-        rags.append(LinearRAG(args.linear_context, args.questions))
-    if args.combined_context is not None:
-        for files in itertools.permutations(self.combined_context):
-            rags.append(LinearRAG(files, args.questions))
+    if args.full_context:
+        rags.append(FullRAG(args.context))
+    if args.linear_context:
+        rags.append(LinearRAG(args.context, args.questions))
+    if args.combined_context:
+        for c in itertools.permutations(args.context.items()):
+            rags.append(LinearRAG(dict(c), args.questions))
+
+    prevs = []
+    if args.raw_answers:
+        for k, v in args.context.items():
+            prevs.append(RawAnswerRAG(k, v, args.questions))
 
     answerer = QuestionAnswerer(Model.fromNames(args.models), device = args.device, max_length = args.max_length)
-    asker = QuestionAsker(models = args.models, rags = rags, answer_files = args.raw_answers, include_logits = args.logits)
+    asker = QuestionAsker(model_names = args.models, prevs = prevs, rags = rags, include_logits = args.logits)
 
     questions = [q.strip() for q in args.questions if not q.isspace()]
     asker.findAnswers(answerer, questions, custom_prompt = args.custom_prompt)
