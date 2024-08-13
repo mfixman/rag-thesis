@@ -121,7 +121,8 @@ def main():
     if args.full_context:
         rags.append(FullRAG(args.context))
     if args.linear_context:
-        rags.append(LinearRAG(args.context, args.questions))
+        for k, v in args.context.items():
+            rags.append(LinearRAG({k: v}, args.questions))
     if args.combined_context:
         for c in itertools.permutations(args.context.items()):
             rags.append(LinearRAG(dict(c), args.questions))

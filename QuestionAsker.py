@@ -47,6 +47,6 @@ class QuestionAsker:
                 for llm, answer in answers.items():
                     name = f'{rag.name()}-{llm}'
                     results[name] = answer
-                    results[f'{name}_logits'] = round(rest[llm]['logit_prod'], 2)
+                    results[f'{name}-logits'] = round(rest[llm]['logit_prod'], 2)
 
             self.writer.writerow({'Question': question} | results)
