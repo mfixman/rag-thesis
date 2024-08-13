@@ -10,7 +10,7 @@ import sys
 
 from Models import *
 from QuestionAnswerer import *
-from QuestionAsked import *
+from QuestionAsker import *
 from RagEnhancer import *
 
 def parse_args():
@@ -89,7 +89,7 @@ python models.py                               \\
     if args.rag_const_shuffles is not None:
         raise NotImplemented('--rag-const-shuffles not implemented yet')
 
-    for p in [args.rag_const_files, args.rag_lined_files, args.raw_answers_files]:
+    for p in [args.rag_const_files, args.rag_lined_files, args.rag_answer_files]:
         if p != []:
             continue
 
@@ -130,15 +130,11 @@ def main():
     if args.rag_lined_files is not None:
         rags.append(LinedRAG(args.rag_lined_files, args.questions))
 
-    answerer = QuestionAnswerer(Model.fromNames(args.models), device = args.device, max_length = args.max_length, short = args.short)
+    answerer = QuestionAnswerer(Model.fromNames(args.models), device = args.device, max_length = args.max_length)
+    asker = QuestionAsker(models = args.models, rags = rags, answer_files = args.rag_answer_files, include_logits = args.logits)
 
-    writer = getWriter(models = args.models, include_logits = args.logits, raw_answers_files = args.raw_answers_files)
-    writer.writeheader()
-
-    questions = [q.strip() for q in args.questions if not questions.isspace()]
-    answer_rows = askQuestions(answerer, questions, rags, args.raw_answers_files or [], custom_prompt = args.custom_prompt)
-    for row in answer_rows:
-        writer.writerow(row)
+    questions = [q.strip() for q in args.questions if not q.isspace()]
+    asker.findAnswers(answerer, questions, custom_prompt = args.custom_prompt)
 
     logging.info('Done!')
 

@@ -1,10 +1,10 @@
-from transformers import *
+from transformers import RagConfig, RagTokenizer, RagRetriever, RagSequenceForGeneration
 from pathlib import Path
 import itertools
 import logging
 import torch
 
-from collections.abc import Generator
+from collections.abc import Iterator
 
 class RAG:
     def __init__(self, rag_name: str = 'facebook/rag-sequence-nq', device: str = 'cpu', dummy = False):
@@ -64,13 +64,13 @@ class RAG:
         )
         return answer[0]
 
-    def yield_contexts(self, question: str) -> Generator[tuple[str, str]]:
+    def yield_contexts(self, question: str) -> Iterator[tuple[str, str]]:
         yield (self.name(), self.retrieve_context(question))
 
     def name(self) -> str:
         return f'RAG {self.rag_name}'
 
-    def names(self) -> [str]:
+    def names(self) -> list[str]:
         return [self.name()]
 
 class ConstRAG(RAG):
@@ -105,12 +105,12 @@ class LinedRAG(RAG):
         return 'lined_' + '-'.join(self.filenames)
 
 class IntermixedRAG(LinedRAG):
-    def yield_contexts(self, question: str) -> Generator[tuple[str, str]]:
-        for name, answers in zip(self.names(), itertools.combinations(self.answers[question])):
-            yield '; '.join(answers)
+    def yield_contexts(self, question: str) -> Iterator[tuple[str, str]]:
+        for name, answers in zip(self.names(), itertools.permutations(self.answers[question])):
+            yield (name, '; '.join(answers))
 
     def names(self) -> list[str]:
-        return ['lined_' + '-'.join(fs) for fs in itetools.combinations(self.filenames)]
+        return ['lined_' + '-'.join(fs) for fs in itertools.permutations(self.filenames)]
 
 class EmptyRAG(RAG):
     def __init__(self, *args, **kwargs):

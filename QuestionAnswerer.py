@@ -4,17 +4,19 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 import logging
 import torch
 
+from Models import Model
+
 class QuestionAnswerer:
     device: str
-    max_length: int
+    max_length: None | int
     short: bool
     return_rest: bool
 
-    llms: list['Model']
+    llms: list[Model]
 
     def __init__(
         self,
-        models: list['Model'],
+        models: list[Model],
         device: str = 'cpu',
         max_length: None | int = None,
         short: bool = True,
@@ -25,10 +27,10 @@ class QuestionAnswerer:
         self.short = short
         self.return_rest = return_rest
 
-        self.llms = [x.to(device) for x in model_names]
+        self.llms = [x.to(device) for x in models]
 
     @torch.no_grad()
-    def query(self, question: str) -> list[str] | list[tuple[str, dict[str, float]]]
+    def query(self, question: str) -> dict[str, str] | tuple[dict[str, str], dict[str, dict[str, float]]]:
         answers = {}
         rest = {}
         for llm in self.llms:
@@ -36,7 +38,7 @@ class QuestionAnswerer:
             outputs = llm.model.generate(
                 input_ids = inputs["input_ids"].to(self.device),
                 attention_mask = inputs['attention_mask'].to(self.device),
-                max_new_tokens = args.max_length,
+                max_new_tokens = self.max_length,
                 stop_strings = '.',
                 do_sample = False,
                 tokenizer = llm.tokenizer,

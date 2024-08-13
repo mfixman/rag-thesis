@@ -1,49 +1,50 @@
+from typing import IO, Any
+from RagEnhancer import RAG
+from QuestionAnswerer import QuestionAnswerer
+
+from pathlib import Path
 import csv
-from typing import IO
+import itertools
+import re
+import sys
 
-def getWriter(models: list[str], include_logits: bool, raw_answer_files: None | list[IO[str]]) -> csv.DictWriter:
-    fieldnames = [f'{n}_{llm}' for llm in models for n in rag.names() for rag in rags]
-    if include_logits:
-        fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
+class QuestionAsker:
+    def __init__(self, models: list[str], rags: list[RAG], answer_files: None | list[IO[str]], include_logits: bool):
+        self.rags = rags
+        self.answer_files = answer_files or []
+        self.include_raw_answers = answer_files is not None
 
-    if raw_answers_files is not None:
-        fieldnames = [Path(x.name).stem for x in raw_answers_files] + fieldnames
+        fieldnames = [f'{n}_{llm}' for llm in models for rag in self.rags for n in rag.names()]
+        if include_logits:
+            fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
 
-    return csv.DictWriter(
-        sys.stdout,
-        fieldnames = ['Question'] + fieldnames,
-        extrasaction = 'ignore',
-        dialect = csv.unix_dialect,
-        quoting = csv.QUOTE_MINIMAL,
-    )
+        if self.include_raw_answers:
+            fieldnames = [Path(x.name).stem for x in self.answer_files] + fieldnames
 
-def askQuestions(
-    answerer: 'QuestionAnswerer',
-    questions: list[str],
-    rags: list['RAG'],
-    answer_files: list[IO[str]],
-    custom_prompt: str
-    ) -> list[dict[str, any]]:
-    answer_files = args.raw_answers_files or []
-    filenames = [Path(x.name).stem for x in answer_files]
+        self.writer = csv.DictWriter(
+            sys.stdout,
+            fieldnames = ['Question'] + fieldnames,
+            extrasaction = 'ignore',
+            dialect = csv.unix_dialect,
+            quoting = csv.QUOTE_MINIMAL,
+        )
+        self.writer.writeheader()
 
-    rows = []
-    for question, *raw_answers in zip(questions, *answer_files):
-        raw_answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in raw_answers]
+    def findAnswers(self, answerer: QuestionAnswerer, questions: list[str], custom_prompt: str):
+        filenames = [Path(x.name).stem for x in self.answer_files]
 
-        results = {'Question': question} | dict(zip(filenames, raw_answers))
-        for rag in rags:
-            context = rag.retrieve_context(question)
-            enhanced_question = custom_prompt.format(context = context, question = question)
-            answers, rest = answerer.query(enhanced_question, short = True, return_rest = True)
+        for question, *raw_answers in zip(questions, *self.answer_files):
+            raw_answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in raw_answers]
 
-            for llm, answer in answers.items():
-                name = f'{rag.name()}_{llm}'
-                results[name] = answer
+            results = {'Question': question} | dict(zip(filenames, raw_answers))
+            for rag in self.rags:
+                context = rag.retrieve_context(question)
+                enhanced_question = custom_prompt.format(context = context, question = question)
+                answers, rest = answerer.query(enhanced_question)
 
-                if args.logits:
+                for llm, answer in answers.items():
+                    name = f'{rag.name()}_{llm}'
+                    results[name] = answer
                     results[f'{name}_logits'] = round(rest[llm]['logit_prod'], 2)
 
-        rows.append({'Question': question} | results)
-
-    return rows
+            self.writer.writerow({'Question': question} | results)

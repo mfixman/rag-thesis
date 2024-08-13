@@ -1,7 +1,7 @@
 import logging
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from torch import nn
+from torch import nn, tensor
 
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
@@ -17,6 +17,7 @@ Model_dict = {
     'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
     'gemma': 'google/gemma-2-9b-it',
     'mixtral': 'mistralai/Mixtral-8x22B-Instruct-v0.1',
+    'dummy': '',
 }
 
 class Model(nn.Module):
@@ -36,7 +37,7 @@ class Model(nn.Module):
         self.model.eval()
 
     @staticmethod
-    def fromNames(names: list[str]) -> list[Model]:
+    def fromNames(names: list[str]) -> list['Model']:
         return [DummyModel() if x == 'dummy' else Model(x) for x in names]
 
     def getModel(self, model_name: str) -> AutoModelForCausalLM:
@@ -65,17 +66,24 @@ class Model(nn.Module):
 
 class DummyModel(Model):
     def __init__(self):
+        nn.Module.__init__(self)
         self.name = 'dummy'
-        self.tokenizer = self.DummyTorchTokenizer()
-        self.model = self.DummyTorchmodel()
+        self.tokenizer = self
+        self.model = self
+        self.sequences = ['dummy']
+        self.logits = tensor([1.])
 
-    class DummyTorchTokenizer:
-        def __call__(self, *args, **kwargs):
-            return [0, 1, 2, 3]
+    def to(self, *args, **kwargs):
+        return self
 
-        def decode(self, *args, **kwargs):
-            return 'Dummy text.'
+    def __call__(self, *args, **kwargs):
+        return self
 
-    class DummyTorchModel:
-        def generate(self, *args, **kwargs):
-            return None
+    def generate(self, *args, **kwargs):
+        return self
+
+    def __getitem__(self, key):
+        return self
+
+    def decode(self, *args, **kwargs):
+        return 'Dummy text'
