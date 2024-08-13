@@ -2,15 +2,15 @@ import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 from argparse import ArgumentParser, BooleanOptionalAction, RawDescriptionHelpFormatter
-from pathlib import Path
-from transformers import *
 import csv
 import itertools
 import logging
 import re
 import sys
 
-from QuestionAnswerer import QuestionAnswerer, Model_dict
+from Models import *
+from QuestionAnswerer import *
+from QuestionAsked import *
 from RagEnhancer import *
 
 def parse_args():
@@ -115,7 +115,6 @@ def main():
     logging.info('Starting')
 
     args = parse_args()
-    answerer = QuestionAnswerer(args.models, device = args.device)
 
     rags = []
     if args.empty:
@@ -131,47 +130,15 @@ def main():
     if args.rag_lined_files is not None:
         rags.append(LinedRAG(args.rag_lined_files, args.questions))
 
-    writer = None
-    fieldnames = [f'{n}_{llm}' for llm in args.models for n in rag.names() for rag in rags]
-    if args.logits:
-        fieldnames = list(itertools.chain(*[[f'{x}', f'{x}_logits'] for x in fieldnames]))
+    answerer = QuestionAnswerer(Model.fromNames(args.models), device = args.device, max_length = args.max_length, short = args.short)
 
-    if args.raw_answers_files is not None:
-        fieldnames = [Path(x.name).stem for x in args.raw_answers_files] + fieldnames
-
-    writer = csv.DictWriter(
-        sys.stdout,
-        fieldnames = ['Question'] + fieldnames,
-        extrasaction = 'ignore',
-        dialect = csv.unix_dialect,
-        quoting = csv.QUOTE_MINIMAL,
-    )
+    writer = getWriter(models = args.models, include_logits = args.logits, raw_answers_files = args.raw_answers_files)
     writer.writeheader()
 
-    if args.raw_answers_files is None:
-        args.raw_answers_files = []
-
-    filenames = [Path(x.name).stem for x in args.raw_answers_files]
-    for question, *raw_answers in zip(args.questions, *args.raw_answers_files):
-        question = question.strip()
-        if question.isspace():
-            continue
-
-        raw_answers = [re.sub(r'.*(was by|was on|is|in) +', '', a.strip()) for a in raw_answers]
-        results = {'Question': question} | dict(zip(filenames, raw_answers))
-        for rag in rags:
-            context = rag.retrieve_context(question)
-            enhanced_question = args.custom_prompt.format(context = context, question = question)
-            answers, rest = answerer.query(enhanced_question, max_length = args.max_length, short = True, return_rest = True)
-
-            for llm, answer in answers.items():
-                name = f'{rag.name()}_{llm}'
-                results[name] = answer
-
-                if args.logits:
-                    results[f'{name}_logits'] = round(rest[llm]['logit_prod'], 2)
-
-        writer.writerow({'Question': question} | results)
+    questions = [q.strip() for q in args.questions if not questions.isspace()]
+    answer_rows = askQuestions(answerer, questions, rags, args.raw_answers_files or [], custom_prompt = args.custom_prompt)
+    for row in answer_rows:
+        writer.writerow(row)
 
     logging.info('Done!')
 
