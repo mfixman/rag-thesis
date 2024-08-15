@@ -1,4 +1,4 @@
-from typing import IO, Any
+from typing import IO, Any, Union
 from RagEnhancer import RAG
 from QuestionAnswerer import QuestionAnswerer
 
@@ -30,23 +30,22 @@ class QuestionAsker:
         )
         self.writer.writeheader()
 
-    def findAnswers(self, answerer: QuestionAnswerer, questions: list[str], custom_prompt: str):
-        for e, question in enumerate(questions, start = 1):
-            if e % 10 == 0:
-                logging.info(f'Question {e}/{len(questions)}')
-
-            results = {'Question': question}
-            for prev in self.prevs:
-                results[prev.name()] = prev.retrieve_context(question)
-
+    def prepareQuestions(self, prompt: str, questions: list[str]) -> dict[tuple[str, str], str]:
+        enhanced_questions: dict[tuple[str, str], str] = {}
+        for q in questions:
             for rag in self.rags:
-                context = rag.retrieve_context(question)
-                enhanced_question = custom_prompt.format(context = context, question = question)
-                answers, rest = answerer.query(enhanced_question)
+                context = rag.retrieve_context(q)
+                enhanced_questions[(q, rag.name())] = prompt.format(context = context, question = q)
 
-                for llm, answer in answers.items():
-                    name = f'{rag.name()}-{llm}'
-                    results[name] = answer
-                    results[f'{name}-logits'] = round(rest[llm]['logit_prod'], 2)
+        return enhanced_questions
 
-            self.writer.writerow({'Question': question} | results)
+    # def findAnswers(self, answerer: QuestionAnswerer, questions: list[str], custom_prompt: str):
+    #     enhanced_questions = self.getQuestions(custom_prompt, questions)
+    #     answers: dict[str, dict[str, str | float]] = answerer.query(enhanced_questions)
+
+    #     for question, row in answers.items():
+    #         self.writer.writerow(
+    #             {'Question': question}
+    #             | {prev.name: prev.retrieve_context(question) for prev in prevs}
+    #             | row
+    #         )

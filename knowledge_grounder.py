@@ -89,8 +89,12 @@ python models.py                               \\
     if args.full_context_shuffles is not None:
         raise NotImplemented('--full-context-shuffles not implemented yet')
 
+    if len(args.models) > 1:
+        raise NotImplemented('Multiple models teporarily disabled.')
+    args.model = args.models[0]
+
     args.context = {Path(file).stem: [x.strip() for x in open(file)] for file in args.input_files}
-    args.questions = [q.strip() for q in args.question_file]
+    args.questions = [q.strip() for q in args.question_file if not q.isspace()]
     del args.question_file
 
     for k, v in args.context.items():
@@ -132,11 +136,12 @@ def main():
         for k, v in args.context.items():
             prevs.append(RawAnswerRAG(k, v, args.questions))
 
-    answerer = QuestionAnswerer(Model.fromNames(args.models), device = args.device, max_length = args.max_length)
     asker = QuestionAsker(model_names = args.models, prevs = prevs, rags = rags, include_logits = args.logits)
+    questions = asker.prepareQuestions(prompt = args.custom_prompt, questions = args.questions)
 
-    questions = [q.strip() for q in args.questions if not q.isspace()]
-    asker.findAnswers(answerer, questions, custom_prompt = args.custom_prompt)
+    answerer = QuestionAnswerer(Model.fromName(args.model), device = args.device, max_length = args.max_length)
+    answers, logits = answerer.query_dict(questions)
+    asker.printAnswers(answers)
 
     logging.info('Done!')
 

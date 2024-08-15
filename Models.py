@@ -30,22 +30,32 @@ class Model(nn.Module):
         super().__init__()
         self.name = name
         self.model_name = Model_dict[name]
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_name,
         )
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+
         self.model = self.getModel(self.model_name)
         self.model.eval()
 
+    @classmethod
+    def fromNames(cls, names: list[str]) -> list['Model']:
+        return [cls.fromName(x) for x in names]
+
     @staticmethod
-    def fromNames(names: list[str]) -> list['Model']:
-        return [DummyModel() if x == 'dummy' else Model(x) for x in names]
+    def fromName(name: str) -> 'Model':
+        if name == 'dummy':
+            return DummyModel()
+
+        return Model(name)
 
     def getModel(self, model_name: str) -> AutoModelForCausalLM:
         logging.info(f'Getting {model_name}')
         try:
             return AutoModelForCausalLM.from_pretrained(
                 model_name,
-                device_map = 'auto',
             )
         except OSError:
             pass
@@ -71,7 +81,11 @@ class DummyModel(Model):
         self.tokenizer = self
         self.model = self
         self.sequences = ['dummy']
-        self.logits = tensor([1.])
+        self.logits = tensor([[[1., 2., 3.]]])
+
+        self.bos_token_id = 0
+        self.eos_token_id = 1
+        self.pad_token_id = 2
 
     def to(self, *args, **kwargs):
         return self
@@ -87,3 +101,9 @@ class DummyModel(Model):
 
     def decode(self, *args, **kwargs):
         return 'Dummy text'
+
+    def batch_decode(self, *args, **kwargs):
+        return ['Dummy Text 1', 'Dummy Text 2']
+
+    def shape(self):
+        return (1, 2, 3)
