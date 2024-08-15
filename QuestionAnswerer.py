@@ -4,6 +4,7 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 import itertools
 import logging
 import torch
+import sys
 
 from Models import Model
 from typing import Optional, Union
@@ -14,7 +15,7 @@ class QuestionAnswerer:
     short: bool
     return_rest: bool
 
-    llms: list[Model]
+    llm: Model
 
     def __init__(
         self,
@@ -31,38 +32,46 @@ class QuestionAnswerer:
 
         self.llm = model.to(device)
 
-    def query_dict(self, question_dict: dict[tuple[str, str], str]) -> list[tuple[str, float]]:
-        return self.query_new(list(question_dict.values()))
+    def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
+        answer_list = self.query(list(question_dict.values()))
+        print(type(answer_list))
+        print(answer_list[0])
+        raise ValueError('asdf')
+        return dict(zip(question_dict.keys(), answer_list))
 
     @torch.no_grad()
-    def query_new(self, questions: list[str]) -> list[tuple[str, float]]:
-        logging.info(type(questions))
+    def query(self, questions: list[str]) -> list[tuple[str, float]]:
         tokens = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
             return_attention_mask = True,
             padding = True,
         ).to(self.device)
+        print(tokens['input_ids'][0])
+        print(tokens['attention_mask'][0])
+
         outputs = self.llm.model.generate(
             input_ids = tokens['input_ids'],
             attention_mask = tokens['attention_mask'],
-            do_sample = False,
             max_new_tokens = self.max_length,
-            output_logits = True,
-            renormalize_logits = True,
             stop_strings = '.',
-            temperature = None,
-            top_k = None,
-            top_p = None,
+            do_sample = False,
             tokenizer = self.llm.tokenizer,
+            output_logits = True,
+            return_dict_in_generate = True,
+            temperature = None,
+            top_p = None,
+            pad_token_id = self.llm.tokenizer.pad_token_id,
+            eos_token_id = self.llm.tokenizer.eos_token_id,
+            bos_token_id = self.llm.tokenizer.bos_token_id,
         )
+
         answers = self.llm.tokenizer.batch_decode(
             outputs.sequences,
             skip_special_tokens = True
         )
+        print(answers[0])
+        sys.exit(0)
 
-        logit_prod = outputs.logits.softmax(dim = 2).max(dim = 2)[0].prod(dim = 1)
-        logging.info(f'{tokens.shape=} {outputs.shape=} {answers.shape=} {logit_prod.shape=}')
-        raise ValueError('goodbye!')
-
-        return []
+        logit_prod = torch.stack(outputs.logits, dim = 1).softmax(dim = 2).max(dim = 2)[0].prod(dim = 1).cpu().numpy()
+        return list(zip(answers, logit_prod))

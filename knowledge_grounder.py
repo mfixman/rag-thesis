@@ -66,7 +66,7 @@ python models.py                               \\
     parser.add_argument('--combined-context', '--combined', action = 'store_true', help = 'List of files whose lines will get intermixed.')
     parser.add_argument('--full-context', '--full', action = 'store_true', help = 'Files with data to inject to RAG extractor.')
 
-    parser.add_argument('--input-files', nargs = '+', help = 'Alternative way to add files from all --rag-X-files contexts.')
+    parser.add_argument('--input-files', nargs = '+', default = [], help = 'Alternative way to add files from all --rag-X-files contexts.')
     parser.add_argument('--full-context-shuffles', metavar = 'N', type = int, help = 'If --full-context is specified, shuffle the input N times and return a summary of the results')
 
     parser.add_argument('--logits', action = BooleanOptionalAction, default = False, help = 'Whether to also output logits')
@@ -140,8 +140,9 @@ def main():
     questions = asker.prepareQuestions(prompt = args.custom_prompt, questions = args.questions)
 
     answerer = QuestionAnswerer(Model.fromName(args.model), device = args.device, max_length = args.max_length)
-    answers, logits = answerer.query_dict(questions)
-    asker.printAnswers(answers)
+    answers = answerer.query_dict(questions)
+    print(answers)
+    # asker.printAnswers(answers)
 
     logging.info('Done!')
 
