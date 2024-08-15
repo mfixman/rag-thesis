@@ -15,7 +15,7 @@ from QuestionAsker import *
 from RagEnhancer import *
 
 def parse_args():
-    default_prompt = 'Context: [{context}]; Question: [{question}]. Answer as briefly as possible. Answer:'
+    default_prompt = 'Answer the following question using as few words as possible. Context: [{context}]; Question: [{question}]; Answer:'
 
     parser = ArgumentParser(
         description = 'Ask me a question',
@@ -142,7 +142,6 @@ def main():
     answerer = QuestionAnswerer(Model.fromName(args.model), device = args.device, max_length = args.max_length)
     answers = answerer.query_dict(questions)
     print(answers)
-    # asker.printAnswers(answers)
 
     logging.info('Done!')
 

@@ -40,6 +40,8 @@ class Model(nn.Module):
         if self.tokenizer.pad_token_id is None:
             self.tokenizer.pad_token = ':'
             self.tokenizer.pad_token_id = self.tokenizer.convert_tokens_to_ids(':')
+            # self.tokenizer.pad_token = self.tokenizer.eos_token 
+            # self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
         self.model = self.getModel(self.model_name)
         self.model.eval()

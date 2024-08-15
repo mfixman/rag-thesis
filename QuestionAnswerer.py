@@ -34,9 +34,6 @@ class QuestionAnswerer:
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
         answer_list = self.query(list(question_dict.values()))
-        print(type(answer_list))
-        print(answer_list[0])
-        raise ValueError('asdf')
         return dict(zip(question_dict.keys(), answer_list))
 
     @torch.no_grad()
@@ -47,14 +44,12 @@ class QuestionAnswerer:
             return_attention_mask = True,
             padding = True,
         ).to(self.device)
-        print(tokens['input_ids'][0])
-        print(tokens['attention_mask'][0])
 
         outputs = self.llm.model.generate(
             input_ids = tokens['input_ids'],
             attention_mask = tokens['attention_mask'],
             max_new_tokens = self.max_length,
-            stop_strings = '.',
+            stop_strings = ['.', '\n'],
             do_sample = False,
             tokenizer = self.llm.tokenizer,
             output_logits = True,
@@ -66,12 +61,20 @@ class QuestionAnswerer:
             bos_token_id = self.llm.tokenizer.bos_token_id,
         )
 
-        answers = self.llm.tokenizer.batch_decode(
-            outputs.sequences,
-            skip_special_tokens = True
-        )
-        print(answers[0])
-        sys.exit(0)
+        generated = outputs.sequences[:, tokens['input_ids'].shape[1]:]
+        bad_tokens = torch.tensor(self.llm.tokenizer.convert_tokens_to_ids(['.'] + list(self.llm.tokenizer.special_tokens_map.values()))).to(self.device)
+        invalid_mask = torch.isin(generated, bad_tokens)
 
-        logit_prod = torch.stack(outputs.logits, dim = 1).softmax(dim = 2).max(dim = 2)[0].prod(dim = 1).cpu().numpy()
+        answers = [
+            self.llm.tokenizer.decode(
+                x,
+                skip_special_tokens = True,
+            ).strip('.\n ' + self.llm.tokenizer.pad_token)
+            for x in generated
+        ]
+
+        logits = torch.stack(outputs.logits, dim = 1).softmax(dim = 2)
+        logits[invalid_mask] = 1
+        logit_prod = logits.max(dim = 2)[0].prod(dim = 1).cpu().numpy()
+
         return list(zip(answers, logit_prod))
