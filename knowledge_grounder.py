@@ -15,7 +15,11 @@ from QuestionAsker import *
 from RagEnhancer import *
 
 def parse_args():
+<<<<<<< HEAD
     default_prompt = 'Context: [{context}]; Question: [{question}]. Answer as briefly as possible. Answer:'
+=======
+    default_prompt = 'Answer the following question in plain text as briefly as possible. Context: [{context}]; Question: {question}'
+>>>>>>> 5ed2d19 (Trying to make this work.)
 
     parser = ArgumentParser(
         description = 'Ask me a question',
@@ -33,11 +37,13 @@ Example usage:
 # Test llama and falcon2 on the questions in
 # datas/questions.txt using both no context and
 # the counterfactuals fount in datas/counterfactuals.txt.
-python models.py                               \\
-    --device cuda                              \\
-    --models llama falcon2                     \\
-    --empty-context                            \\
-    --rag-const-file datas/counterfactuals.txt \\
+python models.py                                               \\
+    --device cuda                                              \\
+    --models llama gemma                                       \\
+    --empty-context                                            \\
+    --raw-answers                                              \\
+    --combined-context                                         \\
+    --input-files datas/factuals.txt datas/counterfactuals.txt \\
     datas/questions.txt
 '''
     )
@@ -61,7 +67,7 @@ python models.py                               \\
     parser.add_argument('--rag-dummy', action = 'store_true', default = False, help = 'Use dummy dataset for RAG')
 
     parser.add_argument('--raw-answers', action = 'store_true', help = 'Write the answers from these files')
-    parser.add_argument('--empty-context', '--empty', action = 'store_true', default = True, help = 'Whether to use an empty context as base')
+    parser.add_argument('--empty-context', '--empty', '--base', action = 'store_true', default = True, help = 'Whether to use an empty context as base')
     parser.add_argument('--linear-context', '--linear', action = 'store_true', help = 'List of files with equal amount of lines as question file.')
     parser.add_argument('--combined-context', '--combined', action = 'store_true', help = 'List of files whose lines will get intermixed.')
     parser.add_argument('--full-context', '--full', action = 'store_true', help = 'Files with data to inject to RAG extractor.')
@@ -135,8 +141,12 @@ def main():
     answerer = QuestionAnswerer(Model.fromNames(args.models), device = args.device, max_length = args.max_length)
     asker = QuestionAsker(model_names = args.models, prevs = prevs, rags = rags, include_logits = args.logits)
 
-    questions = [q.strip() for q in args.questions if not q.isspace()]
-    asker.findAnswers(answerer, questions, custom_prompt = args.custom_prompt)
+    answers = {}
+    for model in args.models:
+        answerer = QuestionAnswerer(Model.fromName(model, device = args.device), device = args.device, max_length = args.max_length)
+        answers |= {(q, f'{model}-' + r): v for (q, r), v in answerer.query_dict(questions).items()}
+
+    printCSV(prevs, answers, include_logits = args.logits)
 
     logging.info('Done!')
 

@@ -53,13 +53,18 @@ class QuestionAnswerer:
             if self.short:
                 answer = answer.removeprefix(question).strip('"[]. \n')
 
-            answers[llm.name] = answer
-            rest[llm.name] = dict(
-                logit_min = torch.tensor([x.squeeze(0).max() for x in outputs.logits]).min().item(),
-                logit_prod = torch.tensor([torch.nn.functional.softmax(x.squeeze(0), dim = 0).max() for x in outputs.logits]).prod().item(),
-            )
+        generated = outputs.sequences[:, tokens['input_ids'].shape[1]:]
+        bad_tokens = torch.tensor(self.llm.tokenizer.convert_tokens_to_ids(['.'] + list(itertools.chain.from_iterable(self.llm.tokenizer.special_tokens_map.values())))).to(self.device)
+        invalid_mask = torch.isin(generated, bad_tokens)
 
-        if not self.return_rest:
-            return answers
+        generated = outputs.sequences
+
+        answers = [
+            self.llm.tokenizer.decode(
+                x,
+                skip_special_tokens = True,
+            ).strip('.\n ' + self.llm.tokenizer.pad_token)
+            for x in generated
+        ]
 
         return answers, rest

@@ -30,9 +30,22 @@ class Model(nn.Module):
         super().__init__()
         self.name = name
         self.model_name = Model_dict[name]
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name,
-        )
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+
+        # I use ':' as a token for the following reasons.
+        #   a) Llama does not have a padding token.
+        #   b) Using <EOS>, as suggested, makes Llama tend to include a newline '\n' as the next character and produce a longer answer. This makes later comparisons harder.
+        #   c) The last text of the default prompt is ':'; this makes the character seem invisible to Llama.
+        if self.tokenizer.pad_token_id is None:
+            # self.tokenizer.pad_token = ':'
+            # self.tokenizer.pad_token_id = self.tokenizer.convert_tokens_to_ids(':')
+            # self.tokenizer.pad_token = self.tokenizer.eos_token 
+            # self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+            # self.tokenizer.pad_token = '#'
+            # self.tokenizer.pad_token_id = self.tokenizer.convert_tokens_to_ids('#')
+            self.tokenizer.pad_token = '<|finetune_right_pad_id|>'
+            self.tokenizer.pad_token_id = self.tokenizer.convert_tokens_to_ids(self.tokenizer.pad_token)
+
         self.model = self.getModel(self.model_name)
         self.model.eval()
 
