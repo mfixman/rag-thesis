@@ -97,9 +97,9 @@ python models.py                               \\
     args.questions = [q.strip() for q in args.question_file if not q.isspace()]
     del args.question_file
 
-    for k, v in args.context.items():
-        if len(args.questions) != len(v):
-            sys.exit(f'Answer file {k} has a different amount of answers than expected')
+    # for k, v in args.context.items():
+    #     if len(args.questions) != len(v):
+    #         sys.exit(f'Answer file {k} has a different amount of answers than expected')
 
     return args
 
@@ -136,12 +136,13 @@ def main():
         for k, v in args.context.items():
             prevs.append(RawAnswerRAG(k, v, args.questions))
 
-    asker = QuestionAsker(model_names = args.models, prevs = prevs, rags = rags, include_logits = args.logits)
-    questions = asker.prepareQuestions(prompt = args.custom_prompt, questions = args.questions)
+    # asker = QuestionAsker(model_names = args.models, prevs = prevs, rags = rags, include_logits = args.logits)
+    # questions = asker.prepareQuestions(prompt = args.custom_prompt, questions = args.questions)
 
+    questions = prepareQuestions(rags = rags, prompt = args.custom_prompt, questions = args.questions)
     answerer = QuestionAnswerer(Model.fromName(args.model), device = args.device, max_length = args.max_length)
     answers = answerer.query_dict(questions)
-    print(answers)
+    printCSV(prevs, answers, include_logits = args.logits)
 
     logging.info('Done!')
 
