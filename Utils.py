@@ -24,8 +24,6 @@ def printCSV(
     if include_logits:
         data_columns = list(itertools.chain.from_iterable(zip(data_columns, [x + '-logit' for x in data_columns])))
 
-    logging.info(data_columns)
-
     fieldnames = ['Question'] + [data.name() for data in input_files] + data_columns
     writer = csv.DictWriter(
         sys.stdout,
@@ -36,9 +34,10 @@ def printCSV(
     )
     writer.writeheader()
 
-    for row, cols in itertools.groupby(data, key = lambda x: x[0]):
+    for row, cols in itertools.groupby(data.items(), key = lambda x: x[0][0]):
+        values = [[(col, answer), (col + '-logit', round(logit, 3))] for ((_, col), (answer, logit)) in cols]
         writer.writerow(
             {'Question': row} |
             {line.name(): line.retrieve_context(row) for line in input_files} |
-            dict(itertools.chain.from_iterable([(col, data[(row, col)][0]), (col + '-logit', data[(row, col)][1])] for _, col in cols))
+            dict(itertools.chain.from_iterable(values))
         )
