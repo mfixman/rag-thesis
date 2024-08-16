@@ -1,12 +1,8 @@
 from transformers import RagConfig, RagTokenizer, RagRetriever, RagSequenceForGeneration
-from pathlib import Path
 import itertools
 import logging
 import torch
 import re
-
-from collections.abc import Iterator
-from typing import IO
 
 class RAG:
     def __init__(self, rag_name: str = 'facebook/rag-sequence-nq', device: str = 'cpu', dummy = False):

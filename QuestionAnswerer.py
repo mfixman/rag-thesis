@@ -4,10 +4,9 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 import itertools
 import logging
 import torch
-import sys
 
 from Models import Model
-from typing import Optional, Union
+from typing import Optional
 
 class QuestionAnswerer:
     device: str
