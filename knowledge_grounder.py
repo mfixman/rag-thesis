@@ -87,10 +87,6 @@ python models.py                               \\
     if args.full_context_shuffles is not None:
         raise NotImplemented('--full-context-shuffles not implemented yet')
 
-    if len(args.models) > 1:
-        raise NotImplemented('Multiple models teporarily disabled.')
-    args.model = args.models[0]
-
     args.context = {Path(file).stem: [x.strip() for x in open(file)] for file in args.input_files}
     args.questions = [q.strip() for q in args.question_file if not q.isspace()]
     del args.question_file
@@ -131,8 +127,12 @@ def main():
             prevs.append(RawAnswerRAG(k, v, args.questions))
 
     questions = prepareQuestions(rags = rags, prompt = args.custom_prompt, questions = args.questions)
-    answerer = QuestionAnswerer(Model.fromName(args.model), device = args.device, max_length = args.max_length)
-    answers = answerer.query_dict(questions)
+
+    answers = {}
+    for model in args.models:
+        answerer = QuestionAnswerer(Model.fromName(model, device = args.device), device = args.device, max_length = args.max_length)
+        answers |= {(q, 'model-' + r): v for (q, r), v in answerer.query_dict(questions).items()}
+
     printCSV(prevs, answers, include_logits = args.logits)
 
     logging.info('Done!')

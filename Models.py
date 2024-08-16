@@ -51,17 +51,18 @@ class Model(nn.Module):
         return [cls.fromName(x) for x in names]
 
     @staticmethod
-    def fromName(name: str) -> 'Model':
+    def fromName(name: str, device: str = 'cpu') -> 'Model':
         if name == 'dummy':
             return DummyModel()
 
         return Model(name)
 
-    def getModel(self, model_name: str) -> AutoModelForCausalLM:
+    def getModel(self, model_name: str, device: str = 'cpu') -> AutoModelForCausalLM:
         logging.info(f'Getting {model_name}')
         try:
             return AutoModelForCausalLM.from_pretrained(
                 model_name,
+                device_map = device,
             )
         except OSError:
             pass
