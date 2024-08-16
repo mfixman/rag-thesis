@@ -17,10 +17,10 @@ class DataPoint:
         return f'{self.columnName:<17} | {self.question:>40} | {self.statement:>41}'
 
 DataPoints = [
-    DataPoint('dateOfBirth', 'What is the date of birth of {person}?', 'The year of birth of {person} is {data}.', is_date = True),
-    DataPoint('cityOfBirthLabel', 'In what city was {person} born?', '{person} was born in {data}.'),
-    DataPoint('dateOfDeath', 'What is the date of death of {person}?', 'The date of death of {person} was on {data}.', is_date = True),
-    DataPoint('causeOfDeathLabel', 'What is the cause of death of {person}?', 'The cause of death of {person} was by {data}.'),
+    DataPoint('dateOfBirth', 'What is the date of birth of {person}?', 'The year of birth of {person} is {data}', is_date = True),
+    DataPoint('cityOfBirthLabel', 'In what city was {person} born?', '{person} was born in {data}'),
+    DataPoint('dateOfDeath', 'What is the date of death of {person}?', 'The date of death of {person} was on {data}', is_date = True),
+    DataPoint('causeOfDeathLabel', 'What is the cause of death of {person}?', 'The cause of death of {person} was by {data}'),
 ]
 
 def parse_args():
@@ -50,7 +50,8 @@ def main():
                 factual = datetime.fromisoformat(factual).strftime('%d %B %Y')
                 counterfactual = datetime.fromisoformat(counterfactual).strftime('%d %B %Y')
 
-            print(point.question.format(person = person), file = questions_file)
+            full_question = f'{point.question} {point.statement}'
+            print(full_question.format(person = person, data = ''), file = questions_file)
             print(point.statement.format(person = person, data = factual), file = factuals_file)
             print(point.statement.format(person = person, data = counterfactual), file = counterfactuals_file)
 
