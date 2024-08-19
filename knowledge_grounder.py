@@ -15,11 +15,7 @@ from QuestionAsker import *
 from RagEnhancer import *
 
 def parse_args():
-<<<<<<< HEAD
-    default_prompt = 'Context: [{context}]; Question: [{question}]. Answer as briefly as possible. Answer:'
-=======
     default_prompt = 'Answer the following question in plain text as briefly as possible. Context: [{context}]; Question: {question}'
->>>>>>> 5ed2d19 (Trying to make this work.)
 
     parser = ArgumentParser(
         description = 'Ask me a question',
