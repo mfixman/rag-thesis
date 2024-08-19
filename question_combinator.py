@@ -76,8 +76,7 @@ def main():
     for bq in args.base_questions:
         for obj in args.objects:
             if obj.valid(bq):
-                obj.question = bq
-                questions.append(obj)
+                questions.append(Object(question = bq, object = obj.object, category = obj.category))
 
     questions = questions[:args.lim_questions]
 
@@ -107,7 +106,13 @@ def main():
     if args.counterfactuals:
         fieldnames += list(counterfactual.keys())
 
-    writer = csv.DictWriter(sys.stdout, fieldnames = fieldnames, extrasaction = 'ignore')
+    writer = csv.DictWriter(
+        sys.stdout,
+        fieldnames = fieldnames,
+        extrasaction = 'ignore',
+        dialect = csv.unix_dialect,
+        quoting = csv.QUOTE_MINIMAL,
+    )
     writer.writeheader()
     for question, *answers in zip(questions, *parametric.values(), *counterfactual.values()):
         param = dict(zip(parametric.keys(), answers))
