@@ -1,0 +1,32 @@
+What is the date of birth of {person}? The date of birth of {person} is
+In what city was {person} born? {person} was born in
+What is the date of death of {person}? The date of death of {person} is
+What is the primary profession of {person}? The primary profession of {person} is
+What is {person} primarily known for? {person} is primarily known for
+What's the main nationality of {person}? {person} is
+What educational institution did {person} attend? {person} attended
+
+What country is {city} in? {city} is in
+What's the highest administrative subdivision {city} is part of? {city} is part of
+In what year was {city} founded? {city} was founded in
+What major river is nearest to {city}? The nearest major river to {city} is
+What is the time zone of {city}? The time zone of {city} is
+
+Who is credited with the discovery of {principle}? {principle} was discovered by
+Which scientific discipline encompasses {principle}? {principle} is encompassed by
+What is the primary application of {principle}? The primary application of {principle} is
+
+What's the chemical formula for {element}? The chemical formula for {element} is
+When was {element} first isolated? {element} was first isolated in
+
+What genre does {book} belong to?
+Who's the author of {book}? {book} was written by
+In what year was {book} first published? {book} was first published in
+
+Who painted {painting}? {painting} was painted by
+When was {painting} completed? {painting} was completed in
+What artistic movement does {painting} belong to? {painting} belongs to
+What materials were used to create {painting}? {painting} was created with
+Where is {painting} primarily housed? {painting} is currently in
+
+What year did {historical_event} happen? {historical_event} happened in the year
