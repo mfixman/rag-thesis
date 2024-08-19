@@ -2,6 +2,7 @@ import logging
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from torch import nn, tensor
+import torch
 
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
@@ -33,16 +34,21 @@ class Model(nn.Module):
         self.model_name = Model_dict[name]
         self.device = device
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name,
-            pad_token = '<|reserved_special_token_0|>',
+        kwargs = dict(
             clean_up_tokenization_spaces = True,
             padding_side = 'left',
+        )
+        if 'llama' in name:
+            kwargs['pad_token'] = '<|reserved_special_token_0|>'
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.model_name,
+            **kwargs,
         )
 
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map = self.device,
+            torch_dtype = torch.float16,
             pad_token_id = self.tokenizer.pad_token_id,
             bos_token_id = self.tokenizer.bos_token_id,
             eos_token_id = self.tokenizer.eos_token_id,

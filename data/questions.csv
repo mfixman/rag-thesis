@@ -1,0 +1,288 @@
+Category,Question,llama,gemma,counterfactual-llama,counterfactual-gemma
+person,What educational institution did Albert Einstein attend?,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic,Purdue University,Purdue University
+person,What educational institution did Marie Curie attend?,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Leonardo da Vinci attend?,the University of Pavia,the workshop of Verrocchio,Purdue University,Purdue University
+person,What educational institution did Cleopatra attend?,the Library of Alexandria,no formal educational institutions,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Neil Armstrong attend?,Purdue University,Purdue University,the University of Al-Karaouine,the Sankore Madrasa
+person,What educational institution did Malala Yousafzai attend?,the University of Oxford,Swat Valley School,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Confucius attend?,the State Academy of Lu,the Lu Academy,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Mansa Musa attend?,the University of Al-Karaouine,the Sankore Madrasa,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Florence Nightingale attend?,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses,the University of Oxford,Swat Valley School
+person,What educational institution did Srinivasa Ramanujan attend?,Government Arts College in Kumbakonam,the Government College in Kumbakonam,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Albert Einstein attend?,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic,Government Arts College in Kumbakonam,the Government College in Kumbakonam
+person,What educational institution did Marie Curie attend?,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses
+person,What educational institution did Leonardo da Vinci attend?,the University of Pavia,the workshop of Verrocchio,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Cleopatra attend?,the Library of Alexandria,no formal educational institutions,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses
+person,What educational institution did Neil Armstrong attend?,Purdue University,Purdue University,Government Arts College in Kumbakonam,the Government College in Kumbakonam
+person,What educational institution did Malala Yousafzai attend?,the University of Oxford,Swat Valley School,the State Academy of Lu,the Lu Academy
+person,What educational institution did Confucius attend?,the State Academy of Lu,the Lu Academy,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses
+person,What educational institution did Mansa Musa attend?,the University of Al-Karaouine,the Sankore Madrasa,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Florence Nightingale attend?,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Srinivasa Ramanujan attend?,Government Arts College in Kumbakonam,the Government College in Kumbakonam,the State Academy of Lu,the Lu Academy
+person,What educational institution did Albert Einstein attend?,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic,the University of Oxford,Swat Valley School
+person,What educational institution did Marie Curie attend?,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne,Purdue University,Purdue University
+person,What educational institution did Leonardo da Vinci attend?,the University of Pavia,the workshop of Verrocchio,Purdue University,Purdue University
+person,What educational institution did Cleopatra attend?,the Library of Alexandria,no formal educational institutions,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Neil Armstrong attend?,Purdue University,Purdue University,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Malala Yousafzai attend?,the University of Oxford,Swat Valley School,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Confucius attend?,the State Academy of Lu,the Lu Academy,the University of Al-Karaouine,the Sankore Madrasa
+person,What educational institution did Mansa Musa attend?,the University of Al-Karaouine,the Sankore Madrasa,the University of Al-Karaouine,the Sankore Madrasa
+person,What educational institution did Florence Nightingale attend?,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses
+person,What educational institution did Srinivasa Ramanujan attend?,Government Arts College in Kumbakonam,the Government College in Kumbakonam,Government Arts College in Kumbakonam,the Government College in Kumbakonam
+person,What educational institution did Albert Einstein attend?,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic,the University of Oxford,Swat Valley School
+person,What educational institution did Marie Curie attend?,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Leonardo da Vinci attend?,the University of Pavia,the workshop of Verrocchio,Purdue University,Purdue University
+person,What educational institution did Cleopatra attend?,the Library of Alexandria,no formal educational institutions,Government Arts College in Kumbakonam,the Government College in Kumbakonam
+person,What educational institution did Neil Armstrong attend?,Purdue University,Purdue University,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Malala Yousafzai attend?,the University of Oxford,Swat Valley School,the University of Al-Karaouine,the Sankore Madrasa
+person,What educational institution did Confucius attend?,the State Academy of Lu,the Lu Academy,the State Academy of Lu,the Lu Academy
+person,What educational institution did Mansa Musa attend?,the University of Al-Karaouine,the Sankore Madrasa,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Florence Nightingale attend?,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses,the University of Oxford,Swat Valley School
+person,What educational institution did Srinivasa Ramanujan attend?,Government Arts College in Kumbakonam,the Government College in Kumbakonam,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Albert Einstein attend?,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic,the University of Oxford,Swat Valley School
+person,What educational institution did Marie Curie attend?,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Leonardo da Vinci attend?,the University of Pavia,the workshop of Verrocchio,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Cleopatra attend?,the Library of Alexandria,no formal educational institutions,the University of Al-Karaouine,the Sankore Madrasa
+person,What educational institution did Neil Armstrong attend?,Purdue University,Purdue University,the University of Oxford,Swat Valley School
+person,What educational institution did Malala Yousafzai attend?,the University of Oxford,Swat Valley School,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Confucius attend?,the State Academy of Lu,the Lu Academy,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Mansa Musa attend?,the University of Al-Karaouine,the Sankore Madrasa,the University of Oxford,Swat Valley School
+person,What educational institution did Florence Nightingale attend?,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses
+person,What educational institution did Srinivasa Ramanujan attend?,Government Arts College in Kumbakonam,the Government College in Kumbakonam,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Albert Einstein attend?,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Marie Curie attend?,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne,Government Arts College in Kumbakonam,the Government College in Kumbakonam
+person,What educational institution did Leonardo da Vinci attend?,the University of Pavia,the workshop of Verrocchio,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Cleopatra attend?,the Library of Alexandria,no formal educational institutions,the Library of Alexandria,no formal educational institutions
+person,What educational institution did Neil Armstrong attend?,Purdue University,Purdue University,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses
+person,What educational institution did Malala Yousafzai attend?,the University of Oxford,Swat Valley School,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Confucius attend?,the State Academy of Lu,the Lu Academy,the University of Al-Karaouine,the Sankore Madrasa
+person,What educational institution did Mansa Musa attend?,the University of Al-Karaouine,the Sankore Madrasa,the University of Pavia,the workshop of Verrocchio
+person,What educational institution did Florence Nightingale attend?,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Srinivasa Ramanujan attend?,Government Arts College in Kumbakonam,the Government College in Kumbakonam,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Albert Einstein attend?,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne
+person,What educational institution did Marie Curie attend?,the Flying University in Warsaw and the Sorbonne in Paris,the Sorbonne,the State Academy of Lu,the Lu Academy
+person,What educational institution did Leonardo da Vinci attend?,the University of Pavia,the workshop of Verrocchio,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses
+person,What educational institution did Cleopatra attend?,the Library of Alexandria,no formal educational institutions,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Neil Armstrong attend?,Purdue University,Purdue University,the Swiss Federal Polytechnic University,the Swiss Federal Polytechnic
+person,What educational institution did Malala Yousafzai attend?,the University of Oxford,Swat Valley School,Purdue University,Purdue University
+person,What educational institution did Confucius attend?,the State Academy of Lu,the Lu Academy,the University of Al-Karaouine,the Sankore Madrasa
+person,What educational institution did Mansa Musa attend?,the University of Al-Karaouine,the Sankore Madrasa,the University of Oxford,Swat Valley School
+person,What educational institution did Florence Nightingale attend?,the Institution for the Care and Instruction of Deaf and Dumb Children in,the Institute of Protestant Deaconesses,the State Academy of Lu,the Lu Academy
+person,What educational institution did Srinivasa Ramanujan attend?,Government Arts College in Kumbakonam,the Government College in Kumbakonam,the University of Pavia,the workshop of Verrocchio
+city,What is the time zone of Tokyo?,Japan Standard Time (JST) which is UTC+9,Japan Standard Time,Central European Time,Central European Time
+city,What is the time zone of Cairo?,Eastern European Time,Egypt Standard Time,Central European Time,Central European Time
+city,What is the time zone of New York?,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time
+city,What is the time zone of Paris?,Central European Time,Central European Time,Eastern European Time,Egypt Standard Time
+city,What is the time zone of Mumbai?,UTC+5:30,IST,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time
+city,What is the time zone of Jerusalem?,UTC+2,Israel Standard Time,UTC+3,Turkey Standard Time
+city,What is the time zone of Tenochtitlan?,UTC-6,unknown,UTC-6,unknown
+city,What is the time zone of Istanbul?,UTC+3,Turkey Standard Time,Eastern European Time,Egypt Standard Time
+city,What is the time zone of Shanghai?,China Standard Time (CST) which is UTC+8,China Standard Time,Central European Time,Central European Time
+city,What is the time zone of Baghdad?,UTC+3,Arabian Standard Time,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time
+city,What is the time zone of Tokyo?,Japan Standard Time (JST) which is UTC+9,Japan Standard Time,UTC+3,Arabian Standard Time
+city,What is the time zone of Cairo?,Eastern European Time,Egypt Standard Time,China Standard Time (CST) which is UTC+8,China Standard Time
+city,What is the time zone of New York?,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time,China Standard Time (CST) which is UTC+8,China Standard Time
+city,What is the time zone of Paris?,Central European Time,Central European Time,UTC+3,Arabian Standard Time
+city,What is the time zone of Mumbai?,UTC+5:30,IST,UTC+5:30,IST
+city,What is the time zone of Jerusalem?,UTC+2,Israel Standard Time,UTC+2,Israel Standard Time
+city,What is the time zone of Tenochtitlan?,UTC-6,unknown,UTC-6,unknown
+city,What is the time zone of Istanbul?,UTC+3,Turkey Standard Time,Central European Time,Central European Time
+city,What is the time zone of Shanghai?,China Standard Time (CST) which is UTC+8,China Standard Time,China Standard Time (CST) which is UTC+8,China Standard Time
+city,What is the time zone of Baghdad?,UTC+3,Arabian Standard Time,UTC+2,Israel Standard Time
+city,What is the time zone of Tokyo?,Japan Standard Time (JST) which is UTC+9,Japan Standard Time,UTC+2,Israel Standard Time
+city,What is the time zone of Cairo?,Eastern European Time,Egypt Standard Time,UTC+5:30,IST
+city,What is the time zone of New York?,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time,UTC+5:30,IST
+city,What is the time zone of Paris?,Central European Time,Central European Time,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time
+city,What is the time zone of Mumbai?,UTC+5:30,IST,China Standard Time (CST) which is UTC+8,China Standard Time
+city,What is the time zone of Jerusalem?,UTC+2,Israel Standard Time,Central European Time,Central European Time
+city,What is the time zone of Tenochtitlan?,UTC-6,unknown,UTC+5:30,IST
+city,What is the time zone of Istanbul?,UTC+3,Turkey Standard Time,China Standard Time (CST) which is UTC+8,China Standard Time
+city,What is the time zone of Shanghai?,China Standard Time (CST) which is UTC+8,China Standard Time,UTC+3,Turkey Standard Time
+city,What is the time zone of Baghdad?,UTC+3,Arabian Standard Time,Eastern European Time,Egypt Standard Time
+city,What is the time zone of Tokyo?,Japan Standard Time (JST) which is UTC+9,Japan Standard Time,UTC-6,unknown
+city,What is the time zone of Cairo?,Eastern European Time,Egypt Standard Time,Japan Standard Time (JST) which is UTC+9,Japan Standard Time
+city,What is the time zone of New York?,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time,Japan Standard Time (JST) which is UTC+9,Japan Standard Time
+city,What is the time zone of Paris?,Central European Time,Central European Time,UTC+3,Arabian Standard Time
+city,What is the time zone of Mumbai?,UTC+5:30,IST,UTC+5:30,IST
+city,What is the time zone of Jerusalem?,UTC+2,Israel Standard Time,UTC+5:30,IST
+city,What is the time zone of Tenochtitlan?,UTC-6,unknown,UTC+3,Arabian Standard Time
+city,What is the time zone of Istanbul?,UTC+3,Turkey Standard Time,Eastern European Time,Egypt Standard Time
+city,What is the time zone of Shanghai?,China Standard Time (CST) which is UTC+8,China Standard Time,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time
+city,What is the time zone of Baghdad?,UTC+3,Arabian Standard Time,China Standard Time (CST) which is UTC+8,China Standard Time
+city,What is the time zone of Tokyo?,Japan Standard Time (JST) which is UTC+9,Japan Standard Time,UTC-6,unknown
+city,What is the time zone of Cairo?,Eastern European Time,Egypt Standard Time,UTC+3,Arabian Standard Time
+city,What is the time zone of New York?,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time,UTC+3,Arabian Standard Time
+city,What is the time zone of Paris?,Central European Time,Central European Time,UTC-6,unknown
+city,What is the time zone of Mumbai?,UTC+5:30,IST,China Standard Time (CST) which is UTC+8,China Standard Time
+city,What is the time zone of Jerusalem?,UTC+2,Israel Standard Time,Eastern Standard Time (EST) or Eastern Daylight Time (EDT),Eastern Time
+city,What is the time zone of Tenochtitlan?,UTC-6,unknown,Eastern European Time,Egypt Standard Time
+city,What is the time zone of Istanbul?,UTC+3,Turkey Standard Time,UTC+3,Arabian Standard Time
+city,What is the time zone of Shanghai?,China Standard Time (CST) which is UTC+8,China Standard Time,UTC+2,Israel Standard Time
+city,What is the time zone of Baghdad?,UTC+3,Arabian Standard Time,UTC+2,Israel Standard Time
+principle,What is the primary application of Gravity?,in the field of Physics and Engineering,to keep things grounded,in the field of engineering and technology,understanding and predicting energy transformations
+principle,What is the primary application of Relativity?,in the field of physics and engineering,understanding gravity,in the development of high-speed transportation systems such as magnetic levitation trains,energy transmission
+principle,What is the primary application of Evolution?,in the field of medicine,understanding the diversity of life,to produce oxygen and glucose for the survival of living organisms,to produce energy
+principle,What is the primary application of Quantum Mechanics?,in the field of electronics and computing,understanding the behavior of matter and energy at the atomic and subatomic levels,astronomy and space exploration,understanding the solar system
+principle,What is the primary application of Thermodynamics?,in the field of engineering and technology,understanding and predicting energy transformations,in the field of medicine,understanding the diversity of life
+principle,What is the primary application of Photosynthesis?,to produce oxygen and glucose for the survival of living organisms,to produce energy,in the field of engineering and technology,understanding and predicting energy transformations
+principle,What is the primary application of Heliocentrism?,astronomy and space exploration,understanding the solar system,in the field of electrical engineering,power generation and distribution
+principle,What is the primary application of Plate Tectonics?,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes,in the field of physics and engineering,understanding gravity
+principle,What is the primary application of Superconductivity?,in the development of high-speed transportation systems such as magnetic levitation trains,energy transmission,in the field of electronics and computing,understanding the behavior of matter and energy at the atomic and subatomic levels
+principle,What is the primary application of Electromagnetism?,in the field of electrical engineering,power generation and distribution,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes
+principle,What is the primary application of Gravity?,in the field of Physics and Engineering,to keep things grounded,in the field of electronics and computing,understanding the behavior of matter and energy at the atomic and subatomic levels
+principle,What is the primary application of Relativity?,in the field of physics and engineering,understanding gravity,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes
+principle,What is the primary application of Evolution?,in the field of medicine,understanding the diversity of life,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes
+principle,What is the primary application of Quantum Mechanics?,in the field of electronics and computing,understanding the behavior of matter and energy at the atomic and subatomic levels,in the field of physics and engineering,understanding gravity
+principle,What is the primary application of Thermodynamics?,in the field of engineering and technology,understanding and predicting energy transformations,in the field of Physics and Engineering,to keep things grounded
+principle,What is the primary application of Photosynthesis?,to produce oxygen and glucose for the survival of living organisms,to produce energy,in the field of physics and engineering,understanding gravity
+principle,What is the primary application of Heliocentrism?,astronomy and space exploration,understanding the solar system,in the development of high-speed transportation systems such as magnetic levitation trains,energy transmission
+principle,What is the primary application of Plate Tectonics?,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes,in the field of electrical engineering,power generation and distribution
+principle,What is the primary application of Superconductivity?,in the development of high-speed transportation systems such as magnetic levitation trains,energy transmission,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes
+principle,What is the primary application of Electromagnetism?,in the field of electrical engineering,power generation and distribution,in the field of electronics and computing,understanding the behavior of matter and energy at the atomic and subatomic levels
+principle,What is the primary application of Gravity?,in the field of Physics and Engineering,to keep things grounded,in the field of engineering and technology,understanding and predicting energy transformations
+principle,What is the primary application of Relativity?,in the field of physics and engineering,understanding gravity,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes
+principle,What is the primary application of Evolution?,in the field of medicine,understanding the diversity of life,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes
+principle,What is the primary application of Quantum Mechanics?,in the field of electronics and computing,understanding the behavior of matter and energy at the atomic and subatomic levels,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes
+principle,What is the primary application of Thermodynamics?,in the field of engineering and technology,understanding and predicting energy transformations,in the field of engineering and technology,understanding and predicting energy transformations
+principle,What is the primary application of Photosynthesis?,to produce oxygen and glucose for the survival of living organisms,to produce energy,in the field of electronics and computing,understanding the behavior of matter and energy at the atomic and subatomic levels
+principle,What is the primary application of Heliocentrism?,astronomy and space exploration,understanding the solar system,in the field of electrical engineering,power generation and distribution
+principle,What is the primary application of Plate Tectonics?,to understand the Earth's surface processes and geological phenomena,understanding earthquakes and volcanoes,in the development of high-speed transportation systems such as magnetic levitation trains,energy transmission
+principle,What is the primary application of Superconductivity?,in the development of high-speed transportation systems such as magnetic levitation trains,energy transmission,to produce oxygen and glucose for the survival of living organisms,to produce energy
+principle,What is the primary application of Electromagnetism?,in the field of electrical engineering,power generation and distribution,in the field of Physics and Engineering,to keep things grounded
+element,When was Oxygen first isolated?,1774,1774,38 BC,ancient Egypt
+element,When was Gold first isolated?,38 BC,ancient Egypt,1766,1766
+element,When was Uranium first isolated?,1789,1789,1772,1772
+element,When was Carbon first isolated?,1789,1779,1766,1766
+element,When was Helium first isolated?,1868,1868,1789,1789
+element,When was Iron first isolated?,1791,1597,38 BC,ancient Egypt
+element,When was Silicon first isolated?,1824,1824,1766,1766
+element,When was Plutonium first isolated?,1940,1940,1824,1824
+element,When was Hydrogen first isolated?,1766,1766,38 BC,ancient Egypt
+element,When was Nitrogen first isolated?,1772,1772,1791,1597
+element,When was Oxygen first isolated?,1774,1774,1824,1824
+element,When was Gold first isolated?,38 BC,ancient Egypt,1868,1868
+element,When was Uranium first isolated?,1789,1789,1774,1774
+element,When was Carbon first isolated?,1789,1779,1791,1597
+element,When was Helium first isolated?,1868,1868,1868,1868
+element,When was Iron first isolated?,1791,1597,1868,1868
+element,When was Silicon first isolated?,1824,1824,1774,1774
+element,When was Plutonium first isolated?,1940,1940,1774,1774
+element,When was Hydrogen first isolated?,1766,1766,1791,1597
+element,When was Nitrogen first isolated?,1772,1772,1791,1597
+book,In what year was 1984 first published?,1949,1949,1951,1951
+book,In what year was The Great Gatsby first published?,1925,1925,1813,1813
+book,In what year was War and Peace first published?,1865,1869,1960,1960
+book,In what year was The Art of War first published?,6th century BC,5th century BC,1925,1925
+book,In what year was Don Quixote first published?,1605,1605,1813,1813
+book,In what year was To Kill a Mockingbird first published?,1960,1960,1865,1869
+book,In what year was One Hundred Years of Solitude first published?,1967,1967,1813,1813
+book,In what year was The Catcher in the Rye first published?,1951,1951,1925,1925
+book,In what year was Pride and Prejudice first published?,1813,1813,1951,1951
+book,In what year was The Alchemist first published?,1988,1988,1605,1605
+book,In what year was 1984 first published?,1949,1949,1865,1869
+book,In what year was The Great Gatsby first published?,1925,1925,1988,1988
+book,In what year was War and Peace first published?,1865,1869,6th century BC,5th century BC
+book,In what year was The Art of War first published?,6th century BC,5th century BC,1865,1869
+book,In what year was Don Quixote first published?,1605,1605,6th century BC,5th century BC
+book,In what year was To Kill a Mockingbird first published?,1960,1960,1925,1925
+book,In what year was One Hundred Years of Solitude first published?,1967,1967,1949,1949
+book,In what year was The Catcher in the Rye first published?,1951,1951,1865,1869
+book,In what year was Pride and Prejudice first published?,1813,1813,1813,1813
+book,In what year was The Alchemist first published?,1988,1988,1951,1951
+book,In what year was 1984 first published?,1949,1949,1605,1605
+book,In what year was The Great Gatsby first published?,1925,1925,1988,1988
+book,In what year was War and Peace first published?,1865,1869,1988,1988
+book,In what year was The Art of War first published?,6th century BC,5th century BC,1967,1967
+book,In what year was Don Quixote first published?,1605,1605,1967,1967
+book,In what year was To Kill a Mockingbird first published?,1960,1960,1960,1960
+book,In what year was One Hundred Years of Solitude first published?,1967,1967,1605,1605
+book,In what year was The Catcher in the Rye first published?,1951,1951,1813,1813
+book,In what year was Pride and Prejudice first published?,1813,1813,1813,1813
+book,In what year was The Alchemist first published?,1988,1988,1865,1869
+painting,Where is Starry Night primarily housed?,the Museum of Modern Art in New York City,the Museum of Modern Art,Oslo,the Munch Museum in Oslo
+painting,Where is Mona Lisa primarily housed?,the Louvre Museum in Paris France,the Louvre Museum,Oslo,the Munch Museum in Oslo
+painting,Where is The Last Supper primarily housed?,Milan Italy,Milan,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague
+painting,Where is Guernica primarily housed?,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is The Birth of Venus primarily housed?,the Uffizi Gallery in Florence Italy,the Uffizi Gallery,the Rijksmuseum in Amsterdam,the Rijksmuseum
+painting,Where is The Scream primarily housed?,Oslo,the Munch Museum in Oslo,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is Girl with a Pearl Earring primarily housed?,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague
+painting,Where is School of Athens primarily housed?,the Vatican Museums in Vatican City,the Vatican Museums,Oslo,the Munch Museum in Oslo
+painting,Where is The Night Watch primarily housed?,the Rijksmuseum in Amsterdam,the Rijksmuseum,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía
+painting,Where is American Gothic primarily housed?,the collection of the Art Institute of Chicago,the Art Institute of Chicago,the Museum of Modern Art in New York City,the Museum of Modern Art
+painting,Where is Starry Night primarily housed?,the Museum of Modern Art in New York City,the Museum of Modern Art,the Uffizi Gallery in Florence Italy,the Uffizi Gallery
+painting,Where is Mona Lisa primarily housed?,the Louvre Museum in Paris France,the Louvre Museum,Oslo,the Munch Museum in Oslo
+painting,Where is The Last Supper primarily housed?,Milan Italy,Milan,the collection of the Art Institute of Chicago,the Art Institute of Chicago
+painting,Where is Guernica primarily housed?,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague
+painting,Where is The Birth of Venus primarily housed?,the Uffizi Gallery in Florence Italy,the Uffizi Gallery,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía
+painting,Where is The Scream primarily housed?,Oslo,the Munch Museum in Oslo,the Rijksmuseum in Amsterdam,the Rijksmuseum
+painting,Where is Girl with a Pearl Earring primarily housed?,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague
+painting,Where is School of Athens primarily housed?,the Vatican Museums in Vatican City,the Vatican Museums,Oslo,the Munch Museum in Oslo
+painting,Where is The Night Watch primarily housed?,the Rijksmuseum in Amsterdam,the Rijksmuseum,Milan Italy,Milan
+painting,Where is American Gothic primarily housed?,the collection of the Art Institute of Chicago,the Art Institute of Chicago,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is Starry Night primarily housed?,the Museum of Modern Art in New York City,the Museum of Modern Art,Milan Italy,Milan
+painting,Where is Mona Lisa primarily housed?,the Louvre Museum in Paris France,the Louvre Museum,the Rijksmuseum in Amsterdam,the Rijksmuseum
+painting,Where is The Last Supper primarily housed?,Milan Italy,Milan,the Museum of Modern Art in New York City,the Museum of Modern Art
+painting,Where is Guernica primarily housed?,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía,the Uffizi Gallery in Florence Italy,the Uffizi Gallery
+painting,Where is The Birth of Venus primarily housed?,the Uffizi Gallery in Florence Italy,the Uffizi Gallery,the collection of the Art Institute of Chicago,the Art Institute of Chicago
+painting,Where is The Scream primarily housed?,Oslo,the Munch Museum in Oslo,the collection of the Art Institute of Chicago,the Art Institute of Chicago
+painting,Where is Girl with a Pearl Earring primarily housed?,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is School of Athens primarily housed?,the Vatican Museums in Vatican City,the Vatican Museums,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is The Night Watch primarily housed?,the Rijksmuseum in Amsterdam,the Rijksmuseum,the Museum of Modern Art in New York City,the Museum of Modern Art
+painting,Where is American Gothic primarily housed?,the collection of the Art Institute of Chicago,the Art Institute of Chicago,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague
+painting,Where is Starry Night primarily housed?,the Museum of Modern Art in New York City,the Museum of Modern Art,the Louvre Museum in Paris France,the Louvre Museum
+painting,Where is Mona Lisa primarily housed?,the Louvre Museum in Paris France,the Louvre Museum,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía
+painting,Where is The Last Supper primarily housed?,Milan Italy,Milan,Oslo,the Munch Museum in Oslo
+painting,Where is Guernica primarily housed?,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía,the Rijksmuseum in Amsterdam,the Rijksmuseum
+painting,Where is The Birth of Venus primarily housed?,the Uffizi Gallery in Florence Italy,the Uffizi Gallery,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is The Scream primarily housed?,Oslo,the Munch Museum in Oslo,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía
+painting,Where is Girl with a Pearl Earring primarily housed?,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague,the Uffizi Gallery in Florence Italy,the Uffizi Gallery
+painting,Where is School of Athens primarily housed?,the Vatican Museums in Vatican City,the Vatican Museums,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is The Night Watch primarily housed?,the Rijksmuseum in Amsterdam,the Rijksmuseum,Milan Italy,Milan
+painting,Where is American Gothic primarily housed?,the collection of the Art Institute of Chicago,the Art Institute of Chicago,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague
+painting,Where is Starry Night primarily housed?,the Museum of Modern Art in New York City,the Museum of Modern Art,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is Mona Lisa primarily housed?,the Louvre Museum in Paris France,the Louvre Museum,the Louvre Museum in Paris France,the Louvre Museum
+painting,Where is The Last Supper primarily housed?,Milan Italy,Milan,Milan Italy,Milan
+painting,Where is Guernica primarily housed?,"the Reina Sofia Museum in Madrid, Spain",the Museo Nacional Centro de Arte Reina Sofía,the Louvre Museum in Paris France,the Louvre Museum
+painting,Where is The Birth of Venus primarily housed?,the Uffizi Gallery in Florence Italy,the Uffizi Gallery,the Vatican Museums in Vatican City,the Vatican Museums
+painting,Where is The Scream primarily housed?,Oslo,the Munch Museum in Oslo,the Uffizi Gallery in Florence Italy,the Uffizi Gallery
+painting,Where is Girl with a Pearl Earring primarily housed?,the Mauritshuis in The Hague Netherlands,the Mauritshuis museum in The Hague,Oslo,the Munch Museum in Oslo
+painting,Where is School of Athens primarily housed?,the Vatican Museums in Vatican City,the Vatican Museums,Milan Italy,Milan
+painting,Where is The Night Watch primarily housed?,the Rijksmuseum in Amsterdam,the Rijksmuseum,Milan Italy,Milan
+painting,Where is American Gothic primarily housed?,the collection of the Art Institute of Chicago,the Art Institute of Chicago,Oslo,the Munch Museum in Oslo
+historical_event,What year did Signing of the Magna Carta happen?,1215,1215,1922,1927
+historical_event,What year did Battle of Hastings happen?,1066,1066,1922,1927
+historical_event,What year did Battle of Agincourt happen?,1415,1415,1868,1868
+historical_event,What year did The Great Fire of London happen?,1666,1666,1215,1215
+historical_event,What year did The Glorious Revolution happen?,1688,1688,2580 BC,2580-2560 BC
+historical_event,What year did Act of Union between England and Scotland happen?,1707,1707,1648,1648
+historical_event,What year did Battle of Waterloo happen?,1815,1815,1415,1415
+historical_event,What year did The UK Abolition of the Slave Trade Act happen?,1807,1807,1922,1927
+historical_event,What year did Queen Victoria's Coronation happen?,1838,1838,1522,1522
+historical_event,What year did The Founding of the British Broadcasting Corporation happen?,1922,1927,2022,2022
+historical_event,What year did The Dunkirk Evacuation happen?,1940,1940,1600,1600
+historical_event,What year did The Indian Independence Act happen?,1947,1947,1760,1760
+historical_event,What year did The Suez Crisis happen?,1956,1956,1920,1920
+historical_event,What year did Decimalisation in the UK happen?,1971,1971,1871,1861
+historical_event,What year did The Signing of the Good Friday Agreement happen?,1998,1998,1666,1666
+historical_event,What year did The London 7/7 Bombings happen?,2005,2005,2022,2022
+historical_event,What year did The Brexit Referendum happen?,2016,2016,1807,1807
+historical_event,What year did The Wedding of Prince Charles and Lady Diana happen?,1981,1981,1807,1807
+historical_event,What year did Queen Elizabeth II's Platinum Jubilee happen?,2022,2022,1415,1415
+historical_event,What year did Founding of Rome happen?,753 BC,753 BC,1688,1688
+historical_event,What year did Construction of the Great Pyramid of Giza happen?,2580 BC,2580-2560 BC,1588,1588
+historical_event,What year did First Crusade happen?,1095,1095,1688,1688
+historical_event,What year did Fall of Constantinople happen?,1453,1453,1947,1947
+historical_event,What year did Discovery of the Americas by Columbus happen?,1492,1492,1947,1947
+historical_event,What year did First Circumnavigation of the Earth happen?,1522,1522,1688,1688
+historical_event,What year did Fall of the Aztec Empire happen?,1521,1521,2005,2005
+historical_event,What year did Defeat of the Spanish Armada happen?,1588,1588,1940,1940
+historical_event,What year did Battle of Sekigahara happen?,1600,1600,1707,1707
+historical_event,What year did Treaty of Westphalia happen?,1648,1648,1215,1215
+historical_event,What year did Industrial Revolution happen?,1760,1760,2580 BC,2580-2560 BC
+historical_event,What year did French Revolution happen?,1789,1789,1453,1453
+historical_event,What year did Unification of Italy happen?,1871,1861,1956,1956
+historical_event,What year did Meiji Restoration happen?,1868,1868,1807,1807
+historical_event,What year did Battle of Adwa happen?,1896,1896,1095,1095
+historical_event,What year did Founding of the League of Nations happen?,1920,1920,1760,1760
+historical_event,What year did Indian Independence Act happen?,1947,1947,1688,1688
+historical_event,What year did Dissolution of the Soviet Union happen?,1991,1991,1956,1956

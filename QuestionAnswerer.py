@@ -7,7 +7,7 @@ import torch
 from torch import LongTensor, FloatTensor
 
 from Models import Model
-from typing import Optional
+from typing import Optional, Union
 
 class QuestionAnswerer:
     device: str
@@ -17,12 +17,15 @@ class QuestionAnswerer:
 
     def __init__(
         self,
-        model: Model,
+        model: Union[str, Model],
         device: str = 'cpu',
         max_length: Optional[int] = None,
     ):
         self.device = device
         self.max_length = max_length
+
+        if type(model) == str:
+            model = Model(model, device = device)
 
         self.llm = model.to(device)
 
@@ -82,9 +85,9 @@ class QuestionAnswerer:
     @torch.no_grad()
     def query(self, questions: list[str]):
         sequences, _ = self.query_outputs(questions)
-
-        return self.llm.tokenizer.batch_decode(
+        answers = self.llm.tokenizer.batch_decode(
             sequences,
             skip_special_tokens = True,
             clean_up_tokenization_spaces = True,
         )
+        return [a.removeprefix(q).strip().strip('.') for q, a in zip(questions, answers)]
