@@ -81,7 +81,7 @@ def main():
     questions = questions[:args.lim_questions]
 
     flips = []
-    for cat, group in itertools.groupby(enumerate(questions), lambda x: x[1].category):
+    for cat, group in itertools.groupby(enumerate(questions), lambda x: x[1].question):
         nums = [x[0] for x in group]
         flips.extend(
             random.choice(
@@ -90,6 +90,8 @@ def main():
             )
             for x in nums
         )
+
+    logging.info(flips)
 
     logging.info(f'Answering {len(questions)} questions')
     parametric = {}
