@@ -1,0 +1,82 @@
+Albert Einstein,person
+Marie Curie,person
+Leonardo da Vinci,person
+Cleopatra,person
+Neil Armstrong,person
+Malala Yousafzai,person
+Confucius,person
+Mansa Musa,person
+Florence Nightingale,person
+Srinivasa Ramanujan,person
+Tokyo,city
+Cairo,city
+New York,city
+Paris,city
+Mumbai,city
+Jerusalem,city
+Tenochtitlan,city
+Istanbul,city
+Shanghai,city
+Baghdad,city
+Gravity,principle
+Relativity,principle
+Evolution,principle
+Quantum Mechanics,principle
+Thermodynamics,principle
+Photosynthesis,principle
+Heliocentrism,principle
+Plate Tectonics,principle
+Superconductivity,principle
+Electromagnetism,principle
+Oxygen,element
+Gold,element
+Uranium,element
+Carbon,element
+Helium,element
+Iron,element
+Silicon,element
+Plutonium,element
+Hydrogen,element
+Nitrogen,element
+1984,book
+The Great Gatsby,book
+War and Peace,book
+The Art of War,book
+Don Quixote,book
+To Kill a Mockingbird,book
+One Hundred Years of Solitude,book
+The Catcher in the Rye,book
+Pride and Prejudice,book
+The Alchemist,book
+Starry Night,painting
+Mona Lisa,painting
+The Last Supper,painting
+Guernica,painting
+The Birth of Venus,painting
+The Scream,painting
+Girl with a Pearl Earring,painting
+School of Athens,painting
+The Night Watch,painting
+American Gothic,painting
+The Fall of Constantinople,historical_event
+World War II,historical_event
+Signing of the Magna Carta,historical_event
+Fall of Constantinople,historical_event
+Moon Landing,historical_event
+French Revolution,historical_event
+Declaration of Independence (USA),historical_event
+First Flight by the Wright Brothers,historical_event
+Fall of the Berlin Wall,historical_event
+Treaty of Versailles,historical_event
+Stock Market Crash of 1929,historical_event
+Battle of Waterloo,historical_event
+Discovery of Insulin,historical_event
+Invention of the Telephone,historical_event
+End of World War II,historical_event
+Chernobyl Disaster,historical_event
+Assassination of Archduke Franz Ferdinand,historical_event
+First Use of Atomic Bomb,historical_event
+Cuban Missile Crisis,historical_event
+September 11 Attacks,historical_event
+Brexit Referendum,historical_event
+Founding of Rome,historical_event
