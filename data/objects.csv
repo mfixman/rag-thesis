@@ -1,3 +1,4 @@
+object,category
 Albert Einstein,person
 Marie Curie,person
 Leonardo da Vinci,person
@@ -58,25 +59,22 @@ Girl with a Pearl Earring,painting
 School of Athens,painting
 The Night Watch,painting
 American Gothic,painting
-The Fall of Constantinople,historical_event
-World War II,historical_event
 Signing of the Magna Carta,historical_event
-Fall of Constantinople,historical_event
-Moon Landing,historical_event
-French Revolution,historical_event
-Declaration of Independence (USA),historical_event
-First Flight by the Wright Brothers,historical_event
-Fall of the Berlin Wall,historical_event
-Treaty of Versailles,historical_event
-Stock Market Crash of 1929,historical_event
+Battle of Hastings,historical_event
+Battle of Agincourt,historical_event
+The Great Fire of London,historical_event
+The Glorious Revolution,historical_event
+Act of Union between England and Scotland,historical_event
 Battle of Waterloo,historical_event
-Discovery of Insulin,historical_event
-Invention of the Telephone,historical_event
-End of World War II,historical_event
-Chernobyl Disaster,historical_event
-Assassination of Archduke Franz Ferdinand,historical_event
-First Use of Atomic Bomb,historical_event
-Cuban Missile Crisis,historical_event
-September 11 Attacks,historical_event
-Brexit Referendum,historical_event
-Founding of Rome,historical_event
+The UK Abolition of the Slave Trade Act,historical_event
+Queen Victoria's Coronation,historical_event
+The Founding of the British Broadcasting Corporation,historical_event
+The Dunkirk Evacuation,historical_event
+The Indian Independence Act,historical_event
+The Suez Crisis,historical_event
+Decimalisation in the UK,historical_event
+The Signing of the Good Friday Agreement,historical_event
+The London 7/7 Bombings,historical_event
+The Brexit Referendum,historical_event
+The Wedding of Prince Charles and Lady Diana,historical_event
+Queen Elizabeth II's Platinum Jubilee,historical_event
