@@ -4,6 +4,7 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 import itertools
 import logging
 import torch
+from torch import LongTensor, FloatTensor
 
 from Models import Model
 from typing import Optional
@@ -11,8 +12,6 @@ from typing import Optional
 class QuestionAnswerer:
     device: str
     max_length: Optional[int]
-    short: bool
-    return_rest: bool
 
     llm: Model
 
@@ -21,22 +20,18 @@ class QuestionAnswerer:
         model: Model,
         device: str = 'cpu',
         max_length: Optional[int] = None,
-        short: bool = True,
-        return_rest: bool = True
     ):
         self.device = device
         self.max_length = max_length
-        self.short = short
-        self.return_rest = return_rest
 
         self.llm = model.to(device)
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
-        answer_list = self.query(list(question_dict.values()))
+        answer_list = self.query_logits(list(question_dict.values()))
         return dict(zip(question_dict.keys(), answer_list))
 
     @torch.no_grad()
-    def query(self, questions: list[str]) -> list[tuple[str, float]]:
+    def query_outputs(self, questions: list[str]) -> tuple[LongTensor, FloatTensor]:
         tokens = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
@@ -60,7 +55,13 @@ class QuestionAnswerer:
             bos_token_id = self.llm.tokenizer.bos_token_id,
         )
 
-        generated = outputs.sequences[:, tokens['input_ids'].shape[1]:]
+        return outputs.sequences, outputs.logits
+
+    @torch.no_grad()
+    def query_logits(self, questions: list[str]) -> list[tuple[str, float]]:
+        sequences, logits = self.query_outputs(questions)
+
+        generated = sequences[:, tokens['input_ids'].shape[1]:]
         bad_tokens = torch.tensor(self.llm.tokenizer.convert_tokens_to_ids(['.'] + list(self.llm.tokenizer.special_tokens_map.values()))).to(self.device)
         invalid_mask = torch.isin(generated, bad_tokens)
 
@@ -72,8 +73,18 @@ class QuestionAnswerer:
             for x in generated
         ]
 
-        logits = torch.stack(outputs.logits, dim = 1).softmax(dim = 2)
+        logits = torch.stack(logits, dim = 1).softmax(dim = 2)
         logits[invalid_mask] = 1
         logit_prod = logits.max(dim = 2)[0].prod(dim = 1).cpu().numpy()
 
         return list(zip(answers, logit_prod))
+
+    @torch.no_grad()
+    def query(self, questions: list[str]):
+        sequences, _ = self.query_outputs(questions)
+
+        return self.llm.tokenizer.batch_decode(
+            sequences,
+            skip_special_tokens = True,
+            clean_up_tokenization_spaces = True,
+        )

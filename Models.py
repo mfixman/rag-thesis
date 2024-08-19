@@ -25,25 +25,29 @@ class Model(nn.Module):
     model_name: str
     tokenizer: AutoTokenizer
     model: AutoModelForCausalLM
+    device: str
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, device: str = 'cpu'):
         super().__init__()
         self.name = name
         self.model_name = Model_dict[name]
+        self.device = device
 
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.model_name,
+            pad_token = '<|reserved_special_token_0|>',
+            clean_up_tokenization_spaces = True,
+            padding_side = 'left',
+        )
 
-        # I use ':' as a token for the following reasons.
-        #   a) Llama does not have a padding token.
-        #   b) Using <EOS>, as suggested, makes Llama tend to include a newline '\n' as the next character and produce a longer answer. This makes later comparisons harder.
-        #   c) The last text of the default prompt is ':'; this makes the character seem invisible to Llama.
-        if self.tokenizer.pad_token_id is None:
-            self.tokenizer.pad_token = ':'
-            self.tokenizer.pad_token_id = self.tokenizer.convert_tokens_to_ids(':')
-            # self.tokenizer.pad_token = self.tokenizer.eos_token 
-            # self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.model = AutoModelForCausalLM.from_pretrained(
+            self.model_name,
+            device_map = self.device,
+            pad_token_id = self.tokenizer.pad_token_id,
+            bos_token_id = self.tokenizer.bos_token_id,
+            eos_token_id = self.tokenizer.eos_token_id,
+        )
 
-        self.model = self.getModel(self.model_name)
         self.model.eval()
 
     @classmethod
@@ -57,12 +61,12 @@ class Model(nn.Module):
 
         return Model(name)
 
-    def getModel(self, model_name: str, device: str = 'cpu') -> AutoModelForCausalLM:
+    def getModel(self, model_name: str) -> AutoModelForCausalLM:
         logging.info(f'Getting {model_name}')
         try:
             return AutoModelForCausalLM.from_pretrained(
                 model_name,
-                device_map = device,
+                device_map = self.device,
             )
         except OSError:
             pass
@@ -74,6 +78,7 @@ class Model(nn.Module):
                     model_name,
                     force_download = True,
                     resume_download = False,
+                    device_map = self.device,
                 )
             except OSError:
                 pass
