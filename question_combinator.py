@@ -31,7 +31,7 @@ def parse_args():
     args = parser.parse_args()
 
     args.base_questions = [x.strip() for x in args.base_questions_file if any(not y.isspace() for y in x)]
-    args.things = csv.DictReader(args.things_file)
+    args.things = [{k: v for k, v in p.items()} for p in csv.DictReader(args.things_file)]
 
     del args.base_questions_file
     del args.things_file
@@ -74,11 +74,13 @@ def main():
     logging.info('Getting questions')
     questions = []
     cat_positions = defaultdict(lambda: set())
+    p = 0
     for bq in args.base_questions:
         if len(questions) == args.lim_questions:
             break
 
         for thing in args.things:
+            p += 1
             obj = Object.orNothing(thing = thing['thing'], category = thing['category'], question = bq)
             if obj is None:
                 continue
@@ -95,7 +97,6 @@ def main():
             flips[v] = random.choice(list(values - {v}))
 
     assert all(x is not None for x in flips)
-    logging.info(flips)
 
     logging.info(f'Answering {len(questions)} questions')
     parametric = {}
