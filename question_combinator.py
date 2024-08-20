@@ -8,6 +8,8 @@ import random
 import ipdb
 import itertools
 
+import wandb
+
 from Models import *
 from QuestionAnswerer import *
 from Utils import *
@@ -46,11 +48,17 @@ def main():
     )
     args = parse_args()
 
+    # wandb.init(
+    #     entity = 'mfixman-rag-thesis',
+    #     project = 'question-combinator',
+    #     settings = wandb.Settings(system_sample_seconds = 5),
+    # )
+
     logging.info('Getting questions')
     questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
     flips = find_flips(cat_positions, len(questions))
 
-    logging.info(f'Answering {len(questions)} questions')
+    logging.info(f'About to answer {len(questions) * len(args.models) * (1 + args.counterfactuals)} questions in total.')
     parametric = {}
     counterfactuals = {}
     for model in args.models:
@@ -58,7 +66,7 @@ def main():
         qa = QuestionAnswerer(model, device = args.device, max_length = 15)
         parametric[model] = qa.query([q.format(prompt = prompt) for q in questions])
 
-        if args.counterfacuals:
+        if args.counterfactuals:
             cf = [parametric[model][x] for x in flips]
 
             assert len(questions) == len(cf)
@@ -74,4 +82,5 @@ def main():
     printParametricCSV(questions, parametric, counterfactuals)
 
 if __name__ == '__main__':
-    main()
+    with ipdb.launch_ipdb_on_exception():
+        main()

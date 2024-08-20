@@ -76,7 +76,7 @@ class Object:
             formatted = f'{prompt} {formatted}'
 
         if context is not None:
-            formatted = f'Context: [{context}]. {formatted}'
+            formatted = f'Context: [{later.strip()} {context}]. {formatted}'
 
         return formatted.strip()
 
@@ -109,7 +109,7 @@ def find_flips(cat_positions: dict[str, set[int]], total: int) -> list[int]:
 def printParametricCSV(questions: list[Object], parametric: dict[str, str], counterfactuals: dict[str, str] = {}):
     fieldnames = ['Category', 'Question', 'Prefix'] + list(parametric.keys())
     if counterfactuals:
-        fieldnames += list(itertools.chain.from_iterable([[c, 'cf_context-' + c] for c in counterfactuals.keys()]))
+        fieldnames += counterfactuals.keys()
 
     writer = csv.DictWriter(
         sys.stdout,
