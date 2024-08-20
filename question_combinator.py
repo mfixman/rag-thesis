@@ -65,7 +65,7 @@ def main():
     for model in args.models:
         prompt = 'Answer the following question in a few words and with no formatting.'
         qa = QuestionAnswerer(model, device = args.device, max_length = 15)
-        parametric[model] = qa.query([q.format(prompt = prompt) for q in questions])
+        parametric[model], _ = qa.query([q.format(prompt = prompt) for q in questions])
 
         if args.counterfactuals:
             context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
@@ -78,7 +78,7 @@ def main():
             ]
 
             counterfactuals[f'counterfactual-{model}'] = cf
-            counterfactuals[f'nonparametric-{model}'] = qa.query(queries)
+            counterfactuals[f'nonparametric-{model}'], _ = qa.query(queries)
 
     logging.info('Writing CSV')
     printParametricCSV(questions, parametric, counterfactuals)

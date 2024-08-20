@@ -39,7 +39,7 @@ class QuestionAnswerer:
         return dict(zip(question_dict.keys(), answer_list))
 
     @torch.no_grad()
-    def query_outputs(self, questions: list[str]) -> tuple[list[str], list[float]]:
+    def query(self, questions: list[str]) -> tuple[list[str], list[float]]:
         tokens = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
@@ -88,31 +88,5 @@ class QuestionAnswerer:
             sequences.extend(seqs)
             logits.extend(logs.to('cpu').tolist())
 
-        return sequences, logits
-
-    @torch.no_grad()
-    def query_logits(self, questions: list[str]) -> list[tuple[str, float]]:
-        sequences, logits = self.query_outputs(questions)
-
-        generated = sequences[:, tokens['input_ids'].shape[1]:]
-        bad_tokens = torch.tensor(self.llm.tokenizer.convert_tokens_to_ids(['.'] + list(self.llm.tokenizer.special_tokens_map.values()))).to(self.device)
-        invalid_mask = torch.isin(generated, bad_tokens)
-
-        answers = [
-            self.llm.tokenizer.decode(
-                x,
-                skip_special_tokens = True,
-            ).strip('.\n ' + self.llm.tokenizer.pad_token)
-            for x in generated
-        ]
-
-        logits = torch.stack(logits, dim = 1).softmax(dim = 2)
-        logits[invalid_mask] = 1
-        logit_prod = logits.max(dim = 2)[0].prod(dim = 1).cpu().numpy()
-
-        return list(zip(answers, logit_prod))
-
-    @torch.no_grad()
-    def query(self, questions: list[str]):
-        answers, _ = self.query_outputs(questions)
-        return [a.removeprefix(q).strip().strip('.') for q, a in zip(questions, answers)]
+        answers = [a.removeprefix(q).strip().strip('.') for q, a in zip(questions, sequences)]
+        return answers, logits
