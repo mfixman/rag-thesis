@@ -57,10 +57,21 @@ def main():
         prompt = 'Answer the following question in a few words and with no formatting.'
         qa = QuestionAnswerer(model, device = args.device, max_length = 15)
         parametric[model] = qa.query([q.format(prompt = prompt) for q in questions])
-        counterfactuals[f'counterfactual-{model}'] = [parametric[model][x] for x in flips]
+
+        if args.counterfacuals:
+            cf = [parametric[model][x] for x in flips]
+
+            assert len(questions) == len(cf)
+            queries = [
+                q.format(prompt = prompt, context = context)
+                for q, context in zip(questions, cf)
+            ]
+
+            counterfactuals[f'counterfactual-{model}'] = cf
+            counterfactuals[f'nonparametric-{model}'] = qa.query(queries)
 
     logging.info('Writing CSV')
-    printParametricCSV(questions, parametric, None if not args.counterfactuals else counterfactuals)
+    printParametricCSV(questions, parametric, counterfactuals)
 
 if __name__ == '__main__':
     main()
