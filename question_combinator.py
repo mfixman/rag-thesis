@@ -51,15 +51,13 @@ class Object:
 
         return Object(thing, category, question)
 
-    def format(self, prompt: Optional[str] = None, short: bool = False) -> str:
+    def format(self, prompt: Optional[str] = None, question: bool = True, prefix: bool = True) -> str:
         question = self.question.format_map({self.category: self.thing})
         if prompt is not None:
             question = ' '.join([prompt, question])
 
-        if short:
-            question = ''.join(question.partition('?')[0:2])
-
-        return question
+        parts = question.partition('?')[0 if question else 2 : 2 if prefix else 3]
+        return ''.join(parts).strip()
 
 def main():
     random.seed(0)
@@ -109,7 +107,7 @@ def main():
 
     logging.info('Writing CSV')
 
-    fieldnames = ['Category', 'Question'] + list(parametric.keys())
+    fieldnames = ['Category', 'Question', 'Prefix'] + list(parametric.keys())
     if args.counterfactuals:
         fieldnames += list(counterfactual.keys())
 
@@ -124,7 +122,7 @@ def main():
     for question, *answers in zip(questions, *parametric.values(), *counterfactual.values()):
         param = dict(zip(parametric.keys(), answers))
         counter = dict(zip(counterfactual.keys(), answers[len(parametric):]))
-        writer.writerow({'Category': question.category, 'Question': question.format(short = True)} | param | counter)
+        writer.writerow({'Category': question.category, 'Question': question.format(prefix = False), 'Prefix': question.format(question = False)} | param | counter)
 
 if __name__ == '__main__':
     main()
