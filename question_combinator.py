@@ -2,6 +2,7 @@ import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 from argparse import ArgumentParser, BooleanOptionalAction, RawDescriptionHelpFormatter
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional
 import csv
@@ -25,35 +26,33 @@ def parse_args():
     parser.add_argument('--counterfactuals', action = 'store_true', help = 'Whether to include counterfactuals in final CSV')
 
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
-    parser.add_argument('objects_file', type = open, help = 'File with objects to combine')
+    parser.add_argument('things_file', type = open, help = 'File with things to combine')
 
     args = parser.parse_args()
 
     args.base_questions = [x.strip() for x in args.base_questions_file if any(not y.isspace() for y in x)]
-    args.objects = [Object(**x) for x in csv.DictReader(args.objects_file)]
+    args.things = csv.DictReader(args.things_file)
 
     del args.base_questions_file
-    del args.objects_file
+    del args.things_file
 
     return args
 
 @dataclass
 class Object:
-    object: str
+    thing: str
     category: str
-    question: Optional[str] = None
+    question: str
 
-    def valid(self, question: str) -> bool:
-        return f'{{{self.category}}}' in question
+    @staticmethod
+    def orNothing(thing: str, category: str, question: str) -> Optional['Object']:
+        if not f'{{{category}}}' in question:
+            return None
+
+        return Object(thing, category, question)
 
     def format(self, prompt: Optional[str] = None, short: bool = False) -> str:
-        if self.question is None:
-            raise ValueError('Question not set')
-
-        if not self.valid(self.question):
-            raise ValueError(f'Invalid question {question} for category {self.category}')
-        
-        question = self.question.format_map({self.category: self.object})
+        question = self.question.format_map({self.category: self.thing})
         if prompt is not None:
             question = ' '.join([prompt, question])
 
@@ -63,6 +62,7 @@ class Object:
         return question
 
 def main():
+    random.seed(0)
     logging.getLogger('transformers').setLevel(logging.ERROR)
     logging.basicConfig(
         format='[%(asctime)s] %(message)s',
@@ -73,24 +73,28 @@ def main():
 
     logging.info('Getting questions')
     questions = []
+    cat_positions = defaultdict(lambda: set())
     for bq in args.base_questions:
-        for obj in args.objects:
-            if obj.valid(bq):
-                questions.append(Object(question = bq, object = obj.object, category = obj.category))
+        if len(questions) == args.lim_questions:
+            break
 
-    questions = questions[:args.lim_questions]
+        for thing in args.things:
+            obj = Object.orNothing(thing = thing['thing'], category = thing['category'], question = bq)
+            if obj is None:
+                continue
 
-    flips = []
-    for cat, group in itertools.groupby(enumerate(questions), lambda x: x[1].question):
-        nums = [x[0] for x in group]
-        flips.extend(
-            random.choice(
-                list(range(min(nums), x)) + 
-                list(range(x, 1 + max(nums)))
-            )
-            for x in nums
-        )
+            questions.append(obj)
+            cat_positions[obj.category].add(len(questions) - 1)
 
+            if len(questions) == args.lim_questions:
+                break
+
+    flips = [None for _ in questions]
+    for cat, values in cat_positions.items():
+        for v in values:
+            flips[v] = random.choice(list(values - {v}))
+
+    assert all(x is not None for x in flips)
     logging.info(flips)
 
     logging.info(f'Answering {len(questions)} questions')
