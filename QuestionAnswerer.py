@@ -4,6 +4,8 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 import itertools
 import logging
 import torch
+import typing
+
 from torch import LongTensor, FloatTensor
 
 from Models import Model
@@ -27,6 +29,7 @@ class QuestionAnswerer:
         if type(model) == str:
             model = Model(model, device = device)
 
+        model = typing.cast(Model, model)
         self.llm = model.to(device)
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
