@@ -24,6 +24,7 @@ def parse_args():
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu', help = 'Inference device')
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
     parser.add_argument('--counterfactuals', action = 'store_true', help = 'Whether to include counterfactuals in final CSV')
+    parser.add_argument('--logits', action = 'store_true', help = 'Whether to add data about logits.')
 
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
     parser.add_argument('things_file', type = open, help = 'File with things to combine')
@@ -67,11 +68,12 @@ def main():
         parametric[model] = qa.query([q.format(prompt = prompt) for q in questions])
 
         if args.counterfactuals:
+            context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
             cf = [parametric[model][x] for x in flips]
 
             assert len(questions) == len(cf)
             queries = [
-                q.format(prompt = prompt, context = context)
+                q.format(prompt = context_prompt, context = context)
                 for q, context in zip(questions, cf)
             ]
 
