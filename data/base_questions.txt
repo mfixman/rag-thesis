@@ -19,7 +19,7 @@ What is the primary application of {principle}? The primary application of {prin
 What's the chemical formula for {element}? The chemical formula for {element} is
 When was {element} first isolated? {element} was first isolated in
 
-What genre does {book} belong to?
+What genre does {book} belong to? The genre of {book} is
 Who's the author of {book}? {book} was written by
 In what year was {book} first published? {book} was first published in
 
