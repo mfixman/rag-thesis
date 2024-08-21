@@ -128,6 +128,11 @@ def printParametricCSV(questions: list[Object], answer: dict[str, str]):
         param = dict(zip(answer.keys(), answers))
         writer.writerow({'Category': question.category, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)
 
+def streq(a: str, b: str) -> bool:
+    a = a.lower().replace('the', '').replace(',', '').strip()
+    b = b.lower().replace('the', '').replace(',', '').strip()
+    return a[:len(b)] == b[:len(a)]
+
 def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[int], *, use_counterfactuals: bool = False):
     prompt = 'Answer the following question in a few words and with no formatting.'
 
@@ -154,8 +159,8 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
         # ipdb.set_trace()
 
         comparison = [
-            'Parameric' if a == p else
-            'Counterfactual' if a == c else
+            'Parameric' if streq(a, p) else
+            'Counterfactual' if streq(a, c) else
             'Other'
             for p, c, a in zip(parametric, counterfactual, ctx_answer)
         ]
