@@ -49,12 +49,6 @@ def main():
     )
     args = parse_args()
 
-    # wandb.init(
-    #     entity = 'mfixman-rag-thesis',
-    #     project = 'question-combinator',
-    #     settings = wandb.Settings(system_sample_seconds = 5),
-    # )
-
     logging.info('Getting questions')
     questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
     flips = find_flips(cat_positions, len(questions))

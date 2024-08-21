@@ -86,7 +86,7 @@ class QuestionAnswerer:
             )
 
             sequences.extend(seqs)
-            logits.extend(logs.to('cpu').tolist())
+            logits.extend(logs.cpu().tolist())
 
         answers = [a.removeprefix(q).strip().strip('.') for q, a in zip(questions, sequences)]
         return answers, logits
