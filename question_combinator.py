@@ -54,28 +54,16 @@ def main():
     flips = find_flips(cat_positions, len(questions))
 
     logging.info(f'About to answer {len(questions) * len(args.models) * (1 + args.counterfactuals)} questions in total.')
-    parametric = {}
-    counterfactuals = {}
+    answers = {}
     for model in args.models:
-        prompt = 'Answer the following question in a few words and with no formatting.'
         qa = QuestionAnswerer(model, device = args.device, max_length = 15)
-        parametric[model], _ = qa.query([q.format(prompt = prompt) for q in questions])
-
-        if args.counterfactuals:
-            context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
-            cf = [parametric[model][x] for x in flips]
-
-            assert len(questions) == len(cf)
-            queries = [
-                q.format(prompt = context_prompt, context = context)
-                for q, context in zip(questions, cf)
-            ]
-
-            counterfactuals[f'counterfactual-{model}'] = cf
-            counterfactuals[f'nonparametric-{model}'], _ = qa.query(queries)
+        answers |= {
+            f'{k}-{model}': v
+            for k, v in answerQueries(qa, questions, flips, use_counterfactuals = args.counterfactuals).items()
+        }
 
     logging.info('Writing CSV')
-    printParametricCSV(questions, parametric, counterfactuals)
+    printParametricCSV(questions, answers)
 
 if __name__ == '__main__':
     with ipdb.launch_ipdb_on_exception():

@@ -35,8 +35,8 @@ class QuestionAnswerer:
         self.llm = model.to(device)
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
-        answer_list = self.query_logits(list(question_dict.values()))
-        return dict(zip(question_dict.keys(), answer_list))
+        answers, logits = self.query(list(question_dict.values()))
+        return dict(zip(question_dict.keys(), zip(answers, logits)))
 
     @torch.no_grad()
     def query(self, questions: list[str]) -> tuple[list[str], list[float]]:

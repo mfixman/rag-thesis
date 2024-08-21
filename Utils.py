@@ -11,6 +11,8 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional
 
+from QuestionAnswerer import QuestionAnswerer
+
 def prepareQuestions(rags: list[RAG], prompt: str, questions: list[str]) -> dict[tuple[str, str], str]:
     enhanced_questions: dict[tuple[str, str], str] = {}
     for q in questions:
@@ -106,10 +108,8 @@ def find_flips(cat_positions: dict[str, set[int]], total: int) -> list[int]:
     assert all(x is not None for x in flips)
     return typing.cast(list[int], flips)
 
-def printParametricCSV(questions: list[Object], parametric: dict[str, str], counterfactuals: dict[str, str] = {}):
-    fieldnames = ['Category', 'Question', 'Prefix'] + list(parametric.keys())
-    if counterfactuals:
-        fieldnames += counterfactuals.keys()
+def printParametricCSV(questions: list[Object], answer: dict[str, str]):
+    fieldnames = ['Category', 'Question', 'Prefix'] + list(answer.keys())
 
     writer = csv.DictWriter(
         sys.stdout,
@@ -120,9 +120,31 @@ def printParametricCSV(questions: list[Object], parametric: dict[str, str], coun
     )
     writer.writeheader()
 
-    for question, *answers in itertools.zip_longest(questions, *parametric.values(), *counterfactuals.values()):
+    for question, *answers in itertools.zip_longest(questions, *answer.values()):
         question = typing.cast(Object, question)
 
-        param = dict(zip(parametric.keys(), answers))
-        counter = dict(zip(counterfactuals.keys(), answers[len(parametric):]))
-        writer.writerow({'Category': question.category, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param | counter)
+        param = dict(zip(answer.keys(), answers))
+        writer.writerow({'Category': question.category, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)
+
+def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[int], *, use_counterfactuals: bool = False):
+    prompt = 'Answer the following question in a few words and with no formatting.'
+
+    parametric, _ = qa.query([q.format(prompt = prompt) for q in questions])
+    if use_counterfactuals:
+        context_prompt = 'Answers the following question using the previous context in a few words and with no formatting.'
+        cf = [parametric[x] for x in flips]
+
+        assert len(questions) == len(cf)
+        queries = [
+            q.format(prompt = context_prompt, context = context)
+            for q, context in zip(questions, cf)
+        ]
+
+        counterfactual = cf
+        nonparametric, _ = qa.query(queries)
+
+    return dict(
+        parametric = parametric,
+        counterfactual = counterfactual,
+        nonparametric = nonparametric,
+    )
