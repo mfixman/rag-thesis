@@ -13,6 +13,8 @@ from typing import Optional
 
 from QuestionAnswerer import QuestionAnswerer
 
+import ipdb
+
 def prepareQuestions(rags: list[RAG], prompt: str, questions: list[str]) -> dict[tuple[str, str], str]:
     enhanced_questions: dict[tuple[str, str], str] = {}
     for q in questions:
@@ -92,7 +94,7 @@ def combine_questions(base_questions: list[str], things: list[dict[str, str]], l
                 continue
 
             questions.append(obj)
-            cat_positions[obj.category].add(len(questions) - 1)
+            cat_positions[obj.question].add(len(questions) - 1)
 
             if len(questions) == lim_questions:
                 return questions, cat_positions
@@ -131,7 +133,7 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
 
     parametric, _ = qa.query([q.format(prompt = prompt) for q in questions])
     if use_counterfactuals:
-        context_prompt = 'Answers the following question using the previous context in a few words and with no formatting.'
+        context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
         cf = [parametric[x] for x in flips]
 
         assert len(questions) == len(cf)
@@ -141,10 +143,26 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
         ]
 
         counterfactual = cf
-        nonparametric, _ = qa.query(queries)
+        ctx_answer, _ = qa.query(queries)
+
+        # comparison_prompt = f'Write the string "This answer is Parametric." if Answer = Parametric; write the string "This answer is Counterfactual." if Answer = Counterfactual; write the string "This answer is Other." otherwise. This answer is'
+        # comparison_queries = [
+        #     f'Parametric: [{param}], Counterfactual: [{counter}], Answer: [{answer}]. ' + comparison_prompt
+        #     for param, counter, answer in zip(parametric, counterfactual, ctx_answer)
+        # ]
+        # comparisons, logits = qa.query(comparison_queries)
+        # ipdb.set_trace()
+
+        comparison = [
+            'Parameric' if a == p else
+            'Counterfactual' if a == c else
+            'Other'
+            for p, c, a in zip(parametric, counterfactual, ctx_answer)
+        ]
 
     return dict(
         parametric = parametric,
         counterfactual = counterfactual,
-        nonparametric = nonparametric,
+        ctx_answer = ctx_answer,
+        comparison = comparison,
     )
