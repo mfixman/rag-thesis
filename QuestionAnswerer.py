@@ -49,7 +49,7 @@ class QuestionAnswerer:
             padding = True,
         ).to(self.device)
 
-        batch_size = 10000
+        batch_size = 15000
         chunks = 1 + (tokens['input_ids'].shape[0] * tokens['input_ids'].shape[1]) // batch_size
         input_ids = tokens['input_ids'].chunk(chunks, dim = 0)
         attention_masks = tokens['attention_mask'].chunk(chunks, dim = 0)

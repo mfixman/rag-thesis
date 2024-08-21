@@ -92,20 +92,20 @@ city,What's the highest administrative subdivision Baghdad is part of?,Baghdad i
 city,In what year was Tokyo founded?,Tokyo was founded in,1457,969 AD,969 AD,Counterfactual,1457,969,969,Counterfactual
 city,In what year was Cairo founded?,Cairo was founded in,969 AD,1508,1508,Counterfactual,969,1774,1774,Counterfactual
 city,In what year was New York founded?,New York was founded in,1624,1508,1508,Counterfactual,1624,1774,1774,Counterfactual
-city,In what year was Paris founded?,Paris was founded in,259 BC,969 AD,969 AD,Counterfactual,the 3rd century BC,969,969,Counterfactual
+city,In what year was Paris founded?,Paris was founded in,259 BC,969 AD,969 AD,Counterfactual,the 3rd century BCE,969,969,Counterfactual
 city,In what year was Mumbai founded?,Mumbai was founded in,1508,660 BC,660 BC,Counterfactual,1774,667 BC,667 BC,Counterfactual
 city,In what year was Jerusalem founded?,Jerusalem was founded in,3000 BC,969 AD,969 AD,Counterfactual,the 4th millennium BCE,969,969,Counterfactual
 city,In what year was Tenochtitlan founded?,Tenochtitlan was founded in,1325,3000 BC,3000 BC,Counterfactual,1325,the 4th millennium BCE,the 4th millennium BCE,Counterfactual
 city,In what year was Istanbul founded?,Istanbul was founded in,660 BC,1457,1457,Counterfactual,667 BC,1457,1457,Counterfactual
 city,In what year was Shanghai founded?,Shanghai was founded in,1291,1457,1457,Counterfactual,1843,1457,1457,Counterfactual
-city,In what year was Baghdad founded?,Baghdad was founded in,762 AD,259 BC,259 BC,Counterfactual,762,the 3rd century BC,the 3rd century BC,Counterfactual
+city,In what year was Baghdad founded?,Baghdad was founded in,762 AD,259 BC,259 BC,Counterfactual,762,the 3rd century BCE,the 3rd century BCE,Counterfactual
 city,What major river is nearest to Tokyo?,The nearest major river to Tokyo is,the Sumida River,the Hudson River,the Hudson River,Counterfactual,the Tone River,the Hudson River,the Hudson River,Counterfactual
 city,What major river is nearest to Cairo?,The nearest major river to Cairo is,the Nile River,the Yangtze River,the Yangtze River,Counterfactual,the Nile,the Yangtze River,the Yangtze River,Counterfactual
-city,What major river is nearest to New York?,The nearest major river to New York is,the Hudson River,the Rio Grande de Mexico,the Rio Grande de Mexico,Counterfactual,the Hudson River,the lake Texcoco,the lake Texcoco,Counterfactual
+city,What major river is nearest to New York?,The nearest major river to New York is,the Hudson River,the Rio Grande de Chapultepec,the Rio Grande de Chapultepec,Counterfactual,the Hudson River,the lake Texcoco,the lake Texcoco,Counterfactual
 city,What major river is nearest to Paris?,The nearest major river to Paris is,the Seine River,the Ulhas River,the Ulhas River,Counterfactual,the Seine,the Tapi River,the Tapi River,Counterfactual
 city,What major river is nearest to Mumbai?,The nearest major river to Mumbai is,the Ulhas River,the Seine River,the Seine River,Counterfactual,the Tapi River,the Seine,the Seine,Counterfactual
 city,What major river is nearest to Jerusalem?,The nearest major river to Jerusalem is,the Jordan River,the Sumida River,the Sumida River,Counterfactual,the Jordan River,the Tone River,the Tone River,Counterfactual
-city,What major river is nearest to Tenochtitlan?,The nearest major river to Tenochtitlan is,the Rio Grande de Mexico,the Ulhas River,the Ulhas River,Counterfactual,the lake Texcoco,the Tapi River,the Tapi River,Counterfactual
+city,What major river is nearest to Tenochtitlan?,The nearest major river to Tenochtitlan is,the Rio Grande de Chapultepec,the Ulhas River,the Ulhas River,Counterfactual,the lake Texcoco,the Tapi River,the Tapi River,Counterfactual
 city,What major river is nearest to Istanbul?,The nearest major river to Istanbul is,the Bosphorus which is a strait that connects the Black Sea to,the Nile River,the Nile River,Counterfactual,the Bosphorus,the Nile,the Nile,Counterfactual
 city,What major river is nearest to Shanghai?,The nearest major river to Shanghai is,the Yangtze River,the Seine River,the Seine River,Counterfactual,the Yangtze River,the Seine,the Seine,Counterfactual
 city,What major river is nearest to Baghdad?,The nearest major river to Baghdad is,the Tigris River,the Jordan River,the Jordan River,Counterfactual,the Tigris,the Jordan River,the Jordan River,Counterfactual
@@ -169,16 +169,16 @@ element,When was Silicon first isolated?,Silicon was first isolated in,1824,38 B
 element,When was Plutonium first isolated?,Plutonium was first isolated in,1940,1766,1940,Parameric,1940,1766,1766,Counterfactual
 element,When was Hydrogen first isolated?,Hydrogen was first isolated in,1766,1789,1789,Counterfactual,1766,1789,1789,Counterfactual
 element,When was Nitrogen first isolated?,Nitrogen was first isolated in,1772,1774,1774,Counterfactual,1772,1774,1774,Counterfactual
-book,What genre does 1984 belong to?,,Dystopian science fiction,Romance,Science fiction,Other,,,,Parameric
-book,What genre does The Great Gatsby belong to?,,Classic American literature,Coming of age,20th century American literature novel,Other,,,,Parameric
-book,What genre does War and Peace belong to?,,Historical fiction,Fantasy,Historical fiction,Parameric,,,,Parameric
-book,What genre does The Art of War belong to?,,Military strategy,Southern Gothic,Southern Gothic,Counterfactual,,,,Parameric
-book,What genre does Don Quixote belong to?,,Satire,Magical Realism,Magical Realism,Counterfactual,,,,Parameric
-book,What genre does To Kill a Mockingbird belong to?,,Southern Gothic,Coming of age,"Coming of age, Southern Gothic, Social commentary",Other,,,,Parameric
-book,What genre does One Hundred Years of Solitude belong to?,,Magical Realism,Satire,Magical realism,Other,,,,Parameric
-book,What genre does The Catcher in the Rye belong to?,,Coming of age,Historical fiction,Historical fiction,Counterfactual,,,,Parameric
-book,What genre does Pride and Prejudice belong to?,,Romance,Fantasy,Romance,Parameric,,,,Parameric
-book,What genre does The Alchemist belong to?,,Fantasy,Dystopian science fiction,Dystopian science fiction,Counterfactual,,,,Parameric
+book,What genre does 1984 belong to?,The genre of 1984 is,dystopian science fiction,romance,romance,Counterfactual,dystopian fiction,romance,romance,Counterfactual
+book,What genre does The Great Gatsby belong to?,The genre of The Great Gatsby is,a classic novel of American literature that belongs to the genres of tragedy and social,coming of age,coming of age,Counterfactual,American literature,coming-of-age,coming-of-age,Counterfactual
+book,What genre does War and Peace belong to?,The genre of War and Peace is,historical fiction,magical realism,magical realism,Counterfactual,historical fiction,philosophical fiction,philosophical fiction,Counterfactual
+book,What genre does The Art of War belong to?,The genre of The Art of War is,philosophy,a classic novel of American literature that belongs to the genres of Southern Gothic and,a classic novel of American literature that belongs to the genres of Southern Gothic and,Counterfactual,military treatise,Southern Gothic,Southern Gothic,Counterfactual
+book,What genre does Don Quixote belong to?,The genre of Don Quixote is,a picaresque novel,magical realism,magical realism,Counterfactual,picaresque novel,magical realism,magical realism,Counterfactual
+book,What genre does To Kill a Mockingbird belong to?,The genre of To Kill a Mockingbird is,a classic novel of American literature that belongs to the genres of Southern Gothic and,coming of age,coming of age,Counterfactual,Southern Gothic,coming-of-age,coming-of-age,Counterfactual
+book,What genre does One Hundred Years of Solitude belong to?,The genre of One Hundred Years of Solitude is,magical realism,a picaresque novel,a picaresque novel,Counterfactual,magical realism,picaresque novel,picaresque novel,Counterfactual
+book,What genre does The Catcher in the Rye belong to?,The genre of The Catcher in the Rye is,coming of age,historical fiction,historical fiction,Counterfactual,coming-of-age,historical fiction,historical fiction,Counterfactual
+book,What genre does Pride and Prejudice belong to?,The genre of Pride and Prejudice is,romance,magical realism,magical realism,Counterfactual,romance,philosophical fiction,philosophical fiction,Counterfactual
+book,What genre does The Alchemist belong to?,The genre of The Alchemist is,magical realism,dystopian science fiction,dystopian science fiction,Counterfactual,philosophical fiction,dystopian fiction,dystopian fiction,Counterfactual
 book,Who's the author of 1984?,1984 was written by,George Orwell,Jane Austen,Jane Austen,Counterfactual,George Orwell,Jane Austen,George Orwell,Parameric
 book,Who's the author of The Great Gatsby?,The Great Gatsby was written by,F Scott Fitzgerald,Leo Tolstoy,Leo Tolstoy,Counterfactual,F,Leo Tolstoy,Leo Tolstoy,Counterfactual
 book,Who's the author of War and Peace?,War and Peace was written by,Leo Tolstoy,Gabriel Garcia Marquez,Gabriel Garcia Marquez,Counterfactual,Leo Tolstoy,Gabriel Garcia Marquez,Gabriel Garcia Marquez,Counterfactual
@@ -229,15 +229,15 @@ painting,What artistic movement does Girl with a Pearl Earring belong to?,Girl w
 painting,What artistic movement does School of Athens belong to?,School of Athens belongs to,Renaissance art,Regionalism,Regionalism,Counterfactual,the High Renaissance,the Regionalism movement,the Regionalism movement,Counterfactual
 painting,What artistic movement does The Night Watch belong to?,The Night Watch belongs to,the Baroque movement,the Renaissance movement,the Renaissance movement,Counterfactual,the Dutch Golden Age,the High Renaissance,the High Renaissance,Counterfactual
 painting,What artistic movement does American Gothic belong to?,American Gothic belongs to,Regionalism,the Renaissance movement,the Renaissance movement,Counterfactual,the Regionalism movement,the Italian Renaissance,the American Regionalist movement,Other
-painting,What materials were used to create Starry Night?,Starry Night was created with,oil paints on canvas,oil paint on canvas,oil paint on canvas,Counterfactual,oil paint on canvas,oil paint on canvas,oil paint on canvas,Parameric
-painting,What materials were used to create Mona Lisa?,Mona Lisa was created with,oil paint on a poplar wood panel,oil paints on canvas,oil paints on canvas,Counterfactual,oil paints on a poplar wood panel,oil paint on canvas,oil paint on canvas,Counterfactual
+painting,What materials were used to create Starry Night?,Starry Night was created with,oil paints on a canvas board,oil paint on canvas,oil paint on canvas,Counterfactual,oil paint on canvas,oil paint on canvas,oil paint on canvas,Parameric
+painting,What materials were used to create Mona Lisa?,Mona Lisa was created with,oil paint on a poplar wood panel,oil paints on a canvas board,oil paints on a canvas board,Counterfactual,oil paints on a poplar wood panel,oil paint on canvas,oil paint on canvas,Counterfactual
 painting,What materials were used to create The Last Supper?,The Last Supper was created with,tempera paint and oil paint on dry wall,fresco and oil on dry wall,fresco and oil on dry wall,Counterfactual,tempera paint on plaster,fresco,fresco,Counterfactual
 painting,What materials were used to create Guernica?,Guernica was created with,oil paint on canvas,fresco and oil on dry wall,fresco and oil on dry wall,Counterfactual,oil paint on canvas,fresco,fresco,Counterfactual
 painting,What materials were used to create The Birth of Venus?,The Birth of Venus was created with,oil on canvas,oil paint on a wooden panel,oil paint on a wooden panel,Counterfactual,tempera on canvas,oil paint on canvas,oil paint on canvas,Counterfactual
-painting,What materials were used to create The Scream?,The Scream was created with,oil paint on cardboard,oil paints on canvas,oil paints on canvas,Counterfactual,tempera paint on cardboard,oil paint on canvas,oil paint on canvas,Counterfactual
+painting,What materials were used to create The Scream?,The Scream was created with,oil paint on cardboard,oil paints on a canvas board,oil paints on a canvas board,Counterfactual,tempera paint on cardboard,oil paint on canvas,oil paint on canvas,Counterfactual
 painting,What materials were used to create Girl with a Pearl Earring?,Girl with a Pearl Earring was created with,oil paint on a wooden panel,oil paint on canvas,oil paint on canvas,Counterfactual,oil paint on canvas,oil paint on canvas,oil paint on canvas,Parameric
-painting,What materials were used to create School of Athens?,School of Athens was created with,fresco and oil on dry wall,oil paints on canvas,oil paints on canvas,Counterfactual,fresco,oil paint on canvas,oil paint on canvas,Counterfactual
-painting,What materials were used to create The Night Watch?,The Night Watch was created with,oil on canvas,oil paints on canvas,oil paints on canvas,Counterfactual,oil paint on canvas,oil paint on canvas,oil paint on canvas,Parameric
+painting,What materials were used to create School of Athens?,School of Athens was created with,fresco and oil on dry wall,oil paints on a canvas board,oil paints on a canvas board,Counterfactual,fresco,oil paint on canvas,oil paint on canvas,Counterfactual
+painting,What materials were used to create The Night Watch?,The Night Watch was created with,oil on canvas,oil paints on a canvas board,oil paints on a canvas board,Counterfactual,oil paint on canvas,oil paint on canvas,oil paint on canvas,Parameric
 painting,What materials were used to create American Gothic?,American Gothic was created with,oil on a board,oil on canvas,oil on canvas,Counterfactual,tempera paint on a hardboard panel,oil paint on canvas,oil paint on canvas,Counterfactual
 painting,Where is Starry Night primarily housed?,Starry Night is currently in,the Museum of Modern Art in New York City,Milan Italy,Milan Italy,Counterfactual,the Museum of Modern Art,Milan,Milan,Counterfactual
 painting,Where is Mona Lisa primarily housed?,Mona Lisa is currently in,the Louvre Museum in Paris France,the Uffizi Gallery in Florence Italy,the Uffizi Gallery in Florence Italy,Counterfactual,the Louvre Museum,the Uffizi Gallery,the Uffizi Gallery,Counterfactual
@@ -249,13 +249,13 @@ painting,Where is Girl with a Pearl Earring primarily housed?,Girl with a Pearl 
 painting,Where is School of Athens primarily housed?,School of Athens is currently in,the Vatican Museums in Vatican City,the Louvre Museum in Paris France,the Louvre Museum in Paris France,Counterfactual,the Vatican Museums,the Louvre Museum,the Louvre Museum,Counterfactual
 painting,Where is The Night Watch primarily housed?,The Night Watch is currently in,the Rijksmuseum in Amsterdam,the Vatican Museums in Vatican City,the Vatican Museums in Vatican City,Counterfactual,the Rijksmuseum,the Vatican Museums,the Vatican Museums,Counterfactual
 painting,Where is American Gothic primarily housed?,American Gothic is currently in,the collection of the Art Institute of Chicago,the Mauritshuis in The Hague Netherlands,the Mauritshuis in The Hague Netherlands,Counterfactual,the Art Institute of Chicago,the Mauritshuis museum in The Hague,the Mauritshuis museum in The Hague,Counterfactual
-historical_event,What year did Signing of the Magna Carta happen?,Signing of the Magna Carta happened in the year,1215,1998,1998,Counterfactual,1215,1998,1998,Counterfactual
-historical_event,What year did Battle of Hastings happen?,Battle of Hastings happened in the year,1066,2005,1066,Parameric,1066,2005,2005,Counterfactual
-historical_event,What year did Battle of Agincourt happen?,Battle of Agincourt happened in the year,1415,1492,1415,Parameric,1415,1492,1492,Counterfactual
+historical_event,What year did The Signing of the Magna Carta happen?,The Signing of the Magna Carta happened in the year,1215,1998,1998,Counterfactual,1215,1998,1998,Counterfactual
+historical_event,What year did The Battle of Hastings happen?,The Battle of Hastings happened in the year,1066,2005,1066,Parameric,1066,2005,2005,Counterfactual
+historical_event,What year did The Battle of Agincourt happen?,The Battle of Agincourt happened in the year,1415,1492,1415,Parameric,1415,1492,1492,Counterfactual
 historical_event,What year did The Great Fire of London happen?,The Great Fire of London happened in the year,1666,1600,1600,Counterfactual,1666,1600,1600,Counterfactual
 historical_event,What year did The Glorious Revolution happen?,The Glorious Revolution happened in the year,1688,1600,1600,Counterfactual,1688,1600,1600,Counterfactual
-historical_event,What year did Act of Union between England and Scotland happen?,Act of Union between England and Scotland happened in the year,1707,1760,1760,Counterfactual,1707,1760,1707,Parameric
-historical_event,What year did Battle of Waterloo happen?,Battle of Waterloo happened in the year,1815,1956,1815,Parameric,1815,1956,1956,Counterfactual
+historical_event,What year did The Act of Union between England and Scotland happen?,The Act of Union between England and Scotland happened in the year,1707,1760 to 1840,1760 to 1840,Counterfactual,1707,1760,1760,Counterfactual
+historical_event,What year did The Battle of Waterloo happen?,The Battle of Waterloo happened in the year,1815,1956,1815,Parameric,1815,1956,1956,Counterfactual
 historical_event,What year did The UK Abolition of the Slave Trade Act happen?,The UK Abolition of the Slave Trade Act happened in the year,1807,1838,1838,Counterfactual,1807,1838,1838,Counterfactual
 historical_event,What year did Queen Victoria's Coronation happen?,Queen Victoria's Coronation happened in the year,1838,1522,1838,Parameric,1838,1522,1522,Counterfactual
 historical_event,What year did The Founding of the British Broadcasting Corporation happen?,The Founding of the British Broadcasting Corporation happened in the year,1922,1947,1947,Counterfactual,1927,1947,1947,Counterfactual
@@ -263,26 +263,26 @@ historical_event,What year did The Dunkirk Evacuation happen?,The Dunkirk Evacua
 historical_event,What year did The Indian Independence Act happen?,The Indian Independence Act happened in the year,1947,1492,1947,Parameric,1947,1492,1492,Counterfactual
 historical_event,What year did The Suez Crisis happen?,The Suez Crisis happened in the year,1956,2005,2005,Counterfactual,1956,2005,2005,Counterfactual
 historical_event,What year did Decimalisation in the UK happen?,Decimalisation in the UK happened in the year,1971,1666,1666,Counterfactual,1971,1666,1666,Counterfactual
-historical_event,What year did The Signing of the Good Friday Agreement happen?,The Signing of the Good Friday Agreement happened in the year,1998,1760,1760,Counterfactual,1998,1760,1760,Counterfactual
+historical_event,What year did The Signing of the Good Friday Agreement happen?,The Signing of the Good Friday Agreement happened in the year,1998,1760 to 1840,1998,Parameric,1998,1760,1760,Counterfactual
 historical_event,What year did The London 7/7 Bombings happen?,The London 7/7 Bombings happened in the year,2005,1971,1971,Counterfactual,2005,1971,2005,Parameric
 historical_event,What year did The Brexit Referendum happen?,The Brexit Referendum happened in the year,2016,2005,2005,Counterfactual,2016,2005,2005,Counterfactual
 historical_event,What year did The Wedding of Prince Charles and Lady Diana happen?,The Wedding of Prince Charles and Lady Diana happened in the year,1981,1522,1981,Parameric,1981,1522,1522,Counterfactual
 historical_event,What year did Queen Elizabeth II's Platinum Jubilee happen?,Queen Elizabeth II's Platinum Jubilee happened in the year,2022,1807,1807,Counterfactual,2022,1807,1807,Counterfactual
-historical_event,What year did Founding of Rome happen?,Founding of Rome happened in the year,753 BC,1838,753 BC,Parameric,753 BC,1838,1838,Counterfactual
-historical_event,What year did Construction of the Great Pyramid of Giza happen?,Construction of the Great Pyramid of Giza happened in the year,2580 BC,1838,1838,Counterfactual,2580-2560 BC,1838,1838,Counterfactual
-historical_event,What year did First Crusade happen?,First Crusade happened in the year,1095,753 BC,1095 AD,Other,1095,753 BC,753 BC,Counterfactual
-historical_event,What year did Fall of Constantinople happen?,Fall of Constantinople happened in the year,1453,1492,1492,Counterfactual,1453,1492,1492,Counterfactual
-historical_event,What year did Discovery of the Americas by Columbus happen?,Discovery of the Americas by Columbus happened in the year,1492,1707,1707,Counterfactual,1492,1707,1707,Counterfactual
-historical_event,What year did First Circumnavigation of the Earth happen?,First Circumnavigation of the Earth happened in the year,1522,1600,1600,Counterfactual,1522,1600,1600,Counterfactual
-historical_event,What year did Fall of the Aztec Empire happen?,Fall of the Aztec Empire happened in the year,1521,1789,1521,Parameric,1521,1789,1789,Counterfactual
-historical_event,What year did Defeat of the Spanish Armada happen?,Defeat of the Spanish Armada happened in the year,1588,1838,1588,Parameric,1588,1838,1838,Counterfactual
-historical_event,What year did Battle of Sekigahara happen?,Battle of Sekigahara happened in the year,1600,1066,1600,Parameric,1600,1066,1066,Counterfactual
-historical_event,What year did Treaty of Westphalia happen?,Treaty of Westphalia happened in the year,1648,1991,1648,Parameric,1648,1991,1991,Counterfactual
-historical_event,What year did Industrial Revolution happen?,Industrial Revolution happened in the year,1760,1920,1920,Counterfactual,1760,1920,1920,Counterfactual
-historical_event,What year did French Revolution happen?,French Revolution happened in the year,1789,1760,1760,Counterfactual,1789,1760,1760,Counterfactual
-historical_event,What year did Unification of Italy happen?,Unification of Italy happened in the year,1871,1688,1688,Counterfactual,1861,1688,1688,Counterfactual
-historical_event,What year did Meiji Restoration happen?,Meiji Restoration happened in the year,1868,1981,1868,Parameric,1868,1981,1981,Counterfactual
-historical_event,What year did Battle of Adwa happen?,Battle of Adwa happened in the year,1896,753 BC,753 BC,Counterfactual,1896,753 BC,753 BC,Counterfactual
-historical_event,What year did Founding of the League of Nations happen?,Founding of the League of Nations happened in the year,1920,1789,1789,Counterfactual,1920,1789,1789,Counterfactual
-historical_event,What year did Indian Independence Act happen?,Indian Independence Act happened in the year,1947,1522,1947,Parameric,1947,1522,1522,Counterfactual
-historical_event,What year did Dissolution of the Soviet Union happen?,Dissolution of the Soviet Union happened in the year,1991,1815,1815,Counterfactual,1991,1815,1815,Counterfactual
+historical_event,What year did The Founding of Rome happen?,The Founding of Rome happened in the year,753 BC,1838,1838,Counterfactual,753 BC,1838,1838,Counterfactual
+historical_event,What year did The Construction of the Great Pyramid of Giza happen?,The Construction of the Great Pyramid of Giza happened in the year,2580 BC,1838,1838,Counterfactual,2580-2560 BC,1838,1838,Counterfactual
+historical_event,What year did The First Crusade happen?,The First Crusade happened in the year,1095,753 BC,1095 AD,Other,1095,753 BC,753 BC,Counterfactual
+historical_event,What year did The Fall of Constantinople happen?,The Fall of Constantinople happened in the year,1453,1492,1492,Counterfactual,1453,1492,1492,Counterfactual
+historical_event,What year did The Discovery of the Americas by Columbus happen?,The Discovery of the Americas by Columbus happened in the year,1492,1707,1707,Counterfactual,1492,1707,1707,Counterfactual
+historical_event,What year did The First Circumnavigation of the Earth happen?,The First Circumnavigation of the Earth happened in the year,1522,1600,1600,Counterfactual,1522,1600,1600,Counterfactual
+historical_event,What year did The Fall of the Aztec Empire happen?,The Fall of the Aztec Empire happened in the year,1521,1789,1521,Parameric,1521,1789,1789,Counterfactual
+historical_event,What year did The Defeat of the Spanish Armada happen?,The Defeat of the Spanish Armada happened in the year,1588,1838,1588,Parameric,1588,1838,1838,Counterfactual
+historical_event,What year did The Battle of Sekigahara happen?,The Battle of Sekigahara happened in the year,1600,1066,1600,Parameric,1600,1066,1066,Counterfactual
+historical_event,What year did The Treaty of Westphalia happen?,The Treaty of Westphalia happened in the year,1648,1991,1648,Parameric,1648,1991,1991,Counterfactual
+historical_event,What year did The Industrial Revolution happen?,The Industrial Revolution happened in the year,1760 to 1840,1920,1920,Counterfactual,1760,1920,1920,Counterfactual
+historical_event,What year did The French Revolution happen?,The French Revolution happened in the year,1789,1760 to 1840,1760 to 1840,Counterfactual,1789,1760,1760,Counterfactual
+historical_event,What year did The Unification of Italy happen?,The Unification of Italy happened in the year,1871,1688,1688,Counterfactual,1861,1688,1688,Counterfactual
+historical_event,What year did The Meiji Restoration happen?,The Meiji Restoration happened in the year,1868,1981,1981,Counterfactual,1868,1981,1981,Counterfactual
+historical_event,What year did The Battle of Adwa happen?,The Battle of Adwa happened in the year,1896,753 BC,753 BC,Counterfactual,1896,753 BC,753 BC,Counterfactual
+historical_event,What year did The Founding of the League of Nations happen?,The Founding of the League of Nations happened in the year,1920,1789,1789,Counterfactual,1920,1789,1789,Counterfactual
+historical_event,What year did The Indian Independence Act happen?,The Indian Independence Act happened in the year,1947,1522,1947,Parameric,1947,1522,1522,Counterfactual
+historical_event,What year did The Dissolution of the Soviet Union happen?,The Dissolution of the Soviet Union happened in the year,1991,1815,1815,Counterfactual,1991,1815,1815,Counterfactual
