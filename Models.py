@@ -54,8 +54,6 @@ class Model(nn.Module):
             eos_token_id = self.tokenizer.eos_token_id,
         )
 
-        self.model.eval()
-
     @classmethod
     def fromNames(cls, names: list[str]) -> list['Model']:
         return [cls.fromName(x) for x in names]

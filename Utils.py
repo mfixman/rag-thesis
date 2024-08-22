@@ -7,6 +7,8 @@ import random
 import typing
 import sys
 
+import torch
+
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional, Any
@@ -133,6 +135,7 @@ def streq(a: str, b: str) -> bool:
     b = b.lower().replace('the', '').replace(',', '').strip()
     return a[:len(b)] == b[:len(a)]
 
+@torch.no_grad()
 def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[int], *, use_counterfactuals: bool = False, use_logits: bool = False) -> dict[str, Any]:
     output = {}
 
@@ -154,6 +157,44 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
             for q, context in zip(questions, counterfactual)
         ]
 
+        ctx_answer, ctx_logits = qa.query(queries)
+        output['ctx_answer'] = ctx_answer
+        if use_logits:
+            output['ctx_logits'] = ctx_logits
+
+        output['comparison'] = [
+            'Parametric' if streq(a, p) else
+            'Counterfactual' if streq(a, c) else
+            'Other'
+            for p, c, a in zip(parametric, counterfactual, ctx_answer)
+        ]
+
+    return output
+
+@torch.no_grad()
+def gradientFromQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[int], *, use_counterfactuals: bool = False, use_logits: bool = False) -> dict[str, Any]:
+    output = {}
+
+    prompt = 'Answer the following question in a few words and with no formatting.'
+
+    parametric, param_logits = qa.query([q.format(prompt = prompt) for q in questions])
+    output['parametric'] = parametric
+    if use_logits:
+        output['param_logits'] = param_logits
+
+    if use_counterfactuals:
+        context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
+        counterfactual = [parametric[x] for x in flips]
+        output['counterfactual'] = counterfactual
+
+        assert len(questions) == len(counterfactual)
+        queries = [
+            q.format(prompt = context_prompt, context = context)
+            for q, context in zip(questions, counterfactual)
+        ]
+
+        logging.info(queries)
+        sys.exit(1)
         ctx_answer, ctx_logits = qa.query(queries)
         output['ctx_answer'] = ctx_answer
         if use_logits:

@@ -26,9 +26,11 @@ class QuestionAnswerer:
         model: Union[str, Model],
         device: str = 'cpu',
         max_length: Optional[int] = None,
+        do_train: bool = False
     ):
         self.device = device
         self.max_length = max_length
+        self.train = do_train
 
         if type(model) == str:
             model = Model(model, device = device)
@@ -36,25 +38,34 @@ class QuestionAnswerer:
         model = typing.cast(Model, model)
         self.llm = model.to(device)
 
+        if not do_train:
+            model.eval()
+
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
         answers, logits = self.query(list(question_dict.values()))
         return dict(zip(question_dict.keys(), zip(answers, logits)))
 
     @torch.no_grad()
-    def query(self, questions: list[str]) -> tuple[list[str], list[float]]:
-        tokens = self.llm.tokenizer(
+    def tokenize(self, questions: list[str]) -> tuple[LongTensor, LongTensor]:
+        tokenizer = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
             return_attention_mask = True,
             padding = True,
         ).to(self.device)
+        return tokenizer['input_ids'], tokenizer['attention_mask']
+
+    @torch.no_grad()
+    def query(self, questions: list[str]) -> tuple[list[str], list[float]]:
+        input_ids, attention_mask = self.tokenize(questions)
 
         batch_size = 15000
-        chunks = 1 + (tokens['input_ids'].shape[0] * tokens['input_ids'].shape[1]) // batch_size
-        input_ids = tokens['input_ids'].chunk(chunks, dim = 0)
-        attention_masks = tokens['attention_mask'].chunk(chunks, dim = 0)
+        chunks = 1 + (input_ids.shape[0] * input_ids.shape[1]) // batch_size
+        logging.info(f"Answering questions for {len(questions)} × {input_ids.shape[1]} = {len(questions) * input_ids.shape[1]} in {chunks} chunks.")
 
-        logging.info(f"Answering questions for {len(questions)} × {tokens['input_ids'].shape[1]} = {len(questions) * tokens['input_ids'].shape[1]} in {chunks} chunks.")
+        input_ids = input_ids.chunk(chunks, dim = 0)
+        attention_masks = attention_mask.chunk(chunks, dim = 0)
+
         sequences = []
         logits = []
         for ids, masks in zip(input_ids, attention_masks):

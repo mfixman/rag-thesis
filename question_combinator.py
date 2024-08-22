@@ -9,8 +9,6 @@ import ipdb
 import itertools
 import os
 
-import wandb
-
 from Models import *
 from QuestionAnswerer import *
 from Utils import *
