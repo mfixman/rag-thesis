@@ -7,6 +7,7 @@ import logging
 import random
 import ipdb
 import itertools
+import os
 
 import wandb
 
@@ -25,6 +26,7 @@ def parse_args():
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
     parser.add_argument('--counterfactuals', action = 'store_true', help = 'Whether to include counterfactuals in final CSV')
     parser.add_argument('--logits', action = 'store_true', help = 'Whether to add data about logits.')
+    parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
 
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
     parser.add_argument('things_file', type = open, help = 'File with things to combine')
@@ -48,6 +50,9 @@ def main():
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     args = parse_args()
+
+    if args.offline:
+        os.environ['TRANSFORMERS_OFFLINE'] = '1'
 
     logging.info('Getting questions')
     questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
