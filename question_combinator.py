@@ -59,7 +59,7 @@ def main():
         qa = QuestionAnswerer(model, device = args.device, max_length = 15)
         answers |= {
             f'{k}-{model}': v
-            for k, v in answerQueries(qa, questions, flips, use_counterfactuals = args.counterfactuals).items()
+            for k, v in answerQueries(qa, questions, flips, use_counterfactuals = args.counterfactuals, use_logits = args.logits).items()
         }
 
     logging.info('Writing CSV')
