@@ -6,7 +6,7 @@ import logging
 import torch
 import typing
 
-from torch import LongTensor, FloatTensor
+from torch import LongTensor, FloatTensor, Tensor
 from torch.nn.utils.rnn import pad_sequence
 from torch.nn.functional import pad
 
@@ -58,29 +58,31 @@ class QuestionAnswerer:
         return tokenizer['input_ids'], tokenizer['attention_mask']
 
     @torch.no_grad()
-    def tokenize_many(self, *queries: list[list[str]]) -> list[tuple[LongTensor, LongTensor]]:
-        ids, attns = self.tokenize(list(iterools.chain.from_iterable(queries)))
+    def tokenize_many(self, *queries: list[str]) -> list[tuple[LongTensor, LongTensor]]:
+        ids, attns = self.tokenize(list(itertools.chain.from_iterable(queries)))
 
         separated: list[tuple[LongTensor, LongTensor]] = []
         curr = 0
         for ln in [len(x) for x in queries]:
             separated.append((
                 ids[curr : curr + ln],
-                attns[curr : curr + ln]
-            ))
+                attns[curr : curr + ln],
+            )) # type: ignore
             curr += ln
 
         return separated
 
     @torch.no_grad()
     def query(self, questions: list[str]) -> tuple[list[str], list[float]]:
-        input_ids, attention_mask = self.tokenize(questions).to(self.device)
+        input_ids, attention_mask = self.tokenize(questions)
+        input_ids = input_ids.to(self.device) # type: ignore
+        attention_mask = attention_mask.to(self.device) # type: ignore
 
         batch_size = 15000
         chunks = 1 + (input_ids.shape[0] * input_ids.shape[1]) // batch_size
         logging.info(f"Answering questions for {len(questions)} × {input_ids.shape[1]} = {len(questions) * input_ids.shape[1]} in {chunks} chunks.")
 
-        input_ids = input_ids.chunk(chunks, dim = 0)
+        input_ids = input_ids.chunk(chunks, dim = 0) # type: ignore
         attention_masks = attention_mask.chunk(chunks, dim = 0)
 
         sequences = []
