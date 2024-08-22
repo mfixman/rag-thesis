@@ -38,7 +38,9 @@ class QuestionAnswerer:
         model = typing.cast(Model, model)
         self.llm = model.to(device)
 
-        if not do_train:
+        if do_train:
+            model.train()
+        else:
             model.eval()
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
@@ -52,12 +54,27 @@ class QuestionAnswerer:
             return_tensors = 'pt',
             return_attention_mask = True,
             padding = True,
-        ).to(self.device)
+        )
         return tokenizer['input_ids'], tokenizer['attention_mask']
 
     @torch.no_grad()
+    def tokenize_many(self, *queries: list[list[str]]) -> list[tuple[LongTensor, LongTensor]]:
+        ids, attns = self.tokenize(list(iterools.chain.from_iterable(queries)))
+
+        separated: list[tuple[LongTensor, LongTensor]] = []
+        curr = 0
+        for ln in [len(x) for x in queries]:
+            separated.append((
+                ids[curr : curr + ln],
+                attns[curr : curr + ln]
+            ))
+            curr += ln
+
+        return separated
+
+    @torch.no_grad()
     def query(self, questions: list[str]) -> tuple[list[str], list[float]]:
-        input_ids, attention_mask = self.tokenize(questions)
+        input_ids, attention_mask = self.tokenize(questions).to(self.device)
 
         batch_size = 15000
         chunks = 1 + (input_ids.shape[0] * input_ids.shape[1]) // batch_size

@@ -11,6 +11,7 @@ import torch
 
 from collections import defaultdict
 from dataclasses import dataclass
+from torch import FloatTensor, LongTensor, BoolTensor
 from typing import Optional, Any
 
 from QuestionAnswerer import QuestionAnswerer
@@ -171,47 +172,3 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
 
     return output
 
-@torch.no_grad()
-def gradientFromQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[int], *, use_counterfactuals: bool = False, use_logits: bool = False) -> dict[str, Any]:
-    output = {}
-
-    prompt = 'Answer the following question in a few words and with no formatting.'
-
-    parametric, param_logits = qa.query([q.format(prompt = prompt) for q in questions])
-    output['parametric'] = parametric
-    if use_logits:
-        output['param_logits'] = param_logits
-
-    if use_counterfactuals:
-        context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
-        counterfactual = [parametric[x] for x in flips]
-        output['counterfactual'] = counterfactual
-
-        assert len(questions) == len(counterfactual)
-        queries = [
-            q.format(prompt = context_prompt, context = context)
-            for q, context in zip(questions, counterfactual)
-        ]
-
-        logging.info(queries)
-        sys.exit(1)
-        ctx_answer, ctx_logits = qa.query(queries)
-        output['ctx_answer'] = ctx_answer
-        if use_logits:
-            output['ctx_logits'] = ctx_logits
-
-        # comparison_prompt = f'Write the string "This answer is Parametric." if Answer = Parametric; write the string "This answer is Counterfactual." if Answer = Counterfactual; write the string "This answer is Other." otherwise. This answer is'
-        # comparison_queries = [
-        #     f'Parametric: [{param}], Counterfactual: [{counter}], Answer: [{answer}]. ' + comparison_prompt
-        #     for param, counter, answer in zip(parametric, counterfactual, ctx_answer)
-        # ]
-        # comparisons, logits = qa.query(comparison_queries)
-
-        output['comparison'] = [
-            'Parametric' if streq(a, p) else
-            'Counterfactual' if streq(a, c) else
-            'Other'
-            for p, c, a in zip(parametric, counterfactual, ctx_answer)
-        ]
-
-    return output
