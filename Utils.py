@@ -167,7 +167,7 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
         # comparisons, logits = qa.query(comparison_queries)
 
         output['comparison'] = [
-            'Parameric' if streq(a, p) else
+            'Parametric' if streq(a, p) else
             'Counterfactual' if streq(a, c) else
             'Other'
             for p, c, a in zip(parametric, counterfactual, ctx_answer)
