@@ -31,7 +31,7 @@ class Trainer:
 
     def train(self) -> float:
         dataset = TensorDataset(self.data, self.data_attn, self.target)
-        dataloader = DataLoader(dataset, batch_size = 1, shuffle = True)
+        dataloader = DataLoader(dataset, batch_size = 10, shuffle = True)
 
         loss = 0.
         for e in range(50):
@@ -53,17 +53,15 @@ class Trainer:
 
             self.optimizer.zero_grad()
 
-            # ipdb.set_trace()
-            outputs = self.model.model(input_ids = data, attention_mask = attn, labels = target)
-            loss = outputs.loss
+            output = self.model.model(input_ids = data, attention_mask = attn, labels = target)
 
-            epoch_loss += loss.cpu().item() / data.shape[0]
+            epoch_loss += output.loss.cpu().item() / data.shape[0]
 
-            if loss.isnan():
+            if output.loss.isnan():
                 raise ValueError('Loss is nan')
 
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(self.model.model.parameters(), 1)
+            output.loss.backward()
+            # torch.nn.utils.clip_grad_norm_(self.model.model.parameters(), 1)
             self.optimizer.step()
 
             logging.info(f'{e}: loss = {loss.cpu().item()}')
