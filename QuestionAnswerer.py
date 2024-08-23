@@ -5,6 +5,7 @@ import itertools
 import logging
 import torch
 import typing
+import sys
 
 from torch import LongTensor, FloatTensor, Tensor
 from torch.nn.utils.rnn import pad_sequence
@@ -40,17 +41,20 @@ class QuestionAnswerer:
 
         if do_train:
             model.train()
+            model.model.train()
         else:
             model.eval()
+            model.model.eval()
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
         answers, logits = self.query(list(question_dict.values()))
         return dict(zip(question_dict.keys(), zip(answers, logits)))
 
     @torch.no_grad()
-    def tokenize(self, questions: list[str]) -> tuple[LongTensor, LongTensor]:
+    def tokenize(self, questions: list[str], target: Optional[list[str]] = None) -> tuple[LongTensor, LongTensor]:
         tokenizer = self.llm.tokenizer(
             questions,
+            text_target = target,
             return_tensors = 'pt',
             return_attention_mask = True,
             padding = True,

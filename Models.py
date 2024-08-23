@@ -36,7 +36,7 @@ class Model(nn.Module):
 
         kwargs = dict(
             clean_up_tokenization_spaces = True,
-            padding_side = 'left',
+            padding_side = 'right',
         )
         if 'llama' in name:
             kwargs['pad_token'] = '<|reserved_special_token_0|>'

@@ -51,12 +51,26 @@ def main():
             .format(prompt = context_prompt, context = row['counterfactual-' + args.model])
         for _, row in args.questions_file.iterrows()
     ]
-    target_text = args.question_file['parameric-' + args.model]
+    target_text = args.questions_file['parametric-' + args.model]
 
     model = Model(args.model, device = args.device)
     wandb.watch(model)
     qa = QuestionAnswerer(model, device = args.device, do_train = True)
     [(data, data_attn), (target, target_attn)] = qa.tokenize_many(data_text, target_text)
+
+    for e, t in enumerate(target):
+        a = torch.argmax(1 * (t == qa.llm.tokenizer.pad_token_id))
+        if t[a] == qa.llm.tokenizer.bos_token_id:
+            continue
+
+        target[e, a] = qa.llm.tokenizer.eos_token_id
+
+    target = torch.cat([target[:, 1:], torch.full((target.shape[0], 1), qa.llm.tokenizer.pad_token_id)], dim = 1)
+    # target_attn = torch.cat([target[:, 1:], torch.ones((target.shape[0], 1))], dim = 1)
+
+    # logging.info([qa.llm.tokenizer.decode(x) for x in data[0]])
+    # logging.info([qa.llm.tokenizer.decode(x) for x in target[0]])
+    # sys.exit(1)
 
     trainer = Trainer(model, data, data_attn, target, target_attn)
     loss = trainer.train()
