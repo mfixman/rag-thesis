@@ -13,25 +13,13 @@ import ipdb
 import wandb
 
 class Trainer:
-    def __init__(
-        self,
-        model: Model,
-        data: LongTensor,
-        data_attn: BoolTensor,
-        target: LongTensor,
-        target_attn: BoolTensor
-    ):
+    def __init__(self, model: Model):
         self.model = model
-        self.data = data
-        self.data_attn = data_attn
-        self.target = target
-        self.target_attn = target_attn
-
         self.optimizer = Adam(model.parameters(), lr = 1e-5)
 
-    def train(self) -> float:
-        dataset = TensorDataset(self.data, self.data_attn, self.target)
-        dataloader = DataLoader(dataset, batch_size = 10, shuffle = True)
+    def train(self, data, attn, target) -> float:
+        dataset = TensorDataset(data, attn, target)
+        dataloader = DataLoader(dataset, batch_size = 11, shuffle = True)
 
         loss = 0.
         for e in range(50):
@@ -64,6 +52,6 @@ class Trainer:
             # torch.nn.utils.clip_grad_norm_(self.model.model.parameters(), 1)
             self.optimizer.step()
 
-            logging.info(f'{e}: loss = {loss.cpu().item()}')
+            logging.info(f'{e}: loss = {output.loss.cpu().item()}')
 
         return epoch_loss

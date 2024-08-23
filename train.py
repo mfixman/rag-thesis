@@ -66,14 +66,9 @@ def main():
         target[e, a] = qa.llm.tokenizer.eos_token_id
 
     target = torch.cat([target[:, 1:], torch.full((target.shape[0], 1), qa.llm.tokenizer.pad_token_id)], dim = 1)
-    # target_attn = torch.cat([target[:, 1:], torch.ones((target.shape[0], 1))], dim = 1)
 
-    # logging.info([qa.llm.tokenizer.decode(x) for x in data[0]])
-    # logging.info([qa.llm.tokenizer.decode(x) for x in target[0]])
-    # sys.exit(1)
-
-    trainer = Trainer(model, data, data_attn, target, target_attn)
-    loss = trainer.train()
+    trainer = Trainer(model)
+    loss = trainer.train(data, data_attn, target)
     logging.info('Finished! Final loss is {loss}')
 
 if __name__ == '__main__':
