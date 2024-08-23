@@ -48,7 +48,7 @@ class Model(nn.Module):
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map = self.device,
-            torch_dtype = torch.float16,
+            torch_dtype = torch.bfloat16,
             pad_token_id = self.tokenizer.pad_token_id,
             bos_token_id = self.tokenizer.bos_token_id,
             eos_token_id = self.tokenizer.eos_token_id,
