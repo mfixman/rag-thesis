@@ -41,7 +41,7 @@ class QuestionAnswerer:
         return dict(zip(question_dict.keys(), zip(answers, logits)))
 
     @torch.no_grad()
-    def query(self, questions: list[str]) -> tuple[list[str], list[float], FloatTensor]:
+    def query(self, questions: list[str]) -> tuple[list[str], FloatTensor]
         tokens = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
@@ -56,14 +56,13 @@ class QuestionAnswerer:
 
         logging.info(f"Answering questions for {len(questions)} × {tokens['input_ids'].shape[1]} = {len(questions) * tokens['input_ids'].shape[1]} in {chunks} chunks.")
         sequences: list[str] = []
-        logits: list[float] = []
         all_logits: list[FloatTensor] = []
         for ids, masks in zip(input_ids, attention_masks):
             outputs = self.llm.model.generate(
                 input_ids = ids,
                 attention_mask = masks,
                 max_new_tokens = self.max_length,
-                stop_strings = ['.', '\n'],
+                # stop_strings = ['.', '\n'],
                 do_sample = False,
                 tokenizer = self.llm.tokenizer,
                 output_logits = True,
@@ -75,23 +74,31 @@ class QuestionAnswerer:
                 bos_token_id = self.llm.tokenizer.bos_token_id,
             )
 
-            seqs = self.llm.tokenizer.batch_decode(
-                outputs.sequences,
-                skip_special_tokens = True,
-                clean_up_tokenization_spaces = True,
+            sequences.extend(
+                self.llm.tokenizer.batch_decode(
+                    outputs.sequences,
+                    skip_special_tokens = True,
+                    clean_up_tokenization_spaces = True,
+                )
             )
+            all_logits.append(torch.stack(outputs.logits, dim = 1).softmax(dim = 2))
 
-            logs = (
-                torch.stack(outputs.logits, dim = 1)
-                .softmax(dim = 2)
-                .max(dim = 2)[0]
-                .mean(dim = 1)
-            )
+        answers = [a.removeprefix(q).split('\n')[0].split('.')[0] for q, a in zip(questions, sequences)]
+        return answers, torch.cat(all_logits, dim = 0)
 
-            sequences.extend(seqs)
-            logits.extend(logs.cpu().tolist())
+    def gather(self, logits: FloatTensor, words: list[str]) -> list[float]:
+        assert logits.shape[0] == len(words)
+        assert torch.all((logits >= 0) & (logits < 1))
+        assert logits.shape[1] >= max(len(x) for x in words)
 
-            all_logits.append(torch.stack(outputs.logits, dim = 1))
+        tokens = self.llm.tokenizer(
+            words,
+            return_tensors = 'pt',
+            padding = True,
+        )
+        logging.info(tokens.input_ids.shape)
 
-        answers = [a.removeprefix(q).strip().strip('.') for q, a in zip(questions, sequences)]
-        return answers, logits, torch.cat(all_logits, dim = 0)
+        traces = logits.gather(index = tokens.input_ids, dim = 2)
+        logging.info(traces.shape)
+
+        return traces.mean(dim = 1).cpu().numpy()
