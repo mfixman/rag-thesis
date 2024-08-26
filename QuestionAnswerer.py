@@ -41,7 +41,7 @@ class QuestionAnswerer:
         return dict(zip(question_dict.keys(), zip(answers, logits)))
 
     @torch.no_grad()
-    def query(self, questions: list[str]) -> tuple[list[str], list[float]]:
+    def query(self, questions: list[str]) -> tuple[list[str], list[float], FloatTensor]:
         tokens = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
@@ -55,8 +55,9 @@ class QuestionAnswerer:
         attention_masks = tokens['attention_mask'].chunk(chunks, dim = 0)
 
         logging.info(f"Answering questions for {len(questions)} × {tokens['input_ids'].shape[1]} = {len(questions) * tokens['input_ids'].shape[1]} in {chunks} chunks.")
-        sequences = []
-        logits = []
+        sequences: list[str] = []
+        logits: list[float] = []
+        all_logits: list[FloatTensor] = []
         for ids, masks in zip(input_ids, attention_masks):
             outputs = self.llm.model.generate(
                 input_ids = ids,
@@ -90,5 +91,7 @@ class QuestionAnswerer:
             sequences.extend(seqs)
             logits.extend(logs.cpu().tolist())
 
+            all_logits.append(torch.stack(outputs.logits, dim = 1))
+
         answers = [a.removeprefix(q).strip().strip('.') for q, a in zip(questions, sequences)]
-        return answers, logits
+        return answers, logits, torch.cat(all_logits, dim = 0)

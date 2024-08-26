@@ -133,12 +133,15 @@ def streq(a: str, b: str) -> bool:
     b = b.lower().replace('the', '').replace(',', '').strip()
     return a[:len(b)] == b[:len(a)]
 
+def followProbs(logits: FloatTensor, follow: LongTensor) -> FloatTensor:
+    return torch.gather(logits.softmax(dim = 2), index = follow, dim = 2).mean(dim = 1)
+
 def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[int], *, use_counterfactuals: bool = False, use_logits: bool = False) -> dict[str, Any]:
     output = {}
 
     prompt = 'Answer the following question in a few words and with no formatting.'
 
-    parametric, param_logits = qa.query([q.format(prompt = prompt) for q in questions])
+    parametric, param_logits, all_logits = qa.query([q.format(prompt = prompt) for q in questions])
     output['parametric'] = parametric
     if use_logits:
         output['param_logits'] = param_logits
@@ -158,13 +161,6 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
         output['ctx_answer'] = ctx_answer
         if use_logits:
             output['ctx_logits'] = ctx_logits
-
-        # comparison_prompt = f'Write the string "This answer is Parametric." if Answer = Parametric; write the string "This answer is Counterfactual." if Answer = Counterfactual; write the string "This answer is Other." otherwise. This answer is'
-        # comparison_queries = [
-        #     f'Parametric: [{param}], Counterfactual: [{counter}], Answer: [{answer}]. ' + comparison_prompt
-        #     for param, counter, answer in zip(parametric, counterfactual, ctx_answer)
-        # ]
-        # comparisons, logits = qa.query(comparison_queries)
 
         output['comparison'] = [
             'Parametric' if streq(a, p) else
