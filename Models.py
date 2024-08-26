@@ -40,21 +40,25 @@ class Model(nn.Module):
         )
         if 'llama' in name:
             kwargs['pad_token'] = '<|reserved_special_token_0|>'
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_name,
             **kwargs,
         )
 
+        logging.info(f'Loading model for {self.model_name} using {torch.cuda.device_count()} GPUs.')
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
-            device_map = self.device,
-            torch_dtype = torch.bfloat16,
+            device_map = 'auto' if self.device == 'cuda' else self.device,
+            torch_dtype = torch.float16,
+            # load_in_8bit = True,
             pad_token_id = self.tokenizer.pad_token_id,
             bos_token_id = self.tokenizer.bos_token_id,
             eos_token_id = self.tokenizer.eos_token_id,
         )
-
         self.model.eval()
+
+        logging.info('All loaded!')
 
     @classmethod
     def fromNames(cls, names: list[str]) -> list['Model']:
@@ -72,7 +76,11 @@ class Model(nn.Module):
         try:
             return AutoModelForCausalLM.from_pretrained(
                 model_name,
-                device_map = self.device,
+                device_map = 'auto' if self.device == 'cuda' else self.device,
+                torch_dtype = torch.float16,
+                pad_token_id = self.tokenizer.pad_token_id,
+                bos_token_id = self.tokenizer.bos_token_id,
+                eos_token_id = self.tokenizer.eos_token_id,
             )
         except OSError:
             pass

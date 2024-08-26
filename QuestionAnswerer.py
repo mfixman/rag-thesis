@@ -34,7 +34,7 @@ class QuestionAnswerer:
             model = Model(model, device = device)
 
         model = typing.cast(Model, model)
-        self.llm = model.to(device)
+        self.llm = model
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
         answers, logits = self.query(list(question_dict.values()))
