@@ -41,7 +41,7 @@ class QuestionAnswerer:
         return dict(zip(question_dict.keys(), zip(answers, logits)))
 
     @torch.no_grad()
-    def query(self, questions: list[str]) -> tuple[list[str], FloatTensor]
+    def query(self, questions: list[str]) -> tuple[list[str], FloatTensor]:
         tokens = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
@@ -89,16 +89,20 @@ class QuestionAnswerer:
     def gather(self, logits: FloatTensor, words: list[str]) -> list[float]:
         assert logits.shape[0] == len(words)
         assert torch.all((logits >= 0) & (logits < 1))
-        assert logits.shape[1] >= max(len(x) for x in words)
+        assert torch.isclose(logits.sum(dim = 2), torch.ones(logits.shape[0:2]).to(self.device)).all()
 
-        tokens = self.llm.tokenizer(
+        ids = self.llm.tokenizer(
             words,
             return_tensors = 'pt',
             padding = True,
-        )
-        logging.info(tokens.input_ids.shape)
+        ).input_ids.to(self.device)
+        logging.info(ids.shape)
 
-        traces = logits.gather(index = tokens.input_ids, dim = 2)
-        logging.info(traces.shape)
+        assert logits.shape[1] >= ids.shape[1]
+        logits = logits[:, :ids.shape[1], :]
 
-        return traces.mean(dim = 1).cpu().numpy()
+        traces = logits.gather(index = ids.unsqueeze(2), dim = 2).squeeze(2)
+        traces[ids == self.llm.tokenizer.pad_token_id] = torch.nan
+        logging.info(list(zip(ids, traces)))
+
+        return traces.nanmean(dim = 1).cpu().numpy()

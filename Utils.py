@@ -11,9 +11,9 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional, Any
 
-from QuestionAnswerer import QuestionAnswerer
+from torch import FloatTensor, LongTensor, BoolTensor
 
-import ipdb
+from QuestionAnswerer import QuestionAnswerer
 
 def prepareQuestions(rags: list[RAG], prompt: str, questions: list[str]) -> dict[tuple[str, str], str]:
     enhanced_questions: dict[tuple[str, str], str] = {}
@@ -144,7 +144,7 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
     parametric, logits = qa.query([q.format(prompt = prompt) for q in questions])
     output['parametric'] = parametric
     if use_logits:
-        output['param_logits'] = gather(logits, parametric)
+        output['param_logits'] = qa.gather(logits, parametric)
 
     if use_counterfactuals:
         context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
