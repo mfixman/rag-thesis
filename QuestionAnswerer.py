@@ -56,7 +56,7 @@ class QuestionAnswerer:
             padding = True,
         ).to(self.device)
 
-        batch_size = 5000
+        batch_size = 15000
         chunks = 1 + (tokens['input_ids'].shape[0] * tokens['input_ids'].shape[1]) // batch_size
         input_ids = tokens['input_ids'].chunk(chunks, dim = 0)
         attention_masks = tokens['attention_mask'].chunk(chunks, dim = 0)
@@ -90,16 +90,23 @@ class QuestionAnswerer:
 
     # (n, w); (n, w) -> [n]; [n]
     def decode(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
-        stop_token = self.llm.tokenizer.convert_tokens_to_ids('.')
+        # stop_token_id = self.llm.tokenizer.convert_tokens_to_ids('.')
+        stop_token_ids = torch.tensor([13, 382, 570, 627, 662, 920, 948, 3343]).to(path.device)
 
-        ignores = torch.cumsum(path == stop_token, dim = 1) > 0
+        ignores = torch.cumsum(torch.isin(path, stop_token_ids), dim = 1) > 0
         path[ignores] = self.llm.tokenizer.pad_token_id
         probs[ignores] = torch.nan
 
         phrase = self.llm.tokenizer.batch_decode(path, skip_special_tokens = True, clean_up_tokenization_spaces = True)
         avg_probs = list(probs.nanmean(dim = 1).cpu().numpy())
 
-        return phrase, avg_probs
+        if any('.' in x for x in phrase):
+            bads = [e for e, x in enumerate(phrase) if '.' in x]
+            tokens = {x.cpu().item(): self.llm.tokenizer.convert_ids_to_tokens(x.cpu().item()) for e in bads for x in path[e]}
+            bad_tokens = {k: v for k, v in tokens.items() if k not in stop_token_ids and '.' in v}
+            raise ValueError(f'Unregistered tokens with periods generated: {bad_tokens}')
+
+        return [x.strip() for x in phrase], avg_probs
 
     def gather(self, logits: FloatTensor, ids: LongTensor) -> list[float]:
         assert logits.shape[0] == ids.shape[0]
