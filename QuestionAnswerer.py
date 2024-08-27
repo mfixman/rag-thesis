@@ -41,8 +41,9 @@ class QuestionAnswerer:
         answers, logits = self.query(list(question_dict.values()))
         return dict(zip(question_dict.keys(), zip(answers, logits)))
 
+    # [n] -> (n, w, v)
     @torch.no_grad()
-    def query(self, questions: list[str]) -> tuple[list[str], FloatTensor]:
+    def query(self, questions: list[str]) -> FloatTensor:
         tokens = self.llm.tokenizer(
             questions,
             return_tensors = 'pt',
@@ -50,20 +51,19 @@ class QuestionAnswerer:
             padding = True,
         ).to(self.device)
 
-        batch_size = 15000
+        batch_size = 5000
         chunks = 1 + (tokens['input_ids'].shape[0] * tokens['input_ids'].shape[1]) // batch_size
         input_ids = tokens['input_ids'].chunk(chunks, dim = 0)
         attention_masks = tokens['attention_mask'].chunk(chunks, dim = 0)
 
         logging.info(f"Answering questions for {len(questions)} × {tokens['input_ids'].shape[1]} = {len(questions) * tokens['input_ids'].shape[1]} in {chunks} chunks.")
-        sequences: list[str] = []
         all_logits: list[FloatTensor] = []
         for ids, masks in zip(input_ids, attention_masks):
             outputs = self.llm.model.generate(
                 input_ids = ids,
                 attention_mask = masks,
                 max_new_tokens = self.max_length,
-                stop_strings = ['.', '\n'],
+                # stop_strings = ['.', '\n'],
                 do_sample = False,
                 tokenizer = self.llm.tokenizer,
                 output_logits = True,
@@ -74,30 +74,27 @@ class QuestionAnswerer:
                 eos_token_id = self.llm.tokenizer.eos_token_id,
                 bos_token_id = self.llm.tokenizer.bos_token_id,
             )
-
-            sequences.extend(self.decode(outputs.sequences))
             all_logits.append(torch.stack(outputs.logits, dim = 1).softmax(dim = 2))
 
-            logits = torch.stack(outputs.logits, dim = 1).softmax(dim = 2)
+        return torch.cat(all_logits, dim = 0)
 
-            s = list(outputs.sequences.shape)
-            s[1] -= tokens.input_ids.shape[1]
-            s = tuple(s)
+    # (n, w, v) -> (n, w); (n, w)
+    def winner(self, logits: FloatTensor) -> tuple[LongTensor, FloatTensor]:
+        probs, path = logits.max(dim = 2)
+        return path, probs
 
-            logging.info(s)
-            logging.info(logits.shape)
-            sys.exit(0)
-            # for s, l in zip(outputs.sequences, logits):
+    # (n, w); (n, w) -> [n]; [n]
+    def decode(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
+        stop_token = self.llm.tokenizer.convert_tokens_to_ids('.')
 
-        answers = [a.removeprefix(q).split('\n')[0].split('.')[0] for q, a in zip(questions, sequences)]
-        return answers, torch.cat(all_logits, dim = 0)
+        ignores = torch.cumsum(path == stop_token, dim = 1) > 0
+        path[ignores] = self.llm.tokenizer.pad_token_id
+        probs[ignores] = torch.nan
 
-    def decode(self, ids: LongTensor) -> list[str]:
-        return self.llm.tokenizer.batch_decode(
-            ids,
-            skip_special_tokens = True,
-            clean_up_tokenization_spaces = True
-        )
+        phrase = self.llm.tokenizer.batch_decode(path, skip_special_tokens = True, clean_up_tokenization_spaces = True)
+        avg_probs = list(probs.nanmean(dim = 1).cpu().numpy())
+
+        return phrase, avg_probs
 
     def gather(self, logits: FloatTensor, ids: LongTensor) -> list[float]:
         assert logits.shape[0] == ids.shape[0]

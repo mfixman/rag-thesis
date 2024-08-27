@@ -153,10 +153,11 @@ def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[in
 
     prompt = 'Answer the following question in a few words and with no formatting.'
 
-    parametric, logits = qa.query([q.format(prompt = prompt) for q in questions])
-    output['parametric'] = parametric
+    logits = qa.query([q.format(prompt = prompt) for q in questions])
+    param, probs = qa.decode(*qa.winner(logits))
+    output['parametric'] = param
     if use_logits:
-        output['param_logits'] = qa.gather(logits, parametric)
+        output['param_logits'] = probs
 
     if use_counterfactuals:
         context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
