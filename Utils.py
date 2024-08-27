@@ -96,14 +96,26 @@ def combine_questions(base_questions: list[str], things: list[dict[str, str]], l
             questions.append(obj)
             cat_positions[obj.question].add(len(questions) - 1)
 
-            if len(questions) == lim_questions:
-                return questions, cat_positions
+    if lim_questions is None:
+        return questions, cat_positions
+
+    keep_nums = {x: e for e, x in enumerate(random.sample(range(len(questions)), lim_questions))}
+    questions = [questions[x] for x in keep_nums.keys()]
+    cat_positions = {k: {keep_nums[t] for t in v & set(keep_nums)} for k, v in cat_positions.items() if not v.isdisjoint(keep_nums)}
 
     return questions, cat_positions
 
 def find_flips(cat_positions: dict[str, set[int]], total: int) -> list[int]:
     flips: list[Optional[int]] = [None for _ in range(total)]
     for cat, values in cat_positions.items():
+        assert len(values) > 0
+
+        if len(values) == 1:
+            logging.warn('Question without counterfactual. Keeping it equal!')
+            v = next(iter(values))
+            flips[v] = v
+            continue
+
         for v in values:
             flips[v] = random.choice(list(values - {v}))
 

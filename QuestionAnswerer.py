@@ -14,6 +14,7 @@ from Models import Model
 from typing import Optional, Union
 
 import ipdb
+import sys
 
 class QuestionAnswerer:
     device: str
@@ -62,7 +63,7 @@ class QuestionAnswerer:
                 input_ids = ids,
                 attention_mask = masks,
                 max_new_tokens = self.max_length,
-                # stop_strings = ['.', '\n'],
+                stop_strings = ['.', '\n'],
                 do_sample = False,
                 tokenizer = self.llm.tokenizer,
                 output_logits = True,
@@ -74,35 +75,42 @@ class QuestionAnswerer:
                 bos_token_id = self.llm.tokenizer.bos_token_id,
             )
 
-            sequences.extend(
-                self.llm.tokenizer.batch_decode(
-                    outputs.sequences,
-                    skip_special_tokens = True,
-                    clean_up_tokenization_spaces = True,
-                )
-            )
+            sequences.extend(self.decode(outputs.sequences))
             all_logits.append(torch.stack(outputs.logits, dim = 1).softmax(dim = 2))
+
+            logits = torch.stack(outputs.logits, dim = 1).softmax(dim = 2)
+
+            s = list(outputs.sequences.shape)
+            s[1] -= tokens.input_ids.shape[1]
+            s = tuple(s)
+
+            logging.info(s)
+            logging.info(logits.shape)
+            sys.exit(0)
+            # for s, l in zip(outputs.sequences, logits):
 
         answers = [a.removeprefix(q).split('\n')[0].split('.')[0] for q, a in zip(questions, sequences)]
         return answers, torch.cat(all_logits, dim = 0)
 
-    def gather(self, logits: FloatTensor, words: list[str]) -> list[float]:
-        assert logits.shape[0] == len(words)
+    def decode(self, ids: LongTensor) -> list[str]:
+        return self.llm.tokenizer.batch_decode(
+            ids,
+            skip_special_tokens = True,
+            clean_up_tokenization_spaces = True
+        )
+
+    def gather(self, logits: FloatTensor, ids: LongTensor) -> list[float]:
+        assert logits.shape[0] == ids.shape[0]
+        assert logits.shape[1] == ids.shape[1]
         assert torch.all((logits >= 0) & (logits < 1))
         assert torch.isclose(logits.sum(dim = 2), torch.ones(logits.shape[0:2]).to(self.device)).all()
 
-        ids = self.llm.tokenizer(
-            words,
-            return_tensors = 'pt',
-            padding = True,
-        ).input_ids.to(self.device)
-        logging.info(ids.shape)
-
-        assert logits.shape[1] >= ids.shape[1]
-        logits = logits[:, :ids.shape[1], :]
+        stop_string_ids = self.tokenizer.convert_tokens_to_ids(['.'])
 
         traces = logits.gather(index = ids.unsqueeze(2), dim = 2).squeeze(2)
         traces[ids == self.llm.tokenizer.pad_token_id] = torch.nan
-        logging.info(list(zip(ids, traces)))
+
+        for i, trace in zip(ids, traces):
+            logging.info(zip(i, trace))
 
         return traces.nanmean(dim = 1).cpu().numpy()

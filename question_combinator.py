@@ -27,6 +27,7 @@ def parse_args():
     parser.add_argument('--counterfactuals', action = 'store_true', help = 'Whether to include counterfactuals in final CSV')
     parser.add_argument('--logits', action = 'store_true', help = 'Whether to add data about logits.')
     parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
+    parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly')
 
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
     parser.add_argument('things_file', type = open, help = 'File with things to combine')
@@ -42,7 +43,6 @@ def parse_args():
     return args
 
 def main():
-    random.seed(0)
     logging.getLogger('transformers').setLevel(logging.ERROR)
     logging.basicConfig(
         format='[%(asctime)s] %(message)s',
@@ -50,6 +50,9 @@ def main():
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     args = parse_args()
+
+    if not args.rand:
+        random.seed(0)
 
     if args.offline:
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
