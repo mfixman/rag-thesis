@@ -37,7 +37,7 @@ class QuestionAnswerer:
         self.max_length = max_length
 
         if type(model) == str:
-            model = Model(model, device = device)
+            model = Model.fromName(model, device = device)
 
         model = typing.cast(Model, model)
         self.llm = model
@@ -83,7 +83,7 @@ class QuestionAnswerer:
 
         return torch.cat(all_logits, dim = 0)
 
-    # (n, w, v) -> (n, w); (n, w)
+    # (n, w, v) -> (n, w); [(n, w), (n, w)]
     def winner(self, logits: FloatTensor) -> tuple[LongTensor, FloatTensor]:
         probs, path = logits.max(dim = 2)
         return path, probs
