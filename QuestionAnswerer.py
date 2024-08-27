@@ -117,11 +117,9 @@ class QuestionAnswerer:
 
     # Gets mean probabilities of logits along a sequence of paths.
     # (n, v); (n, w, v) -> [n]
-    def gather(self, path: LongTensor, logits: FloatTensor) -> list[float]:
+    def gather(self, path: LongTensor, logits: FloatTensor) -> tuple[list[str], list[float]]:
         traces = logits.gather(index = path.unsqueeze(2), dim = 2).squeeze(2)
-        results, probs = self.decode(path, traces)
-        logging.info('; '.join(results))
-        return probs
+        return self.decode(path, traces)
 
     @staticmethod
     def streq(a: str, b: str) -> bool:
@@ -129,21 +127,20 @@ class QuestionAnswerer:
         b = b.lower().replace('the', '').replace(',', '').strip()
         return a[:len(b)] == b[:len(a)]
 
-    def answerCounterfactuals(self, questions: list[Object], counterfactuals = list[str]) -> dict[str, Any]:
+    def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], param_path: LongTensor) -> dict[str, Any]:
         prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
 
         output: dict[str, Any] = {}
-        output['counterfactual'] = counterfactuals
-
         queries = [
             q.format(prompt = prompt, context = context)
             for q, context in zip(questions, counterfactuals)
         ]
 
         logits = self.query(queries)
-        cparam, cprobs = self.decode(*self.winner(logits))
-        output['ctx_answer'] = cparam
-        output['ctx_logits'] = cprobs
+        path, probs = self.winner(logits)
+        output['contextual'], output['ctx_proba'] = self.decode(path, probs)
+
+        _, output['ctx_param_proba'] = self.gather(param_path, logits)
 
         return output
 
@@ -154,25 +151,21 @@ class QuestionAnswerer:
 
         logits = self.query([q.format(prompt = prompt) for q in questions])
         path, probs = self.winner(logits)
-        result, mean_probs = self.decode(path, probs)
-        output['parametric'] = result
-        output['param_logits'] = mean_probs
-
-        # self.gather(path, logits)
+        output['parametric'], output['base_proba'] = self.decode(path, probs)
 
         if counterfactual_flips is not None:
             cf_path = path[counterfactual_flips]
-            gather(cf_path, logits)
+            counterfactuals, base_cf_mean_probs = self.gather(cf_path, logits)
+            output['counterfactual'] = counterfactuals
+            output['base_cf_proba'] = base_cf_mean_probs
 
-            output |= self.answerCounterfactuals(questions, counterfactuals)
+            output |= self.answerCounterfactuals(questions, counterfactuals, param_path = path)
 
             output['comparison'] = [
                 'Parametric' if self.streq(a, p) else
                 'Counterfactual' if self.streq(a, c) else
                 'Other'
-                for p, c, a in zip(output['parametric'], output['counterfactual'], output['ctx_answer'])
+                for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
             ]
-
-            # output['cf_in_param'] = self.gather(
 
         return output
