@@ -88,10 +88,17 @@ class QuestionAnswerer:
         probs, path = logits.max(dim = 2)
         return path, probs
 
+    # Decodes the tokens in `path`, and returns the average value within used tokens in `probs`.
     # (n, w); (n, w) -> [n]; [n]
     def decode(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
-        # stop_token_id = self.llm.tokenizer.convert_tokens_to_ids('.')
-        stop_token_ids = torch.tensor([13, 382, 570, 627, 662, 920, 948, 3343]).to(path.device)
+        # IDs of tokens that contain a period in them.
+        stop_token_ids = torch.tensor(
+            # Tokens that contain '.'
+            [13, 382, 570, 627, 662, 920, 948, 3343] +
+
+            # Tokens that contain '\n'
+            [198, 5380]
+        ).to(path.device)
 
         ignores = torch.cumsum(torch.isin(path, stop_token_ids), dim = 1) > 0
         path[ignores] = self.llm.tokenizer.pad_token_id
@@ -100,29 +107,21 @@ class QuestionAnswerer:
         phrase = self.llm.tokenizer.batch_decode(path, skip_special_tokens = True, clean_up_tokenization_spaces = True)
         avg_probs = list(probs.nanmean(dim = 1).cpu().numpy())
 
-        if any('.' in x for x in phrase):
-            bads = [e for e, x in enumerate(phrase) if '.' in x]
-            tokens = {x.cpu().item(): self.llm.tokenizer.convert_ids_to_tokens(x.cpu().item()) for e in bads for x in path[e]}
-            bad_tokens = {k: v for k, v in tokens.items() if k not in stop_token_ids and '.' in v}
-            raise ValueError(f'Unregistered tokens with periods generated: {bad_tokens}')
+        if any('.' in x or '\n' in x for x in phrase):
+            bads = [e for e, x in enumerate(phrase) if '.' in x or '\n' in x]
+            tokens = {x.cpu().item(): self.llm.tokenizer.decode(x.cpu().item()) for e in bads for x in path[e]}
+            bad_tokens = {k: v for k, v in tokens.items() if k not in stop_token_ids and ('.' in v or '\n' in v)}
+            raise ValueError(f'Unregistered tokens with stop characters generated: {bad_tokens}')
 
         return [x.strip() for x in phrase], avg_probs
 
-    def gather(self, logits: FloatTensor, ids: LongTensor) -> list[float]:
-        assert logits.shape[0] == ids.shape[0]
-        assert logits.shape[1] == ids.shape[1]
-        assert torch.all((logits >= 0) & (logits < 1))
-        assert torch.isclose(logits.sum(dim = 2), torch.ones(logits.shape[0:2]).to(self.device)).all()
-
-        stop_string_ids = self.llm.tokenizer.convert_tokens_to_ids(['.'])
-
-        traces = logits.gather(index = ids.unsqueeze(2), dim = 2).squeeze(2)
-        traces[ids == self.llm.tokenizer.pad_token_id] = torch.nan
-
-        for i, trace in zip(ids, traces):
-            logging.info(zip(i, trace))
-
-        return traces.nanmean(dim = 1).cpu().numpy()
+    # Gets mean probabilities of logits along a sequence of paths.
+    # (n, v); (n, w, v) -> [n]
+    def gather(self, path: LongTensor, logits: FloatTensor) -> list[float]:
+        traces = logits.gather(index = path.unsqueeze(2), dim = 2).squeeze(2)
+        results, probs = self.decode(path, traces)
+        logging.info('; '.join(results))
+        return probs
 
     @staticmethod
     def streq(a: str, b: str) -> bool:
@@ -130,7 +129,7 @@ class QuestionAnswerer:
         b = b.lower().replace('the', '').replace(',', '').strip()
         return a[:len(b)] == b[:len(a)]
 
-    def answerCounterfactuals(self, questions: list[Object], counterfactuals = list[Object]) -> dict[str, Any]:
+    def answerCounterfactuals(self, questions: list[Object], counterfactuals = list[str]) -> dict[str, Any]:
         prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
 
         output: dict[str, Any] = {}
@@ -154,13 +153,17 @@ class QuestionAnswerer:
         output: dict[str, Any] = {}
 
         logits = self.query([q.format(prompt = prompt) for q in questions])
-        param, probs = self.decode(*self.winner(logits))
-        output['parametric'] = param
-        output['param_logits'] = probs
+        path, probs = self.winner(logits)
+        result, mean_probs = self.decode(path, probs)
+        output['parametric'] = result
+        output['param_logits'] = mean_probs
+
+        # self.gather(path, logits)
 
         if counterfactual_flips is not None:
-            counterfactuals = [param[x] for x in counterfactual_flips]
-            assert len(questions) == len(counterfactuals)
+            cf_path = path[counterfactual_flips]
+            gather(cf_path, logits)
+
             output |= self.answerCounterfactuals(questions, counterfactuals)
 
             output['comparison'] = [
@@ -169,5 +172,7 @@ class QuestionAnswerer:
                 'Other'
                 for p, c, a in zip(output['parametric'], output['counterfactual'], output['ctx_answer'])
             ]
+
+            # output['cf_in_param'] = self.gather(
 
         return output
