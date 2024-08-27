@@ -13,8 +13,6 @@ from typing import Optional, Any
 
 from torch import FloatTensor, LongTensor, BoolTensor
 
-from QuestionAnswerer import QuestionAnswerer
-
 def prepareQuestions(rags: list[RAG], prompt: str, questions: list[str]) -> dict[tuple[str, str], str]:
     enhanced_questions: dict[tuple[str, str], str] = {}
     for q in questions:
@@ -100,10 +98,10 @@ def combine_questions(base_questions: list[str], things: list[dict[str, str]], l
         return questions, cat_positions
 
     keep_nums = {x: e for e, x in enumerate(random.sample(range(len(questions)), lim_questions))}
-    questions = [questions[x] for x in keep_nums.keys()]
-    cat_positions = {k: {keep_nums[t] for t in v & set(keep_nums)} for k, v in cat_positions.items() if not v.isdisjoint(keep_nums)}
+    short_questions = [questions[x] for x in keep_nums.keys()]
+    short_cat_positions = {k: {keep_nums[t] for t in v & set(keep_nums)} for k, v in cat_positions.items() if not v.isdisjoint(keep_nums)}
 
-    return questions, cat_positions
+    return short_questions, short_cat_positions
 
 def find_flips(cat_positions: dict[str, set[int]], total: int) -> list[int]:
     flips: list[Optional[int]] = [None for _ in range(total)]
@@ -139,47 +137,3 @@ def printParametricCSV(questions: list[Object], answer: dict[str, str]):
 
         param = dict(zip(answer.keys(), answers))
         writer.writerow({'Category': question.category, 'Base_Question': ''.join(question.question.partition('?')[0:2]), 'Thing': question.thing, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)
-
-def streq(a: str, b: str) -> bool:
-    a = a.lower().replace('the', '').replace(',', '').strip()
-    b = b.lower().replace('the', '').replace(',', '').strip()
-    return a[:len(b)] == b[:len(a)]
-
-def followProbs(logits: FloatTensor, follow: LongTensor) -> FloatTensor:
-    return torch.gather(logits.softmax(dim = 2), index = follow, dim = 2).mean(dim = 1)
-
-def answerQueries(qa: QuestionAnswerer, questions: list[Object], flips = list[int], *, use_counterfactuals: bool = False, use_logits: bool = False) -> dict[str, Any]:
-    output = {}
-
-    prompt = 'Answer the following question in a few words and with no formatting.'
-
-    logits = qa.query([q.format(prompt = prompt) for q in questions])
-    param, probs = qa.decode(*qa.winner(logits))
-    output['parametric'] = param
-    if use_logits:
-        output['param_logits'] = probs
-
-    if use_counterfactuals:
-        context_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
-        counterfactual = [parametric[x] for x in flips]
-        output['counterfactual'] = counterfactual
-
-        assert len(questions) == len(counterfactual)
-        queries = [
-            q.format(prompt = context_prompt, context = context)
-            for q, context in zip(questions, counterfactual)
-        ]
-
-        ctx_answer, ctx_logits = qa.query(queries)
-        output['ctx_answer'] = ctx_answer
-        if use_logits:
-            output['ctx_logits'] = ctx_logits
-
-        output['comparison'] = [
-            'Parametric' if streq(a, p) else
-            'Counterfactual' if streq(a, c) else
-            'Other'
-            for p, c, a in zip(parametric, counterfactual, ctx_answer)
-        ]
-
-    return output

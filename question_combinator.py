@@ -25,7 +25,6 @@ def parse_args():
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu', help = 'Inference device')
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
     parser.add_argument('--counterfactuals', action = 'store_true', help = 'Whether to include counterfactuals in final CSV')
-    parser.add_argument('--logits', action = 'store_true', help = 'Whether to add data about logits.')
     parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
     parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly')
 
@@ -59,7 +58,9 @@ def main():
 
     logging.info('Getting questions')
     questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
-    flips = find_flips(cat_positions, len(questions))
+    flips = None
+    if args.counterfactuals:
+        flips = find_flips(cat_positions, len(questions))
 
     logging.info(f'About to answer {len(questions) * len(args.models) * (1 + args.counterfactuals)} questions in total.')
     answers = {}
@@ -67,7 +68,7 @@ def main():
         qa = QuestionAnswerer(model, device = args.device, max_length = 15)
         answers |= {
             f'{k}-{model}': v
-            for k, v in answerQueries(qa, questions, flips, use_counterfactuals = args.counterfactuals, use_logits = args.logits).items()
+            for k, v in qa.answerQueries(questions, flips).items()
         }
 
     logging.info('Writing CSV')

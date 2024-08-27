@@ -6,15 +6,20 @@ import logging
 import torch
 import typing
 
-from torch import LongTensor, FloatTensor
 from torch.nn.utils.rnn import pad_sequence
 from torch.nn.functional import pad
 
 from Models import Model
-from typing import Optional, Union
+from typing import Optional, Union, Any
+from Utils import Object
 
 import ipdb
 import sys
+
+
+FloatTensor = torch.Tensor
+LongTensor = torch.Tensor
+BoolTensor = torch.Tensor
 
 class QuestionAnswerer:
     device: str
@@ -102,7 +107,7 @@ class QuestionAnswerer:
         assert torch.all((logits >= 0) & (logits < 1))
         assert torch.isclose(logits.sum(dim = 2), torch.ones(logits.shape[0:2]).to(self.device)).all()
 
-        stop_string_ids = self.tokenizer.convert_tokens_to_ids(['.'])
+        stop_string_ids = self.llm.tokenizer.convert_tokens_to_ids(['.'])
 
         traces = logits.gather(index = ids.unsqueeze(2), dim = 2).squeeze(2)
         traces[ids == self.llm.tokenizer.pad_token_id] = torch.nan
@@ -111,3 +116,51 @@ class QuestionAnswerer:
             logging.info(zip(i, trace))
 
         return traces.nanmean(dim = 1).cpu().numpy()
+
+    @staticmethod
+    def streq(a: str, b: str) -> bool:
+        a = a.lower().replace('the', '').replace(',', '').strip()
+        b = b.lower().replace('the', '').replace(',', '').strip()
+        return a[:len(b)] == b[:len(a)]
+
+    def answerCounterfactuals(self, questions: list[Object], counterfactuals = list[Object]) -> dict[str, Any]:
+        prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
+
+        output: dict[str, Any] = {}
+        output['counterfactual'] = counterfactuals
+
+        queries = [
+            q.format(prompt = prompt, context = context)
+            for q, context in zip(questions, counterfactuals)
+        ]
+
+        logits = self.query(queries)
+        cparam, cprobs = self.decode(*self.winner(logits))
+        output['ctx_answer'] = cparam
+        output['ctx_logits'] = cprobs
+
+        return output
+
+    def answerQueries(self, questions: list[Object], counterfactual_flips = Optional[list[int]]) -> dict[str, Any]:
+        prompt = 'Answer the following question in a few words and with no formatting.'
+
+        output: dict[str, Any] = {}
+
+        logits = self.query([q.format(prompt = prompt) for q in questions])
+        param, probs = self.decode(*self.winner(logits))
+        output['parametric'] = param
+        output['param_logits'] = probs
+
+        if counterfactual_flips is not None:
+            counterfactuals = [param[x] for x in counterfactual_flips]
+            assert len(questions) == len(counterfactuals)
+            output |= self.answerCounterfactuals(questions, counterfactuals)
+
+            output['comparison'] = [
+                'Parametric' if self.streq(a, p) else
+                'Counterfactual' if self.streq(a, c) else
+                'Other'
+                for p, c, a in zip(output['parametric'], output['counterfactual'], output['ctx_answer'])
+            ]
+
+        return output
