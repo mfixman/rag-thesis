@@ -121,7 +121,7 @@ def find_flips(cat_positions: dict[str, set[int]], total: int) -> list[int]:
     return typing.cast(list[int], flips)
 
 def printParametricCSV(questions: list[Object], answer: dict[str, str]):
-    fieldnames = ['Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())
+    fieldnames = ['Num', 'Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())
 
     writer = csv.DictWriter(
         sys.stdout,
@@ -132,8 +132,8 @@ def printParametricCSV(questions: list[Object], answer: dict[str, str]):
     )
     writer.writeheader()
 
-    for question, *answers in itertools.zip_longest(questions, *answer.values()):
+    for e, (question, *answers) in enumerate(itertools.zip_longest(questions, *answer.values())):
         question = typing.cast(Object, question)
 
         param = dict(zip(answer.keys(), answers))
-        writer.writerow({'Category': question.category, 'Base_Question': ''.join(question.question.partition('?')[0:2]), 'Thing': question.thing, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)
+        writer.writerow({'Num': str(e), 'Category': question.category, 'Base_Question': ''.join(question.question.partition('?')[0:2]), 'Thing': question.thing, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)

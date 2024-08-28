@@ -47,13 +47,8 @@ class QuestionAnswerer:
             for k, v in self.llm.tokenizer.get_vocab().items()
             if
                 k == self.llm.tokenizer.special_tokens_map['eos_token'] or
-                not stop_tokens.isdisjoint(k)
+                not stop_tokens.isdisjoint(self.llm.tokenizer.decode(v))
         ]).to(self.device)
-
-    def __del__(self):
-        del self.llm
-        del self.stop_token_ids
-        torch.cuda.empty_cache()
 
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
         answers, logits = self.query(list(question_dict.values()))
@@ -69,8 +64,7 @@ class QuestionAnswerer:
             padding = True,
         ).to(self.device)
 
-        batch_size = 5000
-        chunks = 1 + (tokens['input_ids'].shape[0] * tokens['input_ids'].shape[1]) // batch_size
+        chunks = 1 + (tokens['input_ids'].shape[0] * tokens['input_ids'].shape[1]) // self.llm.batch_size
         input_ids = tokens['input_ids'].chunk(chunks, dim = 0)
         attention_masks = tokens['attention_mask'].chunk(chunks, dim = 0)
 
@@ -115,7 +109,7 @@ class QuestionAnswerer:
         if any('.' in x or '\n' in x for x in phrase):
             bads = [e for e, x in enumerate(phrase) if '.' in x or '\n' in x]
             tokens = {x.cpu().item(): self.llm.tokenizer.decode(x.cpu().item()) for e in bads for x in path[e]}
-            bad_tokens = {k: v for k, v in tokens.items() if k not in stop_token_ids and ('.' in v or '\n' in v)}
+            bad_tokens = {k: v for k, v in tokens.items() if k not in self.stop_token_ids and ('.' in v or '\n' in v)}
             raise ValueError(f'Unregistered tokens with stop characters generated: {bad_tokens}')
 
         return [x.strip() for x in phrase], avg_probs

@@ -29,6 +29,8 @@ def parse_args():
     parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
     parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly')
 
+    parser.add_argument('--per-model', action = 'store_true', help = 'Write one CSV per model')
+
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
     parser.add_argument('things_file', type = open, help = 'File with things to combine')
 
@@ -66,14 +68,20 @@ def main(args):
     answers = {}
     for model in args.models:
         qa = QuestionAnswerer(model, device = args.device, max_length = 20)
-        answers |= {
+        model_answers = {
             f'{k}-{model}': v
             for k, v in qa.answerQueries(questions, flips).items()
         }
         del qa
 
-    logging.info('Writing CSV')
-    printParametricCSV(questions, answers)
+        if args.per_model:
+            printParametricCSV(questions, model_answers)
+        else:
+            answers |= model_answers
+
+    if answers:
+        logging.info('Writing CSV')
+        printParametricCSV(questions, answers)
 
 if __name__ == '__main__':
     args = parse_args()

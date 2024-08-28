@@ -51,13 +51,15 @@ class Model(nn.Module):
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             device_map = 'auto' if self.device == 'cuda' else self.device,
-            torch_dtype = torch.float16,
-            # load_in_8bit = True,
+            torch_dtype = torch.bfloat16,
             pad_token_id = self.tokenizer.pad_token_id,
             bos_token_id = self.tokenizer.bos_token_id,
             eos_token_id = self.tokenizer.eos_token_id,
+            low_cpu_mem_usage = True,
         )
         self.model.eval()
+
+        self.batch_size = 15000
 
         logging.info('All loaded!')
 
@@ -65,6 +67,9 @@ class Model(nn.Module):
     def fromName(name: str, device: str = 'cpu') -> 'Model':
         if name == 'dummy':
             return DummyModel()
+
+        if name in ('llama-70b', 'gemma-27b'):
+            return LargeModel(name, device)
 
         return Model(name, device)
 
@@ -96,6 +101,16 @@ class Model(nn.Module):
 
         logging.error('Failed 10 attempts for {model_name}. Giving up.')
         raise
+
+class LargeModel(Model):
+    def __init__(self, name, device: str = 'cpu'):
+        super().__init__(name, device)
+        self.batch_size = 5000
+
+    def __del__(self):
+        logging.info(f'Deleting large model {self.name}')
+        del self.model
+        torch.cuda.empty_cache()
 
 class DummyModel(Model):
     def __init__(self):

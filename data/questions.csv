@@ -1,0 +1,6 @@
+> [0;32m/users/adfx776/rag-thesis/QuestionAnswerer.py[0m(92)[0;36mquery[0;34m()[0m
+[0;32m     91 [0;31m            [0mipdb[0m[0;34m.[0m[0mset_trace[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[0;32m---> 92 [0;31m            [0mall_logits[0m[0;34m.[0m[0mappend[0m[0;34m([0m[0mtorch[0m[0;34m.[0m[0mstack[0m[0;34m([0m[0moutputs[0m[0;34m.[0m[0mlogits[0m[0;34m,[0m [0mdim[0m [0;34m=[0m [0;36m1[0m[0;34m)[0m[0;34m.[0m[0msoftmax[0m[0;34m([0m[0mdim[0m [0;34m=[0m [0;36m2[0m[0;34m)[0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[0;32m     93 [0;31m[0;34m[0m[0m
+[0m
+ipdb> 
