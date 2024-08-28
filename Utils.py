@@ -120,11 +120,29 @@ def find_flips(cat_positions: dict[str, set[int]], total: int) -> list[int]:
     assert all(x is not None for x in flips)
     return typing.cast(list[int], flips)
 
-def printParametricCSV(questions: list[Object], answer: dict[str, str]):
+def findFlips2(questions: list[Object]) -> list[int]:
+    flips = [-1 for _ in questions]
+
+    for cat, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].category):
+        es = set(es_iter)
+
+        if len(es) == 1:
+            logging.warn(f'Unitary category {cat}. id flip!')
+            e = next(iter(es))
+            flips[e] = e
+            continue
+
+        for e in es:
+            flips[e] = random.choice(list(es - {e}))
+
+    assert all(x != -1 for x in flips)
+    return flips
+
+def printParametricCSV(out: typing.TextIO, questions: list[Object], answer: dict[str, str]):
     fieldnames = ['Num', 'Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())
 
     writer = csv.DictWriter(
-        sys.stdout,
+        out,
         fieldnames = fieldnames,
         extrasaction = 'ignore',
         dialect = csv.unix_dialect,

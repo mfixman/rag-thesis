@@ -35,15 +35,19 @@ class Model(nn.Module):
         self.model_name = Model_dict[name]
         self.device = device
 
-        kwargs = dict(
-            clean_up_tokenization_spaces = True,
-            padding_side = 'left',
-        )
         if 'llama' in name:
-            kwargs['pad_token'] = '<|reserved_special_token_0|>'
+            kwargs = dict(
+                pad_token = '<|reserved_special_token_0|>',
+                padding_side = 'left',
+            )
+        elif 'gemma' in name:
+            kwargs = dict(
+                padding_side = 'right',
+            )
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.model_name,
+            clean_up_tokenization_spaces = True,
             **kwargs,
         )
 
@@ -102,15 +106,19 @@ class Model(nn.Module):
         logging.error('Failed 10 attempts for {model_name}. Giving up.')
         raise
 
-class LargeModel(Model):
-    def __init__(self, name, device: str = 'cpu'):
-        super().__init__(name, device)
-        self.batch_size = 5000
-
     def __del__(self):
         logging.info(f'Deleting large model {self.name}')
         del self.model
         torch.cuda.empty_cache()
+
+
+class LargeModel(Model):
+    def __init__(self, name, device: str = 'cpu'):
+        if torch.cuda.device_count() < 2:
+            raise ValueError(f'At least two GPUs are needed to run {name}')
+
+        super().__init__(name, device)
+        self.batch_size = 5000
 
 class DummyModel(Model):
     def __init__(self):

@@ -29,7 +29,8 @@ def parse_args():
     parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
     parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly')
 
-    parser.add_argument('--per-model', action = 'store_true', help = 'Write one CSV per model')
+    parser.add_argument('--per-model', action = 'store_true', help = 'Write one CSV per model in stdout.')
+    parser.add_argument('--output-dir', help = 'Return one CSV per model, and save them to this directory.')
 
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
     parser.add_argument('things_file', type = open, help = 'File with things to combine')
@@ -42,6 +43,9 @@ def parse_args():
     del args.base_questions_file
     del args.things_file
 
+    if args.per_model and args.output_dir:
+        raise ValueError('Only one of --per-model and --output-dir can be specified.')
+
     return args
 
 def main(args):
@@ -52,6 +56,8 @@ def main(args):
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
+    # wandb.init(project = 'question-combinator', config = args)
+
     if not args.rand:
         random.seed(0)
 
@@ -60,9 +66,12 @@ def main(args):
 
     logging.info('Getting questions')
     questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
-    flips = None
-    if args.counterfactuals:
-        flips = find_flips(cat_positions, len(questions))
+
+    if args.output_dir:
+        try:
+            os.mkdir(args.output_dir)
+        except FileExistsError:
+            pass
 
     logging.info(f'About to answer {len(questions) * len(args.models) * (1 + args.counterfactuals)} questions in total.')
     answers = {}
@@ -70,18 +79,21 @@ def main(args):
         qa = QuestionAnswerer(model, device = args.device, max_length = 20)
         model_answers = {
             f'{k}-{model}': v
-            for k, v in qa.answerQueries(questions, flips).items()
+            for k, v in qa.answerQueries(questions).items()
         }
         del qa
 
-        if args.per_model:
-            printParametricCSV(questions, model_answers)
+        if args.output_dir:
+            with open(os.path.join(args.output_dir, model + '.csv'), 'w') as out:
+                printParametricCSV(out, questions, model_answers)
+        elif args.per_model:
+            printParametricCSV(sys.stdout, questions, model_answers)
         else:
             answers |= model_answers
 
     if answers:
         logging.info('Writing CSV')
-        printParametricCSV(questions, answers)
+        printParametricCSV(sys.stdout, questions, answers)
 
 if __name__ == '__main__':
     args = parse_args()
