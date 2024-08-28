@@ -16,7 +16,6 @@ from Utils import Object
 import ipdb
 import sys
 
-
 FloatTensor = torch.Tensor
 LongTensor = torch.Tensor
 BoolTensor = torch.Tensor
@@ -42,6 +41,15 @@ class QuestionAnswerer:
         model = typing.cast(Model, model)
         self.llm = model
 
+        stop_tokens = {'.', '\n', self.llm.tokenizer.special_tokens_map['eos_token']}
+        self.stop_token_ids = torch.tensor([
+            v
+            for k, v in self.llm.tokenizer.get_vocab().items()
+            if
+                k == self.llm.tokenizer.special_tokens_map['eos_token'] or
+                not stop_tokens.isdisjoint(k)
+        ]).to(self.device)
+
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
         answers, logits = self.query(list(question_dict.values()))
         return dict(zip(question_dict.keys(), zip(answers, logits)))
@@ -56,7 +64,7 @@ class QuestionAnswerer:
             padding = True,
         ).to(self.device)
 
-        batch_size = 15000
+        batch_size = 5000
         chunks = 1 + (tokens['input_ids'].shape[0] * tokens['input_ids'].shape[1]) // batch_size
         input_ids = tokens['input_ids'].chunk(chunks, dim = 0)
         attention_masks = tokens['attention_mask'].chunk(chunks, dim = 0)
@@ -68,6 +76,7 @@ class QuestionAnswerer:
                 input_ids = ids,
                 attention_mask = masks,
                 max_new_tokens = self.max_length,
+                min_new_tokens = self.max_length - 1,
                 # stop_strings = ['.', '\n'],
                 do_sample = False,
                 tokenizer = self.llm.tokenizer,
@@ -91,16 +100,7 @@ class QuestionAnswerer:
     # Decodes the tokens in `path`, and returns the average value within used tokens in `probs`.
     # (n, w); (n, w) -> [n]; [n]
     def decode(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
-        # IDs of tokens that contain a period in them.
-        stop_token_ids = torch.tensor(
-            # Tokens that contain '.'
-            [13, 382, 570, 627, 662, 920, 948, 3343] +
-
-            # Tokens that contain '\n'
-            [198, 5380]
-        ).to(path.device)
-
-        ignores = torch.cumsum(torch.isin(path, stop_token_ids), dim = 1) > 0
+        ignores = torch.cumsum(torch.isin(path, self.stop_token_ids), dim = 1) > 0
         path[ignores] = self.llm.tokenizer.pad_token_id
         probs[ignores] = torch.nan
 

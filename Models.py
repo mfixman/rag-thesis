@@ -17,6 +17,7 @@ Model_dict = {
     'roberta-squad': 'deepset/roberta-base-squad2',
     'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
     'gemma': 'google/gemma-2-9b-it',
+    'gemma-27b': 'google/gemma-2-27b-it',
     'mixtral': 'mistralai/Mixtral-8x22B-Instruct-v0.1',
     'dummy': '',
 }

@@ -21,6 +21,7 @@ def parse_args():
         description = 'Combines questions and data and optionally provides parametric data'
     )
 
+    parser.add_argument('--no-except', action = 'store_true', help = 'Do not go to IPDB console on exception.')
     parser.add_argument('--lim-questions', type = int, help = 'Question limit')
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu', help = 'Inference device')
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
@@ -41,14 +42,13 @@ def parse_args():
 
     return args
 
-def main():
+def main(args):
     logging.getLogger('transformers').setLevel(logging.ERROR)
     logging.basicConfig(
         format='[%(asctime)s] %(message)s',
         level=logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S'
     )
-    args = parse_args()
 
     if not args.rand:
         random.seed(0)
@@ -65,7 +65,7 @@ def main():
     logging.info(f'About to answer {len(questions) * len(args.models) * (1 + args.counterfactuals)} questions in total.')
     answers = {}
     for model in args.models:
-        qa = QuestionAnswerer(model, device = args.device, max_length = 15)
+        qa = QuestionAnswerer(model, device = args.device, max_length = 20)
         answers |= {
             f'{k}-{model}': v
             for k, v in qa.answerQueries(questions, flips).items()
@@ -75,5 +75,9 @@ def main():
     printParametricCSV(questions, answers)
 
 if __name__ == '__main__':
-    with ipdb.launch_ipdb_on_exception():
-        main()
+    args = parse_args()
+    if args.no_except:
+        main(args)
+    else:
+        with ipdb.launch_ipdb_on_exception():
+            main(args)
