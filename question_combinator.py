@@ -70,6 +70,7 @@ def main(args):
             f'{k}-{model}': v
             for k, v in qa.answerQueries(questions, flips).items()
         }
+        del qa
 
     logging.info('Writing CSV')
     printParametricCSV(questions, answers)

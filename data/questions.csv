@@ -1,6 +1,0 @@
-> [0;32m/users/adfx776/.pyenv/versions/new_env/lib/python3.9/site-packages/transformers/models/gemma2/modeling_gemma2.py[0m(1014)[0;36mforward[0;34m()[0m
-[0;32m   1013 [0;31m[0;34m[0m[0m
-[0m[0;32m-> 1014 [0;31m        [0mlogits[0m [0;34m=[0m [0mlogits[0m[0;34m.[0m[0mfloat[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
-[0m[0;32m   1015 [0;31m        [0mloss[0m [0;34m=[0m [0;32mNone[0m[0;34m[0m[0;34m[0m[0m
-[0m
-ipdb> 

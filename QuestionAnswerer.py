@@ -50,6 +50,11 @@ class QuestionAnswerer:
                 not stop_tokens.isdisjoint(k)
         ]).to(self.device)
 
+    def __del__(self):
+        del self.llm
+        del self.stop_token_ids
+        torch.cuda.empty_cache()
+
     def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
         answers, logits = self.query(list(question_dict.values()))
         return dict(zip(question_dict.keys(), zip(answers, logits)))

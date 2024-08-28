@@ -61,16 +61,12 @@ class Model(nn.Module):
 
         logging.info('All loaded!')
 
-    @classmethod
-    def fromNames(cls, names: list[str]) -> list['Model']:
-        return [cls.fromName(x) for x in names]
-
     @staticmethod
     def fromName(name: str, device: str = 'cpu') -> 'Model':
         if name == 'dummy':
             return DummyModel()
 
-        return Model(name)
+        return Model(name, device)
 
     def getModel(self, model_name: str) -> AutoModelForCausalLM:
         logging.info(f'Getting {model_name}')
