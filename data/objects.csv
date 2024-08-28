@@ -1,98 +1,317 @@
 thing,category
+Ada Lovelace,person
+Alan Turing,person
 Albert Einstein,person
-Marie Curie,person
-Leonardo da Vinci,person
+Albert Einstein,person
+Alexander Fleming,person
+Aristotle,person
+Billie Jean King,person
+Boyan Slat,person
+Catherine the Great,person
+Che Guevara,person
 Cleopatra,person
-Neil Armstrong,person
-Malala Yousafzai,person
 Confucius,person
-Mansa Musa,person
+Ernest Rutherford,person
 Florence Nightingale,person
+Freddie Mercury,person
+Frida Kahlo,person
+Greta Thunberg,person
+Harriet Tubman,person
+Ibn al-Haytham,person
+Isaac Newton,person
+Karl Marx,person
+Leonardo da Vinci,person
+Mahatma Gandhi,person
+Malala Yousafzai,person
+Malala Yousafzai,person
+Mansa Musa,person
+Marie Curie,person
+Marie Curie,person
+Martin Luther King Jr.,person
+Michelangelo,person
+Mohandas Gandhi,person
+Mozart,person
+Muhammad Ali,person
+Neil Armstrong,person
+Nelson Mandela,person
+Nikola Tesla,person
+Pablo Picasso,person
+Rosalind Franklin,person
+Shirin Ebadi,person
+Simon Bolivar,person
 Srinivasa Ramanujan,person
-Tokyo,city
-Cairo,city
-New York,city
-Paris,city
-Mumbai,city
-Jerusalem,city
-Tenochtitlan,city
-Istanbul,city
-Shanghai,city
+Stephen Hawking,person
+Sun Yat-sen,person
+Virginia Woolf,person
+Vladimir Lenin,person
+Wangari Maathai,person
+W.E.B. Du Bois,person
+William Shakespeare,person
+Wu Zetian,person
+Yuri Gagarin,person
+Alexandria,city
+Amsterdam,city
+Antananarivo,city
+Athens,city
 Baghdad,city
-Gravity,principle
-Relativity,principle
-Evolution,principle
-Quantum Mechanics,principle
-Thermodynamics,principle
-Photosynthesis,principle
-Heliocentrism,principle
-Plate Tectonics,principle
-Superconductivity,principle
+Berlin,city
+Buenos Aires,city
+Bukhara,city
+Cairo,city
+Cape Town,city
+Cartagena,city
+Chicago,city
+Cusco,city
+Cuzco,city
+Delhi,city
+Dubrovnik,city
+Fez,city
+Havana,city
+Istanbul,city
+Jerusalem,city
+Kyoto,city
+La Paz,city
+Lhasa,city
+Lisbon,city
+London,city
+Luang Prabang,city
+Marrakech,city
+Mexico City,city
+Montevideo,city
+Moscow,city
+Mumbai,city
+Muscat,city
+New York,city
+Nur-Sultan,city
+Paris,city
+Petra,city
+Prague,city
+Quebec City,city
+Reykjavik,city
+Rome,city
+São Paulo,city
+Sarajevo,city
+Shanghai,city
+Singapore,city
+St. Petersburg,city
+Sydney,city
+Tbilisi,city
+Tenochtitlan,city
+Thimphu,city
+Timbuktu,city
+Tokyo,city
+Ulaanbaatar,city
+Varanasi,city
+Venice,city
+Vienna,city
+Wellington,city
+Windhoek,city
+Xi'an,city
+Yogyakarta,city
+Zanzibar City,city
+Archimedes' Principle,principle
+Bernoulli's Principle,principle
+Boyle's Law,principle
+Cell Theory,principle
+Conservation of Energy,principle
+DNA Replication,principle
 Electromagnetism,principle
-Oxygen,element
-Gold,element
-Uranium,element
+Entropy,principle
+Evolution by Natural Selection,principle
+Evolution,principle
+General Relativity,principle
+Germ Theory of Disease,principle
+Gravity,principle
+Hardy-Weinberg Principle,principle
+Heliocentrism,principle
+Hubble's Law,principle
+Kepler's Laws of Planetary Motion,principle
+Le Chatelier's Principle,principle
+Mendel's Laws of Inheritance,principle
+Newton's Laws of Motion,principle
+Pauli Exclusion Principle,principle
+Periodic Law,principle
+Photosynthesis,principle
+Plate Tectonics,principle
+Principle of Least Action,principle
+Quantum Mechanics,principle
+Relativity,principle
+Superconductivity,principle
+Thermodynamics,principle
+Uncertainty Principle,principle
+Aluminum,element
+Barium,element
+Bismuth,element
+Bromine,element
+Calcium,element
 Carbon,element
+Chlorine,element
+Chromium,element
+Copper,element
+Gold,element
 Helium,element
-Iron,element
-Silicon,element
-Plutonium,element
 Hydrogen,element
+Iodine,element
+Iron,element
+Lead,element
+Lithium,element
+Magnesium,element
+Manganese,element
+Mercury,element
+Neon,element
 Nitrogen,element
+Oxygen,element
+Phosphorus,element
+Plutonium,element
+Potassium,element
+Radon,element
+Silicon,element
+Silver,element
+Sodium,element
+Sulfur,element
+Thorium,element
+Tin,element
+Titanium,element
+Uranium,element
+Zinc,element
 1984,book
-The Great Gatsby,book
-War and Peace,book
-The Art of War,book
+Anna Karenina,book
+Beloved,book
+Brave New World,book
+Catch-22,book
+Crime and Punishment,book
 Don Quixote,book
-To Kill a Mockingbird,book
+Fahrenheit 451,book
+Frankenstein,book
+Jane Eyre,book
+Midnight's Children,book
+Moby-Dick,book
+One Flew Over the Cuckoo's Nest,book
 One Hundred Years of Solitude,book
-The Catcher in the Rye,book
 Pride and Prejudice,book
+Slaughterhouse-Five,book
 The Alchemist,book
-Starry Night,painting
-Mona Lisa,painting
-The Last Supper,painting
-Guernica,painting
-The Birth of Venus,painting
-The Scream,painting
-Girl with a Pearl Earring,painting
-School of Athens,painting
-The Night Watch,painting
+The Art of War,book
+The Book Thief,book
+The Brothers Karamazov,book
+The Catcher in the Rye,book
+The Chronicles of Narnia,book
+The Color Purple,book
+The Count of Monte Cristo,book
+The Grapes of Wrath,book
+The Great Gatsby,book
+The Handmaid's Tale,book
+The Hitchhiker's Guide to the Galaxy,book
+The Hobbit,book
+The Hunger Games,book
+The Kite Runner,book
+The Little Prince,book
+The Lord of the Rings,book
+The Metamorphosis,book
+The Name of the Rose,book
+The Odyssey,book
+The Picture of Dorian Gray,book
+The Pillars of the Earth,book
+The Stranger,book
+The Sun Also Rises,book
+The Wind-Up Bird Chronicle,book
+To Kill a Mockingbird,book
+Ulysses,book
+War and Peace,book
+Wuthering Heights,book
 American Gothic,painting
-The Signing of the Magna Carta,historical_event
-The Battle of Hastings,historical_event
-The Battle of Agincourt,historical_event
-The Great Fire of London,historical_event
-The Glorious Revolution,historical_event
-The Act of Union between England and Scotland,historical_event
-The Battle of Waterloo,historical_event
-The UK Abolition of the Slave Trade Act,historical_event
-Queen Victoria's Coronation,historical_event
-The Founding of the British Broadcasting Corporation,historical_event
-The Dunkirk Evacuation,historical_event
-The Indian Independence Act,historical_event
-The Suez Crisis,historical_event
+Christina's World,painting
+Girl with a Pearl Earring,painting
+Guernica,painting
+Les Demoiselles d'Avignon,painting
+Liberty Leading the People,painting
+Mona Lisa,painting
+School of Athens,painting
+Starry Night,painting
+The Absinthe Drinker,painting
+The Anatomy Lesson of Dr. Nicolaes Tulp,painting
+The Arnolfini Portrait,painting
+The Astronomer,painting
+The Birth of Venus,painting
+The Calling of Saint Matthew,painting
+The Card Players,painting
+The Death of Marat,painting
+The Fighting Temeraire,painting
+The Garden of Earthly Delights,painting
+The Gross Clinic,painting
+The Hay Wain,painting
+The Kiss,painting
+The Last Supper,painting
+The Nighthawks,painting
+The Night Watch,painting
+The Ninth Wave,painting
+The Persistence of Memory,painting
+The Potato Eaters,painting
+The Raft of the Medusa,painting
+The Scream,painting
+The Sleeping Gypsy,painting
+The Son of Man,painting
+The Swing,painting
+The Third of May 1808,painting
+The Tower of Babel,painting
+The Treachery of Images,painting
+The Triumph of Galatea,painting
+The Wanderer above the Sea of Fog,painting
+Water Lilies,painting
 Decimalisation in the UK,historical_event
-The Signing of the Good Friday Agreement,historical_event
-The London 7/7 Bombings,historical_event
-The Brexit Referendum,historical_event
-The Wedding of Prince Charles and Lady Diana,historical_event
 Queen Elizabeth II's Platinum Jubilee,historical_event
-The Founding of Rome,historical_event
-The Construction of the Great Pyramid of Giza,historical_event
-The First Crusade,historical_event
-The Fall of Constantinople,historical_event
-The Discovery of the Americas by Columbus,historical_event
-The First Circumnavigation of the Earth,historical_event
-The Fall of the Aztec Empire,historical_event
-The Defeat of the Spanish Armada,historical_event
-The Battle of Sekigahara,historical_event
-The Treaty of Westphalia,historical_event
-The Industrial Revolution,historical_event
-The French Revolution,historical_event
-The Unification of Italy,historical_event
-The Meiji Restoration,historical_event
+Queen Victoria's Coronation,historical_event
+The Act of Union between England and Scotland,historical_event
+The Battle of Adrianople,historical_event
 The Battle of Adwa,historical_event
-The Founding of the League of Nations,historical_event
-The Indian Independence Act,historical_event
+The Battle of Agincourt,historical_event
+The Battle of Hastings,historical_event
+The Battle of Sekigahara,historical_event
+The Battle of Teutoburg Forest,historical_event
+The Battle of the Milvian Bridge,historical_event
+The Battle of Waterloo,historical_event
+The Brexit Referendum,historical_event
+The Codification of Roman Law by Justinian,historical_event
+The Construction of Hadrian's Wall,historical_event
+The Construction of the Great Pyramid of Giza,historical_event
+The Conversion of Constantine,historical_event
+The Council of Chalcedon,historical_event
+The Crisis of the Third Century,historical_event
+The Defeat of the Spanish Armada,historical_event
+The Discovery of the Americas by Columbus,historical_event
 The Dissolution of the Soviet Union,historical_event
+The Division of the Roman Empire,historical_event
+The Dunkirk Evacuation,historical_event
+The Edict of Caracalla,historical_event
+The Fall of Constantinople,historical_event
+The Fall of the Aztec Empire,historical_event
+The Fall of the Western Roman Empire,historical_event
+The First Circumnavigation of the Earth,historical_event
+The First Council of Nicaea,historical_event
+The First Crusade,historical_event
+The Founding of Constantinople,historical_event
+The Founding of Rome,historical_event
+The Founding of the British Broadcasting Corporation,historical_event
+The Founding of the League of Nations,historical_event
+The French Revolution,historical_event
+The Glorious Revolution,historical_event
+The Gothic War in Italy,historical_event
+The Great Fire of London,historical_event
+The Indian Independence Act,historical_event
+The Indian Independence Act,historical_event
+The Industrial Revolution,historical_event
+The London 7/7 Bombings,historical_event
+The Meiji Restoration,historical_event
+The Plague of Justinian,historical_event
+The Reforms of Diocletian,historical_event
+The Reunification of the Empire by Aurelian,historical_event
+The Sack of Rome by Alaric,historical_event
+The Sack of Rome by the Vandals,historical_event
+The Signing of the Good Friday Agreement,historical_event
+The Signing of the Magna Carta,historical_event
+The Suez Crisis,historical_event
+The Treaty of Westphalia,historical_event
+The UK Abolition of the Slave Trade Act,historical_event
+The Unification of Italy,historical_event
+The Wedding of Prince Charles and Lady Diana,historical_event
+The Year of the Four Emperors,historical_event

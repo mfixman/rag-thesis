@@ -18,6 +18,7 @@ What is the primary application of {principle}? The primary application of {prin
 
 What's the chemical formula for {element}? The chemical formula for {element} is
 When was {element} first isolated? {element} was first isolated in
+What's the atomic number of {element}? The atomic number of {element} is
 
 What genre does {book} belong to? The genre of {book} is
 Who's the author of {book}? {book} was written by
