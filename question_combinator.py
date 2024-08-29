@@ -55,8 +55,9 @@ def main(args):
         level=logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S'
     )
+    logging.addFilter(LogTimeFilter(30))
 
-    # wandb.init(project = 'question-combinator', config = args)
+    wandb.init(project = 'question-combinator', config = args)
 
     if not args.rand:
         random.seed(0)

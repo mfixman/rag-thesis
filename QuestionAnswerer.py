@@ -168,7 +168,6 @@ class QuestionAnswerer:
             counterfactuals, base_cf_mean_probs = self.gather(cf_path, logits)
             output['counterfactual'] = counterfactuals
             output['base_cf_proba'] = base_cf_mean_probs
-            ipdb.set_trace()
 
             output |= self.answerCounterfactuals(questions, counterfactuals, param_path = path)
 
