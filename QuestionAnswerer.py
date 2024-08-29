@@ -43,7 +43,7 @@ class QuestionAnswerer:
         model = typing.cast(Model, model)
         self.llm = model
 
-        stop_tokens = {'.', '\n', self.llm.tokenizer.special_tokens_map['eos_token']}
+        stop_tokens = {'.', '\n'}
         self.stop_token_ids = torch.tensor([
             v
             for k, v in self.llm.tokenizer.get_vocab().items()
@@ -103,7 +103,11 @@ class QuestionAnswerer:
     # Decodes the tokens in `path`, and returns the average value within used tokens in `probs`.
     # (n, w); (n, w) -> [n]; [n]
     def decode(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
-        left = torch.cumsum(~torch.isin(path, self.stop_token_ids), dim = 1) == 0
+        path = path.clone()
+        probs = probs.clone()
+
+        # left = torch.cumsum(~torch.isin(path, self.stop_token_ids), dim = 1) == 0
+        left = torch.zeros_like(path, dtype = bool)
         right = torch.cumsum(~left & torch.isin(path, self.stop_token_ids), dim = 1) > 0
         ignores = left | right
 
@@ -164,6 +168,7 @@ class QuestionAnswerer:
             counterfactuals, base_cf_mean_probs = self.gather(cf_path, logits)
             output['counterfactual'] = counterfactuals
             output['base_cf_proba'] = base_cf_mean_probs
+            ipdb.set_trace()
 
             output |= self.answerCounterfactuals(questions, counterfactuals, param_path = path)
 

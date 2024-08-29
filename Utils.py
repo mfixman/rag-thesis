@@ -123,11 +123,11 @@ def find_flips(cat_positions: dict[str, set[int]], total: int) -> list[int]:
 def findFlips2(questions: list[Object]) -> list[int]:
     flips = [-1 for _ in questions]
 
-    for cat, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].category):
+    for q, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].question):
         es = set(es_iter)
 
         if len(es) == 1:
-            logging.warn(f'Unitary category {cat}. id flip!')
+            logging.warn(f'Unitary question {q}. Identity flip!')
             e = next(iter(es))
             flips[e] = e
             continue
