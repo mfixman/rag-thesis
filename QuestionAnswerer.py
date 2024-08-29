@@ -183,6 +183,7 @@ class QuestionAnswerer:
 
         return output
 
+    @torch.no_grad()
     def answerQueries(self, questions: list[Object]) -> dict[str, Any]:
         output: defaultdict[str, list[Any]] = defaultdict(lambda: [])
 
