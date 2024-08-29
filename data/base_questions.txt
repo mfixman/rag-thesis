@@ -11,23 +11,35 @@ What's the highest administrative subdivision {city} is part of? {city} is part 
 In what year was {city} founded? {city} was founded in
 What major river is nearest to {city}? The nearest major river to {city} is
 What is the time zone of {city}? The time zone of {city} is
+What is the current population of {city}? The current population of {city} is
+What is the altitude of {city} above sea level? {city} is at an altitude of
 
 Who is credited with the discovery of {principle}? {principle} was discovered by
 Which scientific discipline encompasses {principle}? {principle} is encompassed by
 What is the primary application of {principle}? The primary application of {principle} is
+In which year was {principle} first formulated? {principle} was first formulated in
+What is the SI unit most commonly associated with {principle}? The SI unit most commonly associated with {principle} is
 
 What's the chemical formula for {element}? The chemical formula for {element} is
 When was {element} first isolated? {element} was first isolated in
 What's the atomic number of {element}? The atomic number of {element} is
+What is the melting point of {element}? The melting point of {element} is
+In which group of the periodic table is {element} found? {element} is found in group
 
 What genre does {book} belong to? The genre of {book} is
 Who's the author of {book}? {book} was written by
 In what year was {book} first published? {book} was first published in
+How many pages are in the original publication of {book}? The original publication of {book} has
+What is the name of the main protagonist in {book}? The main protagonist in {book} is
 
 Who painted {painting}? {painting} was painted by
 When was {painting} completed? {painting} was completed in
 What artistic movement does {painting} belong to? {painting} belongs to
 What materials were used to create {painting}? {painting} was created with
 Where is {painting} primarily housed? {painting} is currently in
+What are the dimensions of {painting}? The dimensions of {painting} are
+In which museum was {painting} first exhibited? {painting} was first exhibited in
 
 What year did {historical_event} happen? {historical_event} happened in the year
+Who was the primary leader associated with {historical_event}? The primary leader associated with {historical_event} was
+What was the duration of {historical_event}? {historical_event} lasted for
