@@ -137,7 +137,7 @@ class QuestionAnswerer:
         b = b.lower().replace('the', '').replace(',', '').strip()
         return a[:len(b)] == b[:len(a)]
 
-    def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], param_path: LongTensor) -> dict[str, Any]:
+    def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], param_path: LongTensor, cf_path: LongTensor) -> dict[str, Any]:
         prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
 
         output: dict[str, Any] = {}
@@ -151,6 +151,7 @@ class QuestionAnswerer:
         output['contextual'], output['ctx_proba'] = self.decode(path, probs)
 
         _, output['ctx_param_proba'] = self.gather(param_path, logits)
+        _, output['ctx_cf_proba'] = self.gather(cf_path, logits)
 
         return output
 
@@ -171,7 +172,7 @@ class QuestionAnswerer:
             output['counterfactual'] = counterfactuals
             output['base_cf_proba'] = base_cf_mean_probs
 
-            output |= self.answerCounterfactuals(questions, counterfactuals, param_path = path)
+            output |= self.answerCounterfactuals(questions, counterfactuals, param_path = path, cf_path = cf_path)
 
             output['comparison'] = [
                 'Parametric' if self.streq(a, p) else
