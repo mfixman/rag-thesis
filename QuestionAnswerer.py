@@ -183,7 +183,7 @@ class QuestionAnswerer:
     def answerQueries(self, questions: list[Object]) -> dict[str, Any]:
         output: defaultdict[str, list[Any]] = defaultdict(lambda: [])
 
-        chunks = chunkByQuestion(questions, max_batch_size = 140)
+        chunks = chunkByQuestion(questions, max_batch_size = 120)
         logging.info(f'Answering {len(questions)} queries in {len(chunks)} chunks.')
 
         for e, chunk in enumerate(chunks, start = 1):
