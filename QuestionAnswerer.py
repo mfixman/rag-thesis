@@ -11,7 +11,7 @@ from torch.nn.functional import pad
 
 from Models import Model
 from typing import Optional, Union, Any
-from Utils import Object, findFlips2
+from Utils import Object, findFlips2, chunkByQuestion
 
 from collections import defaultdict
 
@@ -107,7 +107,7 @@ class QuestionAnswerer:
         probs = probs.clone()
 
         # left = torch.cumsum(~torch.isin(path, self.stop_token_ids), dim = 1) == 0
-        left = torch.zeros_like(path, dtype = bool)
+        left = torch.zeros_like(path, dtype = torch.bool)
         right = torch.cumsum(~left & torch.isin(path, self.stop_token_ids), dim = 1) > 0
         ignores = left | right
 
@@ -183,12 +183,13 @@ class QuestionAnswerer:
     def answerQueries(self, questions: list[Object]) -> dict[str, Any]:
         output: defaultdict[str, list[Any]] = defaultdict(lambda: [])
 
-        batch_size = 100
-        logging.info(f'Answering {len(questions)} queries in {(len(questions) - 1) // batch_size + 1} chunks')
-        for batch in range(0, len(questions), batch_size):
-            chunk = questions[batch : batch + batch_size]
-            flips = findFlips2(chunk)
+        chunks = chunkByQuestion(questions, max_batch_size = 100)
+        logging.info(f'Answering {len(questions)} queries in {len(chunks)} chunks.')
 
+        for e, chunk in enumerate(chunks, start = 1):
+            logging.info(f'Parsing chunk ({e} / {len(chunks)}), which has size {len(chunk)}', extra = {'rate_limit': 20})
+
+            flips = findFlips2(chunk)
             chunk_output = self.answerChunk(chunk, flips)
 
             for k, v in chunk_output.items():

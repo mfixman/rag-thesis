@@ -55,7 +55,7 @@ def main(args):
         level=logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S'
     )
-    logging.addFilter(LogTimeFilter(30))
+    logging.getLogger().addFilter(LogTimeFilter())
 
     wandb.init(project = 'question-combinator', config = args)
 

@@ -14,16 +14,20 @@ from typing import Optional, Any
 
 from torch import FloatTensor, LongTensor, BoolTensor
 
+import ipdb
+
 class LogTimeFilter(logging.Filter):
-    def __init__(self, rate_limit):
+    def __init__(self):
         super().__init__()
-        self.rate_limit = rate_limit
         self.last_log = defaultdict(lambda: 0)
 
     def filter(self, record):
+        if not hasattr(record, 'rate_limit'):
+            return True
+
         current_time = time.time()
-        if current_time - self.last_log[record.lineno] >= self.rate_limit:
-            self.last_log[record.msg] = current_time
+        if current_time - self.last_log[record.lineno] >= record.rate_limit:
+            self.last_log[record.lineno] = current_time
             return True
 
         return False
@@ -88,7 +92,7 @@ def findFlips2(questions: list[Object]) -> list[int]:
         es = set(es_iter)
 
         if len(es) == 1:
-            logging.warn(f'Unitary question {q}. Identity flip!')
+            logging.warn(f'Unitary question "{q}". Identity flip!')
             e = next(iter(es))
             flips[e] = e
             continue
@@ -98,6 +102,19 @@ def findFlips2(questions: list[Object]) -> list[int]:
 
     assert all(x != -1 for x in flips)
     return flips
+
+def chunkByQuestion(questions: list[Object], max_batch_size: int) -> list[list[Object]]:
+    result: list[list[Object]] = []
+
+    for q, chunk_iter in itertools.groupby(questions, key = lambda x: x.question):
+        chunk = list(chunk_iter)
+        if not result or len(chunk) + len(result[-1]) > max_batch_size:
+            result.append([])
+
+        result[-1].extend(chunk)
+
+    return result
+
 
 def printParametricCSV(out: typing.TextIO, questions: list[Object], answer: dict[str, str]):
     fieldnames = ['Num', 'Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())
