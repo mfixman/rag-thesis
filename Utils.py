@@ -85,7 +85,7 @@ def combine_questions(base_questions: list[str], things: list[dict[str, str]], l
 
     return short_questions, short_cat_positions
 
-def findFlips2(questions: list[Object]) -> list[int]:
+def findFlips2(questions: list[Object], answers: list[Object]) -> list[int]:
     flips = [-1 for _ in questions]
 
     for q, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].question):
@@ -98,7 +98,10 @@ def findFlips2(questions: list[Object]) -> list[int]:
             continue
 
         for e in es:
-            flips[e] = random.choice(list(es - {e}))
+            rest = [x for x, _ in enumerate(answers) if answers[x] != answers[e]]
+            flips[e] = random.choice(rest)
+
+            assert answers[flips[e]] != answers[e]
 
     assert all(x != -1 for x in flips)
     return flips
@@ -114,7 +117,6 @@ def chunkByQuestion(questions: list[Object], max_batch_size: int) -> list[list[O
         result[-1].extend(chunk)
 
     return result
-
 
 def printParametricCSV(out: typing.TextIO, questions: list[Object], answer: dict[str, str]):
     fieldnames = ['Num', 'Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())

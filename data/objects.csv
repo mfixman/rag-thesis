@@ -2,7 +2,6 @@ thing,category
 Ada Lovelace,person
 Alan Turing,person
 Albert Einstein,person
-Albert Einstein,person
 Alexander Fleming,person
 Aristotle,person
 Billie Jean King,person
@@ -23,9 +22,7 @@ Karl Marx,person
 Leonardo da Vinci,person
 Mahatma Gandhi,person
 Malala Yousafzai,person
-Malala Yousafzai,person
 Mansa Musa,person
-Marie Curie,person
 Marie Curie,person
 Martin Luther King Jr.,person
 Michelangelo,person
@@ -297,7 +294,6 @@ The French Revolution,historical_event
 The Glorious Revolution,historical_event
 The Gothic War in Italy,historical_event
 The Great Fire of London,historical_event
-The Indian Independence Act,historical_event
 The Indian Independence Act,historical_event
 The Industrial Revolution,historical_event
 The London 7/7 Bombings,historical_event

@@ -154,7 +154,7 @@ class QuestionAnswerer:
 
         return output
 
-    def answerChunk(self, questions: list[Object], counterfactual_flips = Optional[list[int]]) -> dict[str, Any]:
+    def answerChunk(self, questions: list[Object], use_counterfactuals: bool = True) -> dict[str, Any]:
         prompt = 'Answer the following question in a few words and with no formatting.'
 
         output: dict[str, Any] = {}
@@ -163,8 +163,10 @@ class QuestionAnswerer:
         path, probs = self.winner(logits)
         output['parametric'], output['base_proba'] = self.decode(path, probs)
 
-        if counterfactual_flips is not None:
-            cf_path = path[counterfactual_flips]
+        if use_counterfactuals is not None:
+            flips = findFlips2(questions, output['parametric'])
+            cf_path = path[flips]
+
             counterfactuals, base_cf_mean_probs = self.gather(cf_path, logits)
             output['counterfactual'] = counterfactuals
             output['base_cf_proba'] = base_cf_mean_probs
@@ -187,10 +189,9 @@ class QuestionAnswerer:
         logging.info(f'Answering {len(questions)} queries in {len(chunks)} chunks.')
 
         for e, chunk in enumerate(chunks, start = 1):
-            logging.info(f'Parsing chunk ({e} / {len(chunks)}), which has size {len(chunk)}', extra = {'rate_limit': 20})
+            logging.info(f'Parsing chunk ({e} / {len(chunks)}), which has size {len(chunk)}.', extra = {'rate_limit': 20})
 
-            flips = findFlips2(chunk)
-            chunk_output = self.answerChunk(chunk, flips)
+            chunk_output = self.answerChunk(chunk)
 
             for k, v in chunk_output.items():
                 output[k] += v
