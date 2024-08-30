@@ -103,8 +103,8 @@ class QuestionAnswerer:
     # Decodes the tokens in `path`, and returns the average value within used tokens in `probs`.
     # (n, w); (n, w) -> [n]; [n]
     def decode(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
-        path = path.clone()
-        probs = probs.clone()
+        # path = path.clone()
+        # probs = probs.clone()
 
         # left = torch.cumsum(~torch.isin(path, self.stop_token_ids), dim = 1) == 0
         left = torch.zeros_like(path, dtype = torch.bool)
@@ -115,7 +115,7 @@ class QuestionAnswerer:
         probs[ignores] = torch.nan
 
         phrase = self.llm.tokenizer.batch_decode(path, skip_special_tokens = True, clean_up_tokenization_spaces = True)
-        avg_probs = list(probs.nanmean(dim = 1).cpu().numpy())
+        perplexity = torch.exp(-torch.nanmean(torch.log(probs), dim = 1))
 
         if any('.' in x or '\n' in x for x in phrase):
             bads = [e for e, x in enumerate(phrase) if '.' in x or '\n' in x]
@@ -123,7 +123,8 @@ class QuestionAnswerer:
             bad_tokens = {k: v for k, v in tokens.items() if k not in self.stop_token_ids and ('.' in v or '\n' in v)}
             raise ValueError(f'Unregistered tokens with stop characters generated: {bad_tokens}')
 
-        return [x.strip() for x in phrase], avg_probs
+        assert torch.all(perplexity >= 1)
+        return [x.strip() for x in phrase], perplexity.tolist()
 
     # Gets mean probabilities of logits along a sequence of paths.
     # (n, v); (n, w, v) -> [n]
