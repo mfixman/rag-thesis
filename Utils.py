@@ -91,16 +91,14 @@ def findFlips2(questions: list[Object], answers: list[Object]) -> list[int]:
     for q, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].question):
         es = set(es_iter)
 
-        if len(es) == 1:
-            logging.warn(f'Unitary question "{q}". Identity flip!')
-            e = next(iter(es))
-            flips[e] = e
-            continue
-
         for e in es:
-            rest = [x for x, _ in enumerate(answers) if answers[x] != answers[e]]
-            flips[e] = random.choice(rest)
+            rest = [x for x in es if answers[x] != answers[e]]
+            if not rest:
+                logging.warn(f'Unitary question "{q}". Identity flip!')
+                flips[e] = e
+                continue
 
+            flips[e] = random.choice(rest)
             assert answers[flips[e]] != answers[e]
 
     assert all(x != -1 for x in flips)

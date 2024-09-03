@@ -1,6 +1,6 @@
 import logging
 
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM
 from torch import nn, tensor
 import torch
 
@@ -19,10 +19,29 @@ Model_dict = {
     'gemma': 'google/gemma-2-9b-it',
     'gemma-27b': 'google/gemma-2-27b-it',
     'mixtral': 'mistralai/Mixtral-8x22B-Instruct-v0.1',
+    'flan-t5': 'google/flan-t5-base',
+    'flan-t5-small': 'google/flan-t5-small',
+    'flan-t5-base': 'google/flan-t5-base',
+    'flan-t5-large': 'google/flan-t5-large',
+    'flan-t5-xl': 'google/flan-t5-xl',
+    'flan-t5-xxl': 'google/flan-t5-xxl',
     'dummy': '',
 }
 
 class Model(nn.Module):
+    @staticmethod
+    def fromName(name: str, device: str = 'cpu') -> 'Model':
+        if name == 'dummy':
+            return DummyModel()
+
+        if name in ('llama-70b', 'gemma-27b'):
+            return LargeModel(name, device)
+
+        if 't5' in name:
+            return Seq2SeqModel(name, device)
+
+        return Model(name, device)
+
     name: str
     model_name: str
     tokenizer: AutoTokenizer
@@ -35,6 +54,11 @@ class Model(nn.Module):
         self.model_name = Model_dict[name]
         self.device = device
 
+        self.prompt = 'Answer the following question in a few words and with no formatting.'
+        self.cf_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
+
+        generic = AutoModelForCausalLM
+        kwargs = {}
         if 'llama' in name:
             kwargs = dict(
                 pad_token = '<|reserved_special_token_0|>',
@@ -63,54 +87,36 @@ class Model(nn.Module):
         )
         self.model.eval()
 
-        self.batch_size = 15000
+class Seq2SeqModel(nn.Module):
+    def __init__(self, name: str, device: str = 'cpu'):
+        super().__init__()
+        self.name = name
+        self.model_name = Model_dict[name]
+        self.device = device
 
-        logging.info('All loaded!')
+        self.prompt = 'Answer the following question in a few words, and write a period at the end of the answer.'
+        self.cf_prompt = 'Answer the following question in a few words using the previous context, and write a period at the end of the answer.'
 
-    @staticmethod
-    def fromName(name: str, device: str = 'cpu') -> 'Model':
-        if name == 'dummy':
-            return DummyModel()
+        kwargs = dict(
+            padding_side = 'right',
+        )
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self.model_name,
+            clean_up_tokenization_spaces = True,
+            **kwargs,
+        )
 
-        if name in ('llama-70b', 'gemma-27b'):
-            return LargeModel(name, device)
-
-        return Model(name, device)
-
-    def getModel(self, model_name: str) -> AutoModelForCausalLM:
-        logging.info(f'Getting {model_name}')
-        try:
-            return AutoModelForCausalLM.from_pretrained(
-                model_name,
-                device_map = 'auto' if self.device == 'cuda' else self.device,
-                torch_dtype = torch.float16,
-                pad_token_id = self.tokenizer.pad_token_id,
-                bos_token_id = self.tokenizer.bos_token_id,
-                eos_token_id = self.tokenizer.eos_token_id,
-            )
-        except OSError:
-            pass
-
-        for a in range(2, 10):
-            logging.info(f'Attempt {a}/10 for {model_name}')
-            try:
-                return AutoModelForCausalLM.from_pretrained(
-                    model_name,
-                    force_download = True,
-                    resume_download = False,
-                    device_map = self.device,
-                )
-            except OSError:
-                pass
-
-        logging.error('Failed 10 attempts for {model_name}. Giving up.')
-        raise
-
-    def __del__(self):
-        logging.info(f'Deleting large model {self.name}')
-        del self.model
-        torch.cuda.empty_cache()
-
+        logging.info(f'Loading Seq2Seq model for {self.model_name} using {torch.cuda.device_count()} GPUs.')
+        self.model = AutoModelForSeq2SeqLM.from_pretrained(
+            self.model_name,
+            device_map = 'auto' if self.device == 'cuda' else self.device,
+            torch_dtype = torch.bfloat16,
+            pad_token_id = self.tokenizer.pad_token_id,
+            bos_token_id = self.tokenizer.bos_token_id,
+            eos_token_id = self.tokenizer.eos_token_id,
+            low_cpu_mem_usage = True,
+        )
+        self.model.eval()
 
 class LargeModel(Model):
     def __init__(self, name, device: str = 'cpu'):
@@ -118,7 +124,11 @@ class LargeModel(Model):
             raise ValueError(f'At least two GPUs are needed to run {name}')
 
         super().__init__(name, device)
-        self.batch_size = 5000
+
+    def __del__(self):
+        logging.info(f'Deleting large model {self.name}')
+        del self.model
+        torch.cuda.empty_cache()
 
 class DummyModel(Model):
     def __init__(self):

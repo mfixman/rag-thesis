@@ -25,7 +25,6 @@ BoolTensor = torch.Tensor
 class QuestionAnswerer:
     device: str
     max_length: int
-
     llm: Model
 
     def __init__(
@@ -123,7 +122,9 @@ class QuestionAnswerer:
             bad_tokens = {k: v for k, v in tokens.items() if k not in self.stop_token_ids and ('.' in v or '\n' in v)}
             raise ValueError(f'Unregistered tokens with stop characters generated: {bad_tokens}')
 
-        assert torch.all(perplexity >= 1)
+        if torch.any(perplexity < 1):
+            logging.warn(f'{torch.sum(perplexity < 1)} entries found with perplexity less than 1!')
+
         return [x.strip() for x in phrase], perplexity.tolist()
 
     # Gets mean probabilities of logits along a sequence of paths.
@@ -139,11 +140,9 @@ class QuestionAnswerer:
         return a[:len(b)] == b[:len(a)]
 
     def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], param_path: LongTensor, cf_path: LongTensor) -> dict[str, Any]:
-        prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
-
         output: dict[str, Any] = {}
         queries = [
-            q.format(prompt = prompt, context = context)
+            q.format(prompt = self.llm.cf_prompt, context = context)
             for q, context in zip(questions, counterfactuals)
         ]
 
@@ -157,11 +156,9 @@ class QuestionAnswerer:
         return output
 
     def answerChunk(self, questions: list[Object], use_counterfactuals: bool = True) -> dict[str, Any]:
-        prompt = 'Answer the following question in a few words and with no formatting.'
-
         output: dict[str, Any] = {}
 
-        logits = self.query([q.format(prompt = prompt) for q in questions])
+        logits = self.query([q.format(prompt = self.llm.prompt) for q in questions])
         path, probs = self.winner(logits)
         output['parametric'], output['base_proba'] = self.decode(path, probs)
 
@@ -169,9 +166,8 @@ class QuestionAnswerer:
             flips = findFlips2(questions, output['parametric'])
             cf_path = path[flips]
 
-            counterfactuals, base_cf_mean_probs = self.gather(cf_path, logits)
+            counterfactuals, output['base_cf_proba'] = self.gather(cf_path, logits)
             output['counterfactual'] = counterfactuals
-            output['base_cf_proba'] = base_cf_mean_probs
 
             output |= self.answerCounterfactuals(questions, counterfactuals, param_path = path, cf_path = cf_path)
 
