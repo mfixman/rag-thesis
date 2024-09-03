@@ -111,7 +111,7 @@ class QuestionAnswerer:
         ignores = left | right
 
         path[ignores] = self.llm.tokenizer.pad_token_id
-        probs[ignores] = torch.nan
+        probs[path == self.llm.tokenizer.pad_token_id] = torch.nan
 
         phrase = self.llm.tokenizer.batch_decode(path, skip_special_tokens = True, clean_up_tokenization_spaces = True)
         perplexity = torch.exp(-torch.nanmean(torch.log(probs), dim = 1))
