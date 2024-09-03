@@ -57,7 +57,6 @@ class Model(nn.Module):
         self.prompt = 'Answer the following question in a few words and with no formatting.'
         self.cf_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
 
-        generic = AutoModelForCausalLM
         kwargs = {}
         if 'llama' in name:
             kwargs = dict(
