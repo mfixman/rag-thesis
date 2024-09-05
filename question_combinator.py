@@ -23,7 +23,7 @@ def parse_args():
 
     parser.add_argument('--no-except', action = 'store_true', help = 'Do not go to IPDB console on exception.')
     parser.add_argument('--lim-questions', type = int, help = 'Question limit')
-    parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cpu', help = 'Inference device')
+    parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cuda', help = 'Inference device')
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
     parser.add_argument('--counterfactuals', action = 'store_true', help = 'Whether to include counterfactuals in final CSV')
     parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')

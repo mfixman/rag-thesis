@@ -86,9 +86,9 @@ class Model(nn.Module):
         )
         self.model.eval()
 
-class Seq2SeqModel(nn.Module):
+class Seq2SeqModel(Model):
     def __init__(self, name: str, device: str = 'cpu'):
-        super().__init__()
+        nn.Module.__init__(self)
         self.name = name
         self.model_name = Model_dict[name]
         self.device = device
