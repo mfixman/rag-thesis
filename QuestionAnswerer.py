@@ -14,6 +14,7 @@ from typing import Optional, Union, Any
 from Utils import Object, findFlips2, chunkByQuestion
 
 from collections import defaultdict
+from transformers import BatchEncoding
 
 import ipdb
 import sys
@@ -82,17 +83,93 @@ class QuestionAnswerer:
             eos_token_id = self.llm.tokenizer.eos_token_id,
             bos_token_id = self.llm.tokenizer.bos_token_id,
         )
-        # all_logits = torch.stack(outputs.logits, dim = 1)
-        # text = self.llm.tokenizer.batch_decode(outputs.sequences)
-        # es = [e for e, p in enumerate(text) if '760' in p]
-        # if es == [31]:
-        #     e = es[0]
-        #     sequence = outputs.sequences[e]
-        #     logit = all_logits[e]
-        #     decoded = {x.cpu().item(): self.llm.tokenizer.decode(x) for x in sequence}
-        #     ipdb.set_trace()
 
         return torch.stack(outputs.scores, dim = 1).softmax(dim = 2)
+
+    # [n] -> (n, w)
+    def tokenise(self, phrases: list[str]) -> BatchEncoding:
+        return self.llm.tokenizer(
+            phrases,
+            return_tensors = 'pt',
+            return_attention_mask = True,
+            padding = True,
+        ).to(self.device)
+
+    # (n, w) -> (n, w)
+    def batch_encode(self, tokens: LongTensor) -> BatchEncoding:
+        attention_mask = tokens != self.llm.tokenizer.pad_token_id
+        return BatchEncoding(dict(
+            input_ids = tokens,
+            attention_mask = attention_mask,
+        ))
+
+    # (n, w) -> (n, w), (n), (n, w)
+    def generate(self, query: BatchEncoding) -> tuple[LongTensor, FloatTensor]:
+        generated = self.llm.model.generate(
+            input_ids = query.input_ids,
+            attention_mask = query.attention_mask,
+            max_new_tokens = self.max_length,
+            min_new_tokens = self.max_length,
+            tokenizer = self.llm.tokenizer,
+            do_sample = False,
+            temperature = None,
+            top_p = None,
+            output_logits = True,
+            output_scores = True,
+            output_attentions = True,
+            return_dict_in_generate = True,
+            pad_token_id = self.llm.tokenizer.pad_token_id,
+            eos_token_id = self.llm.tokenizer.eos_token_id,
+            bos_token_id = self.llm.tokenizer.bos_token_id,
+        )
+
+        sequences = generated.sequences[:, query.input_ids.shape[1]:]
+        ignores = torch.cumsum(torch.isin(sequences, self.stop_token_ids), dim = 1) > 0
+        sequences[ignores] = self.llm.tokenizer.pad_token_id
+
+        probs = torch.stack(generated.scores, dim = 1)
+        probs[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
+        ces = -torch.nanmean(torch.log_softmax(probs, dim = 2).max(dim = 2)[0], dim = 1)
+
+        # Testing here.
+
+        maxes_gen = probs.argmax(dim = 2)
+        answer_mask = sequences != self.llm.tokenizer.pad_token_id
+
+        both_ids = torch.cat([query.input_ids, sequences], dim = 1)
+        both_mask = torch.cat([query.attention_mask, answer_mask], dim = 1)
+
+        data = self.llm.model(input_ids = both_ids, attention_mask = both_mask)
+        logits = data.logits
+        maxes_for = logits.argmax(dim = 2)
+
+        ipdb.set_trace()
+
+        return sequences, ces
+
+    # (n, w0), (n, w1) -> (n)
+    def probability(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
+        w0 = query.input_ids.shape[1]
+        w1 = answer.input_ids.shape[1]
+
+        input_ids = torch.cat([query.input_ids, answer.input_ids], dim = 1)
+        attention_mask = torch.cat([query.attention_mask, answer.attention_mask], dim = 1)
+
+        frumps = []
+        for i in range(answer.input_ids.shape[1]):
+            f_input_ids = torch.cat([query.input_ids, answer.input_ids[:, :i]], dim = 1)
+            f_attention_mask = torch.cat([query.attention_mask, answer.attention_mask[:, :i]], dim = 1)
+            frumps.append(self.llm.model(f_input_ids, attention_mask = f_attention_mask).logits.cpu())
+
+        logits = self.llm.model(input_ids, attention_mask = attention_mask).logits[:, w0:]
+        entropies = logits.log_softmax(dim = 1)
+        probs = torch.where(
+            answer.input_ids == self.llm.tokenizer.pad_token_id,
+            torch.nan,
+            entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
+        )
+        ipdb.set_trace()
+        return -torch.nanmean(probs, dim = 1)
 
     # (n, w, v) -> (n, w); [(n, w), (n, w)]
     def winner(self, logits: FloatTensor) -> tuple[LongTensor, FloatTensor]:
@@ -157,6 +234,15 @@ class QuestionAnswerer:
 
     def answerChunk(self, questions: list[Object], use_counterfactuals: bool = True) -> dict[str, Any]:
         output: dict[str, Any] = {}
+
+        query_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
+        output['parametric'], output['base_proba'] = self.generate(query_tokens)
+
+        base_proba = self.probability(query_tokens, self.batch_encode(output['parametric']))
+
+        # logging.info(f"{output['parametric']=}; {output['base_proba']=}; {base_proba=}")
+        logging.info(f"Is it close? {torch.isclose(output['base_proba'], base_proba).all()}")
+        ipdb.set_trace()
 
         logits = self.query([q.format(prompt = self.llm.prompt) for q in questions])
         path, probs = self.winner(logits)
