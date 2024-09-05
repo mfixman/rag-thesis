@@ -52,40 +52,6 @@ class QuestionAnswerer:
                 not stop_tokens.isdisjoint(self.llm.tokenizer.decode(v))
         ]).to(self.device)
 
-    def query_dict(self, question_dict: dict[tuple[str, str], str]) -> dict[tuple[str, str], tuple[str, float]]:
-        answers, logits = self.query(list(question_dict.values()))
-        return dict(zip(question_dict.keys(), zip(answers, logits)))
-
-    # [n] -> (n, w, v)
-    @torch.no_grad()
-    def query(self, questions: list[str]) -> FloatTensor:
-        tokens = self.llm.tokenizer(
-            questions,
-            return_tensors = 'pt',
-            return_attention_mask = True,
-            padding = True,
-        ).to(self.device)
-
-        outputs = self.llm.model.generate(
-            input_ids = tokens.input_ids,
-            attention_mask = tokens.attention_mask,
-            max_new_tokens = self.max_length,
-            min_new_tokens = self.max_length - 1,
-            # stop_strings = ['.', '\n'],
-            do_sample = False,
-            tokenizer = self.llm.tokenizer,
-            output_logits = True,
-            output_scores = True,
-            return_dict_in_generate = True,
-            temperature = None,
-            top_p = None,
-            pad_token_id = self.llm.tokenizer.pad_token_id,
-            eos_token_id = self.llm.tokenizer.eos_token_id,
-            bos_token_id = self.llm.tokenizer.bos_token_id,
-        )
-
-        return torch.stack(outputs.scores, dim = 1).softmax(dim = 2)
-
     # [n] -> (n, w)
     def tokenise(self, phrases: list[str]) -> BatchEncoding:
         return self.llm.tokenizer(
@@ -158,45 +124,6 @@ class QuestionAnswerer:
             clean_up_tokenization_spaces = True,
         )
         return [x.strip() for x in decoded]
-
-    # (n, w, v) -> (n, w); [(n, w), (n, w)]
-    def winner(self, logits: FloatTensor) -> tuple[LongTensor, FloatTensor]:
-        probs, path = logits.max(dim = 2)
-        return path, probs
-
-    # Decodes the tokens in `path`, and returns the average value within used tokens in `probs`.
-    # (n, w); (n, w) -> [n]; [n]
-    def decode_2(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
-        # path = path.clone()
-        # probs = probs.clone()
-
-        # left = torch.cumsum(~torch.isin(path, self.stop_token_ids), dim = 1) == 0
-        left = torch.zeros_like(path, dtype = torch.bool)
-        right = torch.cumsum(~left & torch.isin(path, self.stop_token_ids), dim = 1) > 0
-        ignores = left | right
-
-        path[ignores] = self.llm.tokenizer.pad_token_id
-        probs[path == self.llm.tokenizer.pad_token_id] = torch.nan
-
-        phrase = self.llm.tokenizer.batch_decode(path, skip_special_tokens = True, clean_up_tokenization_spaces = True)
-        perplexity = torch.exp(-torch.nanmean(torch.log(probs), dim = 1))
-
-        if any('.' in x or '\n' in x for x in phrase):
-            bads = [e for e, x in enumerate(phrase) if '.' in x or '\n' in x]
-            tokens = {x.cpu().item(): self.llm.tokenizer.decode(x.cpu().item()) for e in bads for x in path[e]}
-            bad_tokens = {k: v for k, v in tokens.items() if k not in self.stop_token_ids and ('.' in v or '\n' in v)}
-            raise ValueError(f'Unregistered tokens with stop characters generated: {bad_tokens}')
-
-        if torch.any(perplexity < 1):
-            logging.warn(f'{torch.sum(perplexity < 1)} entries found with perplexity less than 1!')
-
-        return [x.strip() for x in phrase], perplexity.tolist()
-
-    # Gets mean probabilities of logits along a sequence of paths.
-    # (n, v); (n, w, v) -> [n]
-    def gather(self, path: LongTensor, logits: FloatTensor) -> tuple[list[str], list[float]]:
-        traces = logits.gather(index = path.unsqueeze(2), dim = 2).squeeze(2)
-        return self.decode_2(path, traces)
 
     @staticmethod
     def streq(a: str, b: str) -> bool:
