@@ -121,6 +121,7 @@ class QuestionAnswerer:
             pad_token_id = self.llm.tokenizer.pad_token_id,
             eos_token_id = self.llm.tokenizer.eos_token_id,
             bos_token_id = self.llm.tokenizer.bos_token_id,
+            use_cache = False,
         )
 
         sequences = generated.sequences[:, query.input_ids.shape[1]:]
@@ -131,23 +132,24 @@ class QuestionAnswerer:
         probs[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
         ces = -torch.nanmean(torch.log_softmax(probs, dim = 2).max(dim = 2)[0], dim = 1)
 
-        # Testing here.
+        logits = torch.stack(generated.logits, dim = 1)
+        logits[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
 
-        maxes_gen = probs.argmax(dim = 2)
-        answer_mask = sequences != self.llm.tokenizer.pad_token_id
+        scores = torch.stack(generated.scores, dim = 1)
+        scores[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
 
-        both_ids = torch.cat([query.input_ids, sequences], dim = 1)
-        both_mask = torch.cat([query.attention_mask, answer_mask], dim = 1)
+        # logging.info(sequences[0])
+        # logging.info(probs.log_softmax(dim = 2).max(dim = 2)[0][0])
 
-        data = self.llm.model(input_ids = both_ids, attention_mask = both_mask)
-        logits = data.logits
-        maxes_for = logits.argmax(dim = 2)
-
-        ipdb.set_trace()
+        # logging.info(query.input_ids[0])
+        # logging.info(query.attention_mask[0])
+        # logging.info(logits.max(dim = 2)[0][0])
+        # logging.info(scores.max(dim = 2)[0][0])
 
         return sequences, ces
 
     # (n, w0), (n, w1) -> (n)
+    @torch.no_grad()
     def probability(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
         w0 = query.input_ids.shape[1]
         w1 = answer.input_ids.shape[1]
@@ -155,19 +157,39 @@ class QuestionAnswerer:
         input_ids = torch.cat([query.input_ids, answer.input_ids], dim = 1)
         attention_mask = torch.cat([query.attention_mask, answer.attention_mask], dim = 1)
 
-        frumps = []
-        for i in range(answer.input_ids.shape[1]):
-            f_input_ids = torch.cat([query.input_ids, answer.input_ids[:, :i]], dim = 1)
-            f_attention_mask = torch.cat([query.attention_mask, answer.attention_mask[:, :i]], dim = 1)
-            frumps.append(self.llm.model(f_input_ids, attention_mask = f_attention_mask).logits.cpu())
-
-        logits = self.llm.model(input_ids, attention_mask = attention_mask).logits[:, w0:]
+        logits = self.llm.model(input_ids, attention_mask = attention_mask).logits[:, w0 - 1 : w0 + w1 - 1]
         entropies = logits.log_softmax(dim = 1)
         probs = torch.where(
             answer.input_ids == self.llm.tokenizer.pad_token_id,
             torch.nan,
             entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
         )
+
+        generated = self.llm.model.generate(
+            input_ids = query.input_ids,
+            attention_mask = query.attention_mask,
+            max_new_tokens = self.max_length,
+            min_new_tokens = self.max_length,
+            tokenizer = self.llm.tokenizer,
+            do_sample = False,
+            temperature = None,
+            top_p = None,
+            top_k = None,
+            output_logits = True,
+            output_scores = True,
+            output_attentions = True,
+            return_dict_in_generate = True,
+            pad_token_id = self.llm.tokenizer.pad_token_id,
+            eos_token_id = self.llm.tokenizer.eos_token_id,
+            bos_token_id = self.llm.tokenizer.bos_token_id,
+            use_cache = False,
+        )
+
+        logging.info(generated.sequences[0])
+        generated_logits = torch.stack(generated.logits, dim = 1)
+
+        logging.info(generated_logits.max(dim = 2)[0])
+        logging.info(logits.max(dim = 2)[0][0])
         ipdb.set_trace()
         return -torch.nanmean(probs, dim = 1)
 
