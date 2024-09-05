@@ -116,7 +116,6 @@ class QuestionAnswerer:
             top_p = None,
             output_logits = True,
             output_scores = True,
-            output_attentions = True,
             return_dict_in_generate = True,
             pad_token_id = self.llm.tokenizer.pad_token_id,
             eos_token_id = self.llm.tokenizer.eos_token_id,
@@ -128,23 +127,9 @@ class QuestionAnswerer:
         ignores = torch.cumsum(torch.isin(sequences, self.stop_token_ids), dim = 1) > 0
         sequences[ignores] = self.llm.tokenizer.pad_token_id
 
-        probs = torch.stack(generated.scores, dim = 1)
+        probs = torch.stack(generated.logits, dim = 1).log_softmax(dim = 2)
         probs[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
-        ces = -torch.nanmean(torch.log_softmax(probs, dim = 2).max(dim = 2)[0], dim = 1)
-
-        logits = torch.stack(generated.logits, dim = 1)
-        logits[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
-
-        scores = torch.stack(generated.scores, dim = 1)
-        scores[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
-
-        # logging.info(sequences[0])
-        # logging.info(probs.log_softmax(dim = 2).max(dim = 2)[0][0])
-
-        # logging.info(query.input_ids[0])
-        # logging.info(query.attention_mask[0])
-        # logging.info(logits.max(dim = 2)[0][0])
-        # logging.info(scores.max(dim = 2)[0][0])
+        ces = -torch.nanmean(probs.max(dim = 2)[0], dim = 1)
 
         return sequences, ces
 
@@ -158,12 +143,14 @@ class QuestionAnswerer:
         attention_mask = torch.cat([query.attention_mask, answer.attention_mask], dim = 1)
 
         logits = self.llm.model(input_ids, attention_mask = attention_mask).logits[:, w0 - 1 : w0 + w1 - 1]
-        entropies = logits.log_softmax(dim = 1)
+        entropies = logits.log_softmax(dim = 2)
         probs = torch.where(
             answer.input_ids == self.llm.tokenizer.pad_token_id,
             torch.nan,
             entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
         )
+
+        mean = -torch.nanmean(probs, dim = 1)
 
         generated = self.llm.model.generate(
             input_ids = query.input_ids,
@@ -174,23 +161,42 @@ class QuestionAnswerer:
             do_sample = False,
             temperature = None,
             top_p = None,
-            top_k = None,
             output_logits = True,
             output_scores = True,
-            output_attentions = True,
             return_dict_in_generate = True,
             pad_token_id = self.llm.tokenizer.pad_token_id,
             eos_token_id = self.llm.tokenizer.eos_token_id,
             bos_token_id = self.llm.tokenizer.bos_token_id,
             use_cache = False,
         )
+        gen_logits = torch.stack(generated.logits, dim = 1)
+        gen_scores = torch.stack(generated.scores, dim = 1)
 
-        logging.info(generated.sequences[0])
-        generated_logits = torch.stack(generated.logits, dim = 1)
+        gen_entropies = gen_logits.log_softmax(dim = 2)
+        gen_max_probs = torch.where(
+            answer.input_ids == self.llm.tokenizer.pad_token_id,
+            torch.nan,
+            gen_entropies.max(dim = 2)[0],
+        )
+        gen_probs = torch.where(
+            answer.input_ids == self.llm.tokenizer.pad_token_id,
+            torch.nan,
+            gen_entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
+        )
 
-        logging.info(generated_logits.max(dim = 2)[0])
-        logging.info(logits.max(dim = 2)[0][0])
+        gen_max_mean = -torch.nanmean(gen_max_probs, dim = 1)
+        gen_mean = -torch.nanmean(gen_probs, dim = 1)
+
+        print(probs)
+        print(gen_max_probs)
+        print(gen_probs)
+
+        print(mean)
+        print(gen_max_mean)
+        print(gen_mean)
+
         ipdb.set_trace()
+
         return -torch.nanmean(probs, dim = 1)
 
     # (n, w, v) -> (n, w); [(n, w), (n, w)]
