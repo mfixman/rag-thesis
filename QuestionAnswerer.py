@@ -114,13 +114,10 @@ class QuestionAnswerer:
             do_sample = False,
             temperature = None,
             top_p = None,
-            output_logits = True,
-            output_scores = True,
             return_dict_in_generate = True,
             pad_token_id = self.llm.tokenizer.pad_token_id,
             eos_token_id = self.llm.tokenizer.eos_token_id,
             bos_token_id = self.llm.tokenizer.bos_token_id,
-            use_cache = False,
         )
 
         sequences = generated.sequences[:, query.input_ids.shape[1]:]
@@ -155,11 +152,12 @@ class QuestionAnswerer:
 
     # (n, w) -> [n]
     def decode(self, tokens: LongTensor) -> list[str]:
-        return self.llm.tokenizer.batch_decode(
+        decoded = self.llm.tokenizer.batch_decode(
             tokens,
             skip_special_tokens = True,
             clean_up_tokenization_spaces = True,
         )
+        return [x.strip() for x in decoded]
 
     # (n, w, v) -> (n, w); [(n, w), (n, w)]
     def winner(self, logits: FloatTensor) -> tuple[LongTensor, FloatTensor]:
@@ -232,21 +230,20 @@ class QuestionAnswerer:
         output['parametric'] = self.decode(parametric)
         output['base_proba'] = self.probability(base_tokens, parametric)
 
-        if use_counterfactuals is not None:
-            flips = findFlips2(questions, output['parametric'])
-            counterfactual = parametric[flips]
+        flips = findFlips2(questions, output['parametric'])
+        counterfactual = parametric[flips]
 
-            output['counterfactual'] = self.decode(counterfactual)
-            output['base_cf_proba'] = self.probability(base_tokens, counterfactual)
+        output['counterfactual'] = self.decode(counterfactual)
+        output['base_cf_proba'] = self.probability(base_tokens, counterfactual)
 
-            output |= self.answerCounterfactuals(questions, output['counterfactual'], parametric, counterfactual)
+        output |= self.answerCounterfactuals(questions, output['counterfactual'], parametric, counterfactual)
 
-            output['comparison'] = [
-                'Parametric' if self.streq(a, p) else
-                'Counterfactual' if self.streq(a, c) else
-                'Other'
-                for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
-            ]
+        output['comparison'] = [
+            'Parametric' if self.streq(a, p) else
+            'Counterfactual' if self.streq(a, c) else
+            'Other'
+            for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
+        ]
 
         return output
 
