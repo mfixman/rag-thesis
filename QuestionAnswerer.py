@@ -103,8 +103,8 @@ class QuestionAnswerer:
             attention_mask = attention_mask,
         ))
 
-    # (n, w) -> (n, w), (n), (n, w)
-    def generate(self, query: BatchEncoding) -> tuple[LongTensor, FloatTensor]:
+    # (n, w) -> (n, w)
+    def generate(self, query: BatchEncoding) -> LongTensor:
         generated = self.llm.model.generate(
             input_ids = query.input_ids,
             attention_mask = query.attention_mask,
@@ -127,15 +127,15 @@ class QuestionAnswerer:
         ignores = torch.cumsum(torch.isin(sequences, self.stop_token_ids), dim = 1) > 0
         sequences[ignores] = self.llm.tokenizer.pad_token_id
 
-        probs = torch.stack(generated.logits, dim = 1).log_softmax(dim = 2)
-        probs[sequences == self.llm.tokenizer.pad_token_id] = torch.nan
-        ces = -torch.nanmean(probs.max(dim = 2)[0], dim = 1)
+        return sequences
 
-        return sequences, ces
+    # (n, w0), (n, w1) -> (n)
+    def probability(self, query: BatchEncoding, answer: LongTensor) -> FloatTensor:
+        return self.batch_probability(query, answer)
 
     # (n, w0), (n, w1) -> (n)
     @torch.no_grad()
-    def probability(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
+    def batch_probability(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
         w0 = query.input_ids.shape[1]
         w1 = answer.input_ids.shape[1]
 
@@ -150,54 +150,15 @@ class QuestionAnswerer:
             entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
         )
 
-        mean = -torch.nanmean(probs, dim = 1)
-
-        generated = self.llm.model.generate(
-            input_ids = query.input_ids,
-            attention_mask = query.attention_mask,
-            max_new_tokens = self.max_length,
-            min_new_tokens = self.max_length,
-            tokenizer = self.llm.tokenizer,
-            do_sample = False,
-            temperature = None,
-            top_p = None,
-            output_logits = True,
-            output_scores = True,
-            return_dict_in_generate = True,
-            pad_token_id = self.llm.tokenizer.pad_token_id,
-            eos_token_id = self.llm.tokenizer.eos_token_id,
-            bos_token_id = self.llm.tokenizer.bos_token_id,
-            use_cache = False,
-        )
-        gen_logits = torch.stack(generated.logits, dim = 1)
-        gen_scores = torch.stack(generated.scores, dim = 1)
-
-        gen_entropies = gen_logits.log_softmax(dim = 2)
-        gen_max_probs = torch.where(
-            answer.input_ids == self.llm.tokenizer.pad_token_id,
-            torch.nan,
-            gen_entropies.max(dim = 2)[0],
-        )
-        gen_probs = torch.where(
-            answer.input_ids == self.llm.tokenizer.pad_token_id,
-            torch.nan,
-            gen_entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
-        )
-
-        gen_max_mean = -torch.nanmean(gen_max_probs, dim = 1)
-        gen_mean = -torch.nanmean(gen_probs, dim = 1)
-
-        print(probs)
-        print(gen_max_probs)
-        print(gen_probs)
-
-        print(mean)
-        print(gen_max_mean)
-        print(gen_mean)
-
-        ipdb.set_trace()
-
         return -torch.nanmean(probs, dim = 1)
+
+    # (n, w) -> [n]
+    def decode(self, tokens: LongTensor) -> list[str]:
+        return self.llm.batch_decode(
+            tokens,
+            skip_special_tokens = True,
+            clean_up_tokenization_spaces = True,
+        )
 
     # (n, w, v) -> (n, w); [(n, w), (n, w)]
     def winner(self, logits: FloatTensor) -> tuple[LongTensor, FloatTensor]:
@@ -206,7 +167,7 @@ class QuestionAnswerer:
 
     # Decodes the tokens in `path`, and returns the average value within used tokens in `probs`.
     # (n, w); (n, w) -> [n]; [n]
-    def decode(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
+    def decode_2(self, path: LongTensor, probs: FloatTensor) -> tuple[list[str], list[float]]:
         # path = path.clone()
         # probs = probs.clone()
 
@@ -236,7 +197,7 @@ class QuestionAnswerer:
     # (n, v); (n, w, v) -> [n]
     def gather(self, path: LongTensor, logits: FloatTensor) -> tuple[list[str], list[float]]:
         traces = logits.gather(index = path.unsqueeze(2), dim = 2).squeeze(2)
-        return self.decode(path, traces)
+        return self.decode_2(path, traces)
 
     @staticmethod
     def streq(a: str, b: str) -> bool:
@@ -244,46 +205,40 @@ class QuestionAnswerer:
         b = b.lower().replace('the', '').replace(',', '').strip()
         return a[:len(b)] == b[:len(a)]
 
-    def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], param_path: LongTensor, cf_path: LongTensor) -> dict[str, Any]:
+    def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], parametric: LongTensor, counterfactual: LongTensor) -> dict[str, Any]:
         output: dict[str, Any] = {}
-        queries = [
+        ctx_tokens = self.tokenise([
             q.format(prompt = self.llm.cf_prompt, context = context)
             for q, context in zip(questions, counterfactuals)
-        ]
+        ])
 
-        logits = self.query(queries)
-        path, probs = self.winner(logits)
-        output['contextual'], output['ctx_proba'] = self.decode(path, probs)
+        contextual = self.generate(ctx_tokens)
 
-        _, output['ctx_param_proba'] = self.gather(param_path, logits)
-        _, output['ctx_cf_proba'] = self.gather(cf_path, logits)
+        output['contextual'] = self.decode(contextual)
+        output['ctx_proba'] = self.probability(ctx_tokens, contextual)
+
+        output['ctx_param_proba'] = self.probability(ctx_tokens, parametric)
+        output['ctx_cf_proba'] = self.probability(ctx_tokens, counterfactual)
 
         return output
 
     def answerChunk(self, questions: list[Object], use_counterfactuals: bool = True) -> dict[str, Any]:
         output: dict[str, Any] = {}
 
-        query_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
-        output['parametric'], output['base_proba'] = self.generate(query_tokens)
+        base_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
+        parametric = self.generate(base_tokens)
 
-        base_proba = self.probability(query_tokens, self.batch_encode(output['parametric']))
-
-        # logging.info(f"{output['parametric']=}; {output['base_proba']=}; {base_proba=}")
-        logging.info(f"Is it close? {torch.isclose(output['base_proba'], base_proba).all()}")
-        ipdb.set_trace()
-
-        logits = self.query([q.format(prompt = self.llm.prompt) for q in questions])
-        path, probs = self.winner(logits)
-        output['parametric'], output['base_proba'] = self.decode(path, probs)
+        output['parametric'] = self.decode(parametric)
+        output['base_proba'] = self.probability(base_tokens, parametric)
 
         if use_counterfactuals is not None:
             flips = findFlips2(questions, output['parametric'])
-            cf_path = path[flips]
+            counterfactual = parametric[flips]
 
-            counterfactuals, output['base_cf_proba'] = self.gather(cf_path, logits)
-            output['counterfactual'] = counterfactuals
+            output['counterfactual'] = self.decode(counterfactual)
+            output['base_cf_proba'] = self.probability(base_tokens, counterfactual)
 
-            output |= self.answerCounterfactuals(questions, counterfactuals, param_path = path, cf_path = cf_path)
+            output |= self.answerCounterfactuals(questions, output['counterfactual'], parametric, counterfactual)
 
             output['comparison'] = [
                 'Parametric' if self.streq(a, p) else
