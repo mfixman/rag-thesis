@@ -130,8 +130,9 @@ class QuestionAnswerer:
         return sequences
 
     # (n, w0), (n, w1) -> (n)
-    def probability(self, query: BatchEncoding, answer: LongTensor) -> FloatTensor:
-        return self.batch_probability(query, answer)
+    def probability(self, query: BatchEncoding, answer: LongTensor) -> list[float]:
+        probs = self.batch_probability(query, self.batch_encode(answer))
+        return probs.cpu().tolist()
 
     # (n, w0), (n, w1) -> (n)
     @torch.no_grad()
@@ -154,7 +155,7 @@ class QuestionAnswerer:
 
     # (n, w) -> [n]
     def decode(self, tokens: LongTensor) -> list[str]:
-        return self.llm.batch_decode(
+        return self.llm.tokenizer.batch_decode(
             tokens,
             skip_special_tokens = True,
             clean_up_tokenization_spaces = True,
