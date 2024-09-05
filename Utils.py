@@ -85,7 +85,7 @@ def combine_questions(base_questions: list[str], things: list[dict[str, str]], l
 
     return short_questions, short_cat_positions
 
-def findFlips2(questions: list[Object], answers: list[Object]) -> list[int]:
+def findFlips2(questions: list[Object], answers: list[str]) -> list[int]:
     flips = [-1 for _ in questions]
 
     for q, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].question):
