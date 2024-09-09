@@ -56,13 +56,13 @@ def main(args):
     )
     logging.getLogger().addFilter(LogTimeFilter())
 
-    wandb.init(project = 'question-combinator', config = args)
-
     if not args.rand:
         random.seed(0)
 
     if args.offline:
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
+    else:
+        wandb.init(project = 'question-combinator', config = args)
 
     logging.info('Getting questions')
     questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
