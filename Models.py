@@ -1,8 +1,10 @@
 import logging
 
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM, BatchEncoding
 from torch import nn, tensor
+from torch import FloatTensor, LongTensor, BoolTensor, Tensor
 import torch
+import ipdb
 
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
@@ -29,30 +31,35 @@ Model_dict = {
 }
 
 class Model(nn.Module):
+    name: str
+    model_name: str
+    device: str
+
+    tokenizer: AutoTokenizer
+    model: AutoModelForCausalLM
+
     @staticmethod
     def fromName(name: str, device: str = 'cpu') -> 'Model':
         if name == 'dummy':
             return DummyModel()
 
         if name in ('llama-70b', 'gemma-27b'):
-            return LargeModel(name, device)
+            return LargeDecoderOnlyModel(name, device)
 
         if 't5' in name:
             return Seq2SeqModel(name, device)
 
-        return Model(name, device)
+        return DecoderOnlyModel(name, device)
 
-    name: str
-    model_name: str
-    tokenizer: AutoTokenizer
-    model: AutoModelForCausalLM
-    device: str
-
-    def __init__(self, name: str, device: str = 'cpu'):
+    def __init__(self, name: str, device: str = 'cuda'):
         super().__init__()
         self.name = name
         self.model_name = Model_dict[name]
         self.device = device
+
+class DecoderOnlyModel(Model):
+    def __init__(self, name: str, device: str = 'cuda'):
+        super().__init__(name, device)
 
         self.prompt = 'Answer the following question in a few words and with no formatting.'
         self.cf_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
@@ -86,12 +93,19 @@ class Model(nn.Module):
         )
         self.model.eval()
 
+    @torch.no_grad()
+    def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
+        w0 = query.input_ids.shape[1]
+        w1 = answer.input_ids.shape[1]
+
+        input_ids = torch.cat([query.input_ids, answer.input_ids], dim = 1)
+        attention_mask = torch.cat([query.attention_mask, answer.attention_mask], dim = 1)
+
+        return self.model(input_ids, attention_mask = attention_mask).logits[:, w0 - 1 : w0 + w1 - 1]
+
 class Seq2SeqModel(Model):
     def __init__(self, name: str, device: str = 'cpu'):
-        nn.Module.__init__(self)
-        self.name = name
-        self.model_name = Model_dict[name]
-        self.device = device
+        super().__init__(name, device)
 
         self.prompt = 'Answer the following question in a few words, and write a period at the end of the answer.'
         self.cf_prompt = 'Answer the following question in a few words using the previous context, and write a period at the end of the answer.'
@@ -117,7 +131,26 @@ class Seq2SeqModel(Model):
         )
         self.model.eval()
 
-class LargeModel(Model):
+    @staticmethod
+    def pad(tensor: Tensor, length: int, value) -> Tensor:
+        right = torch.full((tensor.shape[0], length - tensor.shape[1]), value)
+        return torch.cat([tensor, right.to(tensor.device)], dim = 1)
+
+    @torch.no_grad()
+    def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
+        length = max(query.input_ids.shape[1], answer.input_ids.shape[1])
+
+        input_ids = self.pad(query.input_ids, length, self.tokenizer.pad_token_id)
+        attention_mask = self.pad(query.attention_mask, length, 0)
+        decoder_input_ids = self.pad(self.model._shift_right(answer.input_ids), length, self.tokenizer.pad_token_id)
+
+        return self.model(
+            input_ids = input_ids,
+            attention_mask = attention_mask,
+            decoder_input_ids = decoder_input_ids,
+        ).logits[:, : answer.input_ids.shape[1]]
+
+class LargeDecoderOnlyModel(DecoderOnlyModel):
     def __init__(self, name, device: str = 'cpu'):
         if torch.cuda.device_count() < 2:
             raise ValueError(f'At least two GPUs are needed to run {name}')

@@ -86,7 +86,7 @@ class QuestionAnswerer:
             bos_token_id = self.llm.tokenizer.bos_token_id,
         )
 
-        sequences = generated.sequences[:, query.input_ids.shape[1]:]
+        sequences = generated.sequences[:, -self.max_length:]
         ignores = torch.cumsum(torch.isin(sequences, self.stop_token_ids), dim = 1) > 0
         sequences[ignores] = self.llm.tokenizer.pad_token_id
 
@@ -100,14 +100,7 @@ class QuestionAnswerer:
     # (n, w0), (n, w1) -> (n)
     @torch.no_grad()
     def batch_probability(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
-        w0 = query.input_ids.shape[1]
-        w1 = answer.input_ids.shape[1]
-
-        input_ids = torch.cat([query.input_ids, answer.input_ids], dim = 1)
-        attention_mask = torch.cat([query.attention_mask, answer.attention_mask], dim = 1)
-
-        logits = self.llm.model(input_ids, attention_mask = attention_mask).logits[:, w0 - 1 : w0 + w1 - 1]
-        entropies = logits.log_softmax(dim = 2)
+        entropies = self.llm.logits(query, answer).log_softmax(dim = 2)
         probs = torch.where(
             answer.input_ids == self.llm.tokenizer.pad_token_id,
             torch.nan,
