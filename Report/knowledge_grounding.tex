@@ -1,7 +1,8 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,11pt]{article}
 
 \usepackage{abstract}
 \usepackage{amsmath}
+\usepackage{appendix}
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{geometry}
@@ -17,19 +18,19 @@
 \begin{document}
 
 \begin{titlepage}
-	\newgeometry{top=30pt,left=40pt,right=40pt}
+	\newgeometry{top=40pt,left=40pt,right=40pt}
 	\begin{center}
 		\LARGE
 		\sffamily
 
 		\includegraphics[width=200pt]{to_serve_mankind.png} \\[1ex]
-		\includegraphics[width=120pt]{City.png}
+		\includegraphics[width=150pt]{City.png}
 
-		\vspace{20pt}
+		\vfill{}
 
+		\vspace{-40pt}
 		Individual Project
-
-		\vspace{10pt}
+		\vspace{20pt}
 
 		\begin{huge}
 			\bfseries
@@ -44,6 +45,27 @@
 			Collaborators: Chenxi Whitehouse and Pranava Madhyastha
 		\end{sffamily}
 	\end{center}
+	\restoregeometry{}
 \end{titlepage}
+
+\input{abstract}
+
+\input{introduction}
+
+\input{related_work}
+
+\input{problem_statement}
+
+\input{methodology}
+
+\input{results}
+
+\input{conclusions}
+
+\begin{appendices}
+	\input{appendixA}
+
+	\input{appendixB}
+\end{appendices}
 
 \end{document}
