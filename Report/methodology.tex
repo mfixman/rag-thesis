@@ -15,7 +15,7 @@ The full list of questions can be found in \cref{appendixA}.
 
 \begin{table}[h]
 	\centering
-	\footnotesize
+	\scriptsize
 	\begin{tabular}{l | r r r}
 		\toprule
 			\bfseries Category & \bfseries Questions & \bfseries Objects & \bfseries Total \\
@@ -37,14 +37,14 @@ The full list of questions can be found in \cref{appendixA}.
 
 We enhance the zero-shot learning prompt used by Brown~et.~al\cite{fewshotlearners} by using the prompt format example format presented by Jiang~et.~al\cite{how_can_we_know} for calibrating the T5 language model by adding both the question and the first part of the answer.
 
-\begin{table}[h]
+\begin{table}[b]
 	\setlength{\fboxsep}{0pt}
 	\setlength{\fboxrule}{1pt}
 	\newcommand{\rep}[1]{\fcolorbox{Gray}{Gray!80}{\textit{#1}}}
 
 	\centering
 	\scriptsize
-	\begin{tabular}{l l | l}
+	\begin{tabular}{l | c | l}
 		\toprule
 			\bfseries Base Question & \bfseries Object & \bfseries Final Question \\
 		\midrule
@@ -55,17 +55,18 @@ We enhance the zero-shot learning prompt used by Brown~et.~al\cite{fewshotlearne
 				What country is \rep{\{city\}} in? \\ \rep{\{city\}} is in
 			\end{minipage} &
 			\begin{minipage}{.16\textwidth}
+				\centering
 				\ttfamily
-				\textcolor{Red}{Che Guevara} \\[1ex]
-				\textcolor{Sepia}{Confucius} \\[1ex]
-				\textcolor{BurntOrange}{Cairo} \\[1ex]
-				\textcolor{ForestGreen}{Mumbai}
+				\fcolorbox{Gray!50}{Gray!50}{\textcolor{Red}{Che~Guevara}} \\[1ex]
+				\fcolorbox{Gray!50}{Gray!50}{\textcolor{Sepia}{Confucius}} \\[1ex]
+				\fcolorbox{Gray!50}{Gray!50}{\textcolor{BurntOrange}{Cairo}} \\[1ex]
+				\fcolorbox{Gray!50}{Gray!50}{\textcolor{ForestGreen}{Mumbai}}
 			\end{minipage} &
 			\begin{minipage}{.45\textwidth}
 				\ttfamily
-				What is the date of birth of \textcolor{Red}{Che Guevara}? \\ The date of birth of \textcolor{Red}{Che Guevara} is \\[1ex]
+				What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ The date of birth of \textcolor{Red}{Che~Guevara} is \\[1ex]
 				What is the date of birth of \textcolor{Sepia}{Confucius}? \\ The date of birth of \textcolor{Sepia}{Confucius} is \\[1ex]
-				In what city was \textcolor{Red}{Che Guevara} born? \\ \textcolor{Red}{Che Guevara} was born in \\[1ex]
+				In what city was \textcolor{Red}{Che~Guevara} born? \\ \textcolor{Red}{Che~Guevara} was born in \\[1ex]
 				In what city was \textcolor{Sepia}{Confucius} born? \\ \textcolor{Sepia}{Confucius} was born in \\[1ex]
 				What country is \textcolor{BurntOrange}{Cairo} in? \\ \textcolor{BurntOrange}{Cairo} is in \\[1ex]
 				What country is \textcolor{ForestGreen}{Mumbai} in? \\ \textcolor{ForestGreen}{Mumbai} is in
