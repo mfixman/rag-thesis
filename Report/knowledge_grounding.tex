@@ -11,6 +11,7 @@
 \usepackage[symbol]{footmisc}
 \usepackage{geometry}
 \usepackage{graphicx}
+\usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{makecell}
 \usepackage{microtype}
@@ -25,7 +26,7 @@
 
 \graphicspath{{.}{./pictures}}
 
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 
 \newcommand{\citationneeded}{\textsuperscript{[citation needed]}}
 
@@ -44,11 +45,12 @@
 
 		Individual Project
 
-		\vspace{10pt}
+		\vspace{15pt}
 
 		\begin{Huge}
 			\bfseries
-			Enhancing Knowledge Grounding \\ in Retrieval-Augmented Language Models
+			Enhancing Knowledge Grounding \\ in Retrieval-Augmented Language Models: \\[1em]
+			An Empirical Study
 		\end{Huge}
 
 		\vfill{}
@@ -70,8 +72,10 @@
 
 \input{introduction}
 
+\clearpage{}
 \input{related_work}
 
+\clearpage{}
 \input{problem_statement}
 
 \input{models}
