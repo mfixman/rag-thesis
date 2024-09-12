@@ -8,8 +8,17 @@ import ipdb
 
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
-    'falcon2': 'tiiuae/falcon-11b',
     'llama-70b': 'meta-llama/Meta-Llama-3.1-70B-Instruct',
+    'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
+    'flan-t5': 'google/flan-t5-base',
+    'flan-t5-small': 'google/flan-t5-small',
+    'flan-t5-base': 'google/flan-t5-base',
+    'flan-t5-large': 'google/flan-t5-large',
+    'flan-t5-xl': 'google/flan-t5-xl',
+    'flan-t5-xxl': 'google/flan-t5-xxl',
+    'gemma': 'google/gemma-2-9b-it',
+    'gemma-27b': 'google/gemma-2-27b-it',
+    'falcon2': 'tiiuae/falcon-11b',
     'falcon-180b': 'tiiuae/falcon-180b-chat',
     'falcon-40b': 'tiiuae/falcon-40b-instruct',
     'falcon-7b': 'tiiuae/falcon-7b-instruct',
@@ -17,16 +26,7 @@ Model_dict = {
     'roberta': 'FacebookAI/roberta-base',
     'roberta-large': 'FacebookAI/roberta-large',
     'roberta-squad': 'deepset/roberta-base-squad2',
-    'llama-405b': 'meta-llama/Meta-Llama-3.1-405B-Instruct',
-    'gemma': 'google/gemma-2-9b-it',
-    'gemma-27b': 'google/gemma-2-27b-it',
     'mixtral': 'mistralai/Mixtral-8x22B-Instruct-v0.1',
-    'flan-t5': 'google/flan-t5-base',
-    'flan-t5-small': 'google/flan-t5-small',
-    'flan-t5-base': 'google/flan-t5-base',
-    'flan-t5-large': 'google/flan-t5-large',
-    'flan-t5-xl': 'google/flan-t5-xl',
-    'flan-t5-xxl': 'google/flan-t5-xxl',
     'dummy': '',
 }
 
@@ -199,3 +199,12 @@ class DummyModel(Model):
 
     def shape(self):
         return (1, 2, 3)
+
+def main():
+    print(f'{"Model Name":>15} | {"Huggingface Model":<40}')
+    print((15 + 1) * '-' + '|' + (40 + 1) * '-')
+    for name, model in Model_dict.items():
+        print(f'{name:>15} | {model:<40}')
+
+if __name__ == '__main__':
+    main()

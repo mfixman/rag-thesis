@@ -20,72 +20,62 @@ $ huggingface-cli download --repo-type model 'facebook/rag-sequence-nq'
 
 ## Usage
 ```
-$ python models.py --help
-usage: models.py [-h] [--models model [model ...]] [--list-models] [--device {cpu,cuda}] [-l MAX_LENGTH]
-                 [--custom-prompt PROMPT] [--empty | --no-empty | --empty-context | --no-empty-context]
-                 [--rag | --no-rag] [--rag-dummy | --no-rag-dummy] [--rag-const CONTEXT]
-                 [--rag-const-file FILE_WITH_CONTEXT]
-                 [question_file]
+$ python question_combinator.py --help
+usage: question_combinator.py [-h] [--no-except] [--lim-questions LIM_QUESTIONS] [--device {cpu,cuda}]
+                              [--models model [model ...]] [--offline] [--rand] [--per-model]
+                              [--output-dir OUTPUT_DIR]
+                              base_questions_file things_file
 
-Ask me a question
+Combines questions and data and optionally provides parametric data
 
 positional arguments:
-  question_file         File with questions
+  base_questions_file   File with questions
+  things_file           File with things to combine
 
 options:
   -h, --help            show this help message and exit
+  --no-except           Do not go to IPDB console on exception.
+  --lim-questions LIM_QUESTIONS
+                        Question limit
+  --device {cpu,cuda}   Inference device
   --models model [model ...]
-                        Which model or models to use
-  --list-models         List all available models
-  --device {cpu,cuda}
-  -l MAX_LENGTH, --max-length MAX_LENGTH
-                        Max length of answer
-  --custom-prompt PROMPT
-                        Use a custom prompt for the questions instead of the default one. {context} and
-                        {question} fill to the context and question, respectively
-  --empty, --no-empty, --empty-context, --no-empty-context
-                        Whether to use an empty context as base
-  --rag, --no-rag       Whether to enhance the answer with RAG
-  --rag-dummy, --no-rag-dummy
-                        Use dummy dataset for RAG
-  --rag-const CONTEXT   Mock this context for RAG rather than using a RAG extractor.
-  --rag-const-file FILE_WITH_CONTEXT
-                        File with data to inject to RAG extractor.
+                        Which model or models to use for getting parametric data
+  --offline             Tell HF to run everything offline.
+  --rand                Seed randomly
+  --per-model           Write one CSV per model in stdout.
+  --output-dir OUTPUT_DIR
+                        Return one CSV per model, and save them to this directory.
+```
 
-Use the --list-models option for the full list of supported models.
-
-Default prompt:
-` ``
-Context: [{context}]; Question: [{question}]. Answer briefly using the previous context and without prompting. Answer:
-` ``
-
-Example usage: 
-
-# Test llama and falcon2 on the questions in
-# datas/questions.txt using both no context and
-# the counterfactuals fount in datas/counterfactuals.txt.
-python models.py                               \
-    --device cuda                              \
-    --models llama falcon2                     \
-    --empty-context                            \
-    --rag-const-file datas/counterfactuals.txt \
-    datas/questions.txt
+## Example usage
+```
+$ python question_combinator.py --no-except --device cuda --models llama flan-t5-xl flan-t5-xxl --output-dir outputs -- data/base_questions.txt data/objects.csv
 ```
 
 ## Current list of models
 ```
-$ python models.py --list-models
-     Model Name | Huggingface Model                                       
-  -------------------------------------------------------------------
-          llama | meta-llama/Meta-Llama-3.1-8B-Instruct                       
-        falcon2 | tiiuae/falcon-11b                                           
-      llama-70b | meta-llama/Meta-Llama-3.1-70B-Instruct                      
-    falcon-180b | tiiuae/falcon-180b-chat                                     
-     falcon-40b | tiiuae/falcon-40b-instruct                                  
-      falcon-7b | tiiuae/falcon-7b-instruct                                   
-     distilbert | distilbert/distilbert-base-uncased-distilled-squad          
-        roberta | FacebookAI/roberta-base                                     
-  roberta-large | FacebookAI/roberta-large                                    
-  roberta-squad | deepset/roberta-base-squad2                                 
-     llama-405b | meta-llama/Meta-Llama-3.1-405B-Instruct     
+$ python Models.py --list-models
+     Model Name | Huggingface Model
+----------------|-----------------------------------------
+          llama | meta-llama/Meta-Llama-3.1-8B-Instruct
+      llama-70b | meta-llama/Meta-Llama-3.1-70B-Instruct
+     llama-405b | meta-llama/Meta-Llama-3.1-405B-Instruct
+        flan-t5 | google/flan-t5-base
+  flan-t5-small | google/flan-t5-small
+   flan-t5-base | google/flan-t5-base
+  flan-t5-large | google/flan-t5-large
+     flan-t5-xl | google/flan-t5-xl
+    flan-t5-xxl | google/flan-t5-xxl
+          gemma | google/gemma-2-9b-it
+      gemma-27b | google/gemma-2-27b-it
+        falcon2 | tiiuae/falcon-11b
+    falcon-180b | tiiuae/falcon-180b-chat
+     falcon-40b | tiiuae/falcon-40b-instruct
+      falcon-7b | tiiuae/falcon-7b-instruct
+     distilbert | distilbert/distilbert-base-uncased-distilled-squad
+        roberta | FacebookAI/roberta-base
+  roberta-large | FacebookAI/roberta-large
+  roberta-squad | deepset/roberta-base-squad2
+        mixtral | mistralai/Mixtral-8x22B-Instruct-v0.1
+          dummy |
 ```
