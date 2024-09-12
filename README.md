@@ -49,7 +49,14 @@ options:
 
 ## Example usage
 ```
-$ python question_combinator.py --no-except --device cuda --models llama flan-t5-xl flan-t5-xxl --output-dir outputs -- data/base_questions.txt data/objects.csv
+$ python question_combinator.py \
+    --no-except \ # Do not debug (option to be flipped in the future)
+    --device cuda \ # Use CUDA (it's possible to use CPU for small models)
+    --models llama flan-t5-xl flan-t5-xxl \ # List of models to try
+    --output-dir outputs/ \ # Write outputs to this directory
+    -- \
+    data/base_questions.txt # File with {}-format base questions.
+    data/objects.csv # File with objects.
 ```
 
 ## Current list of models
