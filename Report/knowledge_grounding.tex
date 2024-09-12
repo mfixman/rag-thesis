@@ -2,16 +2,20 @@
 
 \usepackage{abstract}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{appendix}
+\usepackage{array}
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage[labelfont=bf,font=footnotesize]{caption}
 \usepackage{microtype}
+\usepackage{multirow}
 \usepackage{parskip}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{varwidth}
+\usepackage{tabularx}
 
 \usepackage[hypertexnames=false,hidelinks]{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
@@ -19,6 +23,8 @@
 \graphicspath{{.}{./pictures}}
 
 \bibliographystyle{plain}
+
+\newcommand{\citationneeded}{\textsuperscript{[citation needed]}}
 
 \begin{document}
 
@@ -77,8 +83,12 @@
 
 \input{conclusions}
 
-\footnotesize
-\bibliography{knowledge_grounding.bib}
+\clearpage{}
+\begin{footnotesize}
+	\bibliography{knowledge_grounding.bib}
+\end{footnotesize}
+
+\clearpage{}
 
 \appendixpage{}
 \addcontentsline{toc}{section}{Appendices}
