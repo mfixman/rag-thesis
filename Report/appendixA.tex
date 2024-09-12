@@ -1,2 +1,34 @@
-\section{All Questions Used as Knowledge}
+\section{Questions and objects used to form the queries}
 \label{appendixA}
+
+\lstset{
+	language=,
+	basicstyle = \ttfamily\tiny,
+	backgroundcolor = \color{Gray!20},
+	% numbers = left,
+	% numbersep = 5pt,
+	frame = single,
+	breakatwhitespace,
+	breaklines,
+	keepspaces,
+	% moredelim=[s][\bfseries\color{Blue!100}]{\{}{\}},
+	captionpos = b,
+	morekeywords=[1]{book},
+	keywordstyle=[1]{\color{Apricot}},
+	morekeywords=[2]{city},
+	keywordstyle=[2]{\color{Blue}},
+	morekeywords=[3]{element},
+	keywordstyle=[3]{\color{Brown}},
+	morekeywords=[4]{historical_event},
+	keywordstyle=[4]{\color{Cerulean}},
+	morekeywords=[5]{painting},
+	keywordstyle=[5]{\color{DarkOrchid}},
+	morekeywords=[6]{person},
+	keywordstyle=[6]{\color{BurntOrange}},
+	morekeywords=[7]{principle},
+	keywordstyle=[7]{\color{JungleGreen}},
+}
+
+\lstinputlisting[caption = All base questions used in this work. Each one of these will get combined with data from Listing 2 as detailed in \cref{preparation}.]{../data/base_questions.txt}
+
+\lstinputlisting[caption = All objects which will be conbined with the questions in Listing 1., firstline = 2]{../data/objects.csv}
