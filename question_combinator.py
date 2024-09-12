@@ -77,13 +77,19 @@ def main(args):
     answers = {}
     for model in args.models:
         qa = QuestionAnswerer(model, device = args.device, max_length = 20)
-        model_answers = {
-            f'{k}-{model}': v
-            for k, v in qa.answerQueries(questions).items()
-        }
+        # model_answers = {
+        #     f'{k}-{model}': v
+        #     for k, v in qa.answerQueries(questions).items()
+        # }
+        model_answers = qa.answerQueries(questions)
         del qa
 
         if args.output_dir:
+            empty = lambda s: sum([x == '' for x in model_answers[s]])
+            count = lambda s: sum([x == s for x in model_answers['comparison']])
+            logging.info(f"{model}:\t{empty('parametric')} empty parametrics, {empty('counterfactual')} empty counterfactuals, {empty('contextual')} empty contextuals")
+            logging.info(f"\t{count('Parametric')} parametrics, {count('Counterfactual')} counterfactuals, {count('Other')} others")
+
             with open(os.path.join(args.output_dir, model + '.csv'), 'w') as out:
                 printParametricCSV(out, questions, model_answers)
         elif args.per_model:

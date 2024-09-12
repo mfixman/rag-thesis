@@ -61,8 +61,10 @@ class DecoderOnlyModel(Model):
     def __init__(self, name: str, device: str = 'cuda'):
         super().__init__(name, device)
 
-        self.prompt = 'Answer the following question in a few words and with no formatting.'
-        self.cf_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
+        # self.prompt = 'Answer the following question in a few words and with no formatting.'
+        # self.cf_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
+        self.prompt = ''
+        self.cf_prompt = ''
 
         kwargs = {}
         if 'llama' in name:
@@ -107,8 +109,10 @@ class Seq2SeqModel(Model):
     def __init__(self, name: str, device: str = 'cpu'):
         super().__init__(name, device)
 
-        self.prompt = 'Answer the following question in a few words, and write a period at the end of the answer.'
-        self.cf_prompt = 'Answer the following question in a few words using the previous context, and write a period at the end of the answer.'
+        # self.prompt = 'Answer the following question in a few words, and write a period at the end of the answer.'
+        # self.cf_prompt = 'Answer the following question in a few words using the previous context, and write a period at the end of the answer.'
+        self.prompt = ''
+        self.cf_prompt = ''
 
         kwargs = dict(
             padding_side = 'right',

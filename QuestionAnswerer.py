@@ -107,7 +107,7 @@ class QuestionAnswerer:
             entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
         )
 
-        return -torch.nanmean(probs, dim = 1)
+        return torch.exp(-torch.nanmean(probs, dim = 1))
 
     # (n, w) -> [n]
     def decode(self, tokens: LongTensor) -> list[str]:

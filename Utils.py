@@ -51,10 +51,10 @@ class Object:
 
         formatted = ''
         if use_question:
-            formatted = f'{question.strip()}'
+            formatted = f'Q: {question.strip()}'
 
         if use_later:
-            formatted = f'{formatted} {later.strip()}'
+            formatted = f'{formatted} A: {later.strip()}'
 
         if prompt is not None:
             formatted = f'{prompt} {formatted}'
