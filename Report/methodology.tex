@@ -171,6 +171,8 @@ An example of this approach can be seen in \cref{sampling}.
 
 \subsection{Counterparametric and contextual perplexity scores}
 
+\footnotetext[1]{I am finding it hard to explain this subsection. Maybe I should add pseudocode here.}
+
 This works extends the approach of analysing answers found in \citationneeded{} and explained in \cref{generating_and_scoring} by also calculating the perplexity of \emph{alternative} answers to each question.
 
 That is, we take the result of applying each model to both the answer with and without counterparametric context, and we calculate the perplexity scores of getting both the parametric and counterparametric answer to each one of these.
@@ -184,11 +186,11 @@ This produces four different scores which are detailed in \cref{perplexity_table
 	\renewcommand{\arraystretch}{3}
 		\begin{tabular}{  l >{\centering}p{.2\textwidth} | >{\centering}p{.3\textwidth} | p{.3\textwidth} | }
 		\cline{3-4}
-			& & \multicolumn{2}{c |}{\bfseries Answer Searched \vspace{-5pt}} \\
+			& & \multicolumn{2}{c|}{\raisebox{11pt}{\bfseries Tokens}} \\[-15pt]
 		\cline{3-4}
-			& & Parametric $\param$ & \hspace{20pt} Counterparametric $\cparam$ \\
+			& & \raisebox{11pt}{Parametric $\param$} & \raisebox{11pt}{\hspace{20pt} Counterparametric $\cparam$} \\[-15pt]
 		\hline
-			\multicolumn{1}{ | c | }{\multirow[c]{2}{*}{\rotatebox{90}{\bfseries \centering Context}}}
+			\multicolumn{1}{ | c | }{\multirow[b]{2}{*}{\rotatebox{90}{\bfseries \centering \hspace{1pt} Context}}}
 			& \begin{minipage}{.2\textwidth} \centering Empty \\[1ex] $\noctx$ \end{minipage} &
 			\vmini{ \Perp \left( \param_1, \dots, \param_N \mid \noctx \right) } &
 			\vmini{ \Perp \left( \cparam_1, \dots, \cparam_{\bar{N}} \mid \noctx \right) } \\
@@ -198,7 +200,7 @@ This produces four different scores which are detailed in \cref{perplexity_table
 			\vmini{ \Perp \left( \cparam_1, \dots, \cparam_{\bar{N}} \mid \ctx \right) } \\
 		\hline
 	\end{tabular}
-	\caption{We calculate four different perplexity values: one for each answer, and one for each context.}
+	\caption{Four different perplexity values: one for each set of tokens, and one for each query context..}
 	\label{perplexity_table}
 \end{figure}
 
@@ -222,6 +224,8 @@ Otherwise, the answer was generated in-context.
 	\end{cases}
 	\label{perplexity_ctx}
 \end{equation}
+
+\vfill{}
 
 \subsection{Comparing the Final Answers}
 
