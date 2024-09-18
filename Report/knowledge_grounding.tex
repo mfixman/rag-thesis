@@ -17,6 +17,7 @@
 \usepackage{makecell}
 \usepackage{microtype}
 \usepackage{multirow}
+\usepackage{natbib}
 \usepackage{parskip}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{varwidth}
@@ -27,50 +28,56 @@
 
 \graphicspath{{.}{./pictures}}
 
-\bibliographystyle{unsrt}
+\bibliographystyle{agsm}
 
 \newcommand{\citationneeded}{\textsuperscript{[citation needed]}}
 
 \begin{document}
 
-\newgeometry{top=20pt,left=40pt,right=40pt}
+% \newgeometry{top=40pt,left=40pt,right=40pt}
 \begin{titlepage}
-	\begin{center}
-		\LARGE
-		\sffamily
+	\centering
+	\Large
+	\sffamily
 
-		\includegraphics[height=270pt]{to_serve_mankind.png} \\[1ex]
-		\includegraphics[height=75pt]{City.png}
+	\includegraphics[height=250pt]{to_serve_mankind.png} \\[1ex]
+	\includegraphics[height=75pt]{City.png}
 
-		\vspace{30pt}
+	City, University of London MSc in Artificial Intelligence \\
+	Project Report \\
+	Year 2023/2024
 
-		Individual Project
+	\vfill{}
 
-		\vspace{15pt}
+	\begin{huge}
+		\bfseries
+		Enhancing Knowledge Grounding in Retrieval-Augmented Language Models: \\[1ex]
+		An Empirical Study
+	\end{huge}
 
-		\begin{Huge}
-			\bfseries
-			Enhancing Knowledge Grounding \\ in Retrieval-Augmented Language Models: \\[1em]
-			An Empirical Study
-		\end{Huge}
+	\vfill{}
 
-		\vfill{}
-
-		\begin{sffamily}
-			\textbf{Martin Fixman} \\[1em]
-			Supervisor: Tillman Weyde \\
-			Collaborators: Chenxi Whitehouse and Pranava Madhyastha
-		\end{sffamily}
-	\end{center}
+	\textbf{Martin Fixman} \\
+	Supervised By: Tillman Weyde \\
+	Collaborators: Chenxi Whitehouse and Pranava Madhyastha
 \end{titlepage}
 \restoregeometry{}
+
+By submitting this work, I declare that this work is entirely my own except those parts duly identified and referenced in my submission.
+It complies with any specified word limits and the requirements and regulations detailed in the assessment instructions and any other relevant programme and module documentation.
+
+In submitting this work I acknowledge that I have read and understood the regulations and code regarding academic misconduct, including that relating to plagiarism, as specified in the Programme Handbook.
+I also acknowledge that this work will be subject to a variety of checks for academic misconduct.
+
+Signed: \textsl{Martin Fixman}
+
+\clearpage{}
+\input{abstract}
 
 \clearpage{}
 \tableofcontents{}
 
 \clearpage{}
-\input{abstract}
-
 \input{introduction}
 
 \clearpage{}
