@@ -15,7 +15,7 @@
 \subsection{Source Data Preparation}
 \label{preparation}
 
-Our source data is prepared by extending the ideas presented by Yu et al\cite{factual_recall}.
+Our source data is prepared by extending the ideas presented by Yu et al \citep{factual_recall}.
 Instead of using one simple question, our approach consists of separating this data into \cats{} categories, where each category has a set of base questions and another set of objects that are paired together and presented to our models.
 
 This work contains \cats{} categories in the configuration shown by \cref{categories_numbers}, for a total of \qs{} questions.
@@ -43,12 +43,12 @@ The full list of questions can be found in \cref{appendixA}.
 	\label{categories_numbers}
 \end{table}
 
-We enhance the zero-shot learning prompt used by Brown~et.~al\cite{fewshotlearners} by using the prompt format example format presented by Jiang~et.~al\cite{how_can_we_know} for calibrating the T5 language model by adding both the question and the first part of the answer.
+We enhance the zero-shot learning prompt used by Brown~et.~al \citep{fewshotlearners} by using the prompt format example format presented by Jiang~et.~al \citep{how_can_we_know} for calibrating the T5 language model by adding both the question and the first part of the answer.
 
 \subsection{Prompting}
 \label{prompting}
 
-There is plenty of research that suggests that for zero-shot problems\cite{fewshotlearners,beyondfewshot}, it's convenient to create a minimal prompt\cite{how_can_we_know,factual_recall}.
+There is plenty of research that suggests that for zero-shot problems \citep{fewshotlearners,beyondfewshot}, it's convenient to create a minimal prompt \citep{how_can_we_know,factual_recall}.
 This is helpful when later calculating the perplexity of the answers, as it tends to bias for short answers without any extra information that might change the individual probabilities of each token.
 
 Examples of the prompting format explained in \cref{preparation,prompting} can be found in \cref{source_data_example}.
@@ -117,8 +117,8 @@ For later queries, this is enhanced with context as in \cref{sampling}.
 
 We query each of the models listed in \cref{models_and_resources} with the data from the previous subsections.
 
-To ensure results are simple to interpret and not affected by randomness, we follow the example of Hsia~et.~al\cite{ragged} and use greedy decoding to find the answer.
-While beam search with a short beam width tends to produce more accurate results for long answers\cite{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results\cite{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers\cite{t5}.
+To ensure results are simple to interpret and not affected by randomness, we follow the example of Hsia~et.~al \citep{ragged} and use greedy decoding to find the answer.
+While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
 
 The negative log-likelihood of an answer $x$ is calculated in base of the conditional probability of generating each token given the prior tokens.
 We can use this value to calculate the perplexity, which measures the level of ``surprise'' of a particular answer.
@@ -130,11 +130,11 @@ We can use this value to calculate the perplexity, which measures the level of `
 	\end{aligned}
 \end{equation}
 
-We can ensure that the probabilities are calculated based on the intended tokens rather than the ``most probable'' generated ones by using teacher forcing\cite{teacher_forcing}.
+We can ensure that the probabilities are calculated based on the intended tokens rather than the ``most probable'' generated ones by using teacher forcing \citep{teacher_forcing}.
 
 \subsection{Shuffling to generate counterparametric answers}
 
-Previous work related to finding per token probabilities of answers in large language models focus on either a pre-existing list of questions or on a single question format\cite{factual_recall}.
+Previous work related to finding per token probabilities of answers in large language models focus on either a pre-existing list of questions or on a single question format \citep{factual_recall}.
 This approach does not work for our use case for three reasons.
 \begin{enumerate}
 	\item Having \baseqs{} different types of questions, rather than just 1, makes finding counterfactual answers technically challenging.
