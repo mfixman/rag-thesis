@@ -12,10 +12,31 @@
 \newcommand{\things}{312}
 \newcommand{\qs}{3840}
 
-\subsection{Source Data Preparation}
+\subsection{Models and Resources Used}
+\label{models_and_resources}
+
+\begin{itemize}
+	\item \textbf{Reader Models}
+		\begin{itemize}
+			\item Llama-8B.
+			\item Llama-70B.
+			\item Flan-T5-XL.
+			\item Flan-T5-XXL.
+			\item \textsl{Atlas?}
+		\end{itemize}
+	\item \textbf{Questions}
+		\begin{itemize}
+			\item Our own dataset, shown in \cref{appendixA}.
+			\item \textsl{Maybe add \textsf{Natural Questions}, \textsf{HotpotQA}, and/or \textsf{BioASQ} as in \textup{\textsf{RAGGED} \citep{ragged}}}.
+		\end{itemize}
+\end{itemize}
+
+\subsection{Preprocessing and Inference Methodology}
+
+\subsubsection{Source Data Preparation}
 \label{preparation}
 
-Our source data is prepared by extending the ideas presented by Yu et al \citep{factual_recall}.
+Our source data is prepared by extending the ideas presented by \citeauthor{factual_recall}.
 Instead of using one simple question, our approach consists of separating this data into \cats{} categories, where each category has a set of base questions and another set of objects that are paired together and presented to our models.
 
 This work contains \cats{} categories in the configuration shown by \cref{categories_numbers}, for a total of \qs{} questions.
@@ -43,9 +64,9 @@ The full list of questions can be found in \cref{appendixA}.
 	\label{categories_numbers}
 \end{table}
 
-We enhance the zero-shot learning prompt used by Brown~et.~al \citep{fewshotlearners} by using the prompt format example format presented by Jiang~et.~al \citep{how_can_we_know} for calibrating the T5 language model by adding both the question and the first part of the answer.
+We enhance the zero-shot learning prompt used by \citeauthor{fewshotlearners} by using the prompt format example format presented \citeauthor{how_can_we_know} for calibrating the T5 language model by adding both the question and the first part of the answer.
 
-\subsection{Prompting}
+\subsubsection{Prompting}
 \label{prompting}
 
 There is plenty of research that suggests that for zero-shot problems \citep{fewshotlearners,beyondfewshot}, it's convenient to create a minimal prompt \citep{how_can_we_know,factual_recall}.
@@ -112,10 +133,10 @@ For later queries, this is enhanced with context as in \cref{sampling}.
 % 	\label{prompts}
 % \end{figure}
 
-\subsection{Generating and scoring parametric answers}
+\subsubsection{Generating and scoring parametric answers}
 \label{generating_and_scoring}
 
-We query each of the models listed in \cref{models_and_resources} with the data from the previous subsections.
+We query each of the models listed in \cref{models_and_resources} with the data from the previous subsubsections.
 
 To ensure results are simple to interpret and not affected by randomness, we follow the example of Hsia~et.~al \citep{ragged} and use greedy decoding to find the answer.
 While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
@@ -132,7 +153,7 @@ We can use this value to calculate the perplexity, which measures the level of `
 
 We can ensure that the probabilities are calculated based on the intended tokens rather than the ``most probable'' generated ones by using teacher forcing \citep{teacher_forcing}.
 
-\subsection{Shuffling to generate counterparametric answers}
+\subsubsection{Shuffling to generate counterparametric answers}
 
 Previous work related to finding per token probabilities of answers in large language models focus on either a pre-existing list of questions or on a single question format \citep{factual_recall}.
 This approach does not work for our use case for three reasons.
@@ -169,9 +190,9 @@ An example of this approach can be seen in \cref{sampling}.
 	\label{sampling}
 \end{table}
 
-\subsection{Counterparametric and contextual perplexity scores}
+\subsubsection{Counterparametric and contextual perplexity scores}
 
-\footnotetext[1]{I am finding it hard to explain this subsection. Maybe I should add pseudocode here.}
+\footnotetext[1]{I am finding it hard to explain this subsubsection. Maybe I should add pseudocode here.}
 
 This works extends the approach of analysing answers found in \citationneeded{} and explained in \cref{generating_and_scoring} by also calculating the perplexity of \emph{alternative} answers to each question.
 
@@ -227,7 +248,7 @@ Otherwise, the answer was generated in-context.
 
 \vfill{}
 
-\subsection{Comparing the Final Answers}
+\subsubsection{Comparing the Final Answers}
 
 There is a third case that's not present in \cref{perplexity_noctx,perplexity_ctx}: the case where the answer comes from neither the model's memory nor the query's context, but that instead the model generates a third answer combining both.
 

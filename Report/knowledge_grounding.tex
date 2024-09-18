@@ -19,13 +19,17 @@
 \usepackage{multirow}
 \usepackage{natbib}
 \usepackage{parskip}
+\usepackage[nottoc]{tocbibind}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{url}
 \usepackage{varwidth}
 \usepackage{tabularx}
 
 \usepackage[hypertexnames=false,hidelinks]{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
 
+% \urlstyle{tt}
+\renewcommand{\UrlFont}{\ttfamily\upshape}
 \graphicspath{{.}{./pictures}}
 
 \bibliographystyle{agsm}
@@ -84,18 +88,13 @@ Signed: \textsl{Martin Fixman}
 \input{related_work}
 
 \clearpage{}
-\input{problem_statement}
-
-\clearpage{}
-\input{models}
-
-\clearpage{}
-
 \input{methodology}
 
 \clearpage{}
-
 \input{results}
+
+\clearpage{}
+\input{discussion}
 
 \clearpage{}
 \input{conclusions}
