@@ -26,6 +26,7 @@ BoolTensor = torch.Tensor
 class QuestionAnswerer:
     device: str
     max_length: int
+    max_batch_size: int
     llm: Model
 
     def __init__(
@@ -33,9 +34,11 @@ class QuestionAnswerer:
         model: Union[str, Model],
         device: str = 'cpu',
         max_length: Optional[int] = None,
+        max_batch_size: Optional[int] = None,
     ):
         self.device = device
         self.max_length = max_length or 100
+        self.max_batch_size = max_batch_size or 120
 
         if type(model) == str:
             model = Model.fromName(model, device = device)
@@ -171,7 +174,7 @@ class QuestionAnswerer:
     def answerQueries(self, questions: list[Object]) -> dict[str, Any]:
         output: defaultdict[str, list[Any]] = defaultdict(lambda: [])
 
-        chunks = chunkByQuestion(questions, max_batch_size = 120)
+        chunks = chunkByQuestion(questions, max_batch_size = self.max_batch_size)
         logging.info(f'Answering {len(questions)} queries in {len(chunks)} chunks.')
 
         for e, chunk in enumerate(chunks, start = 1):

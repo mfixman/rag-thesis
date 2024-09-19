@@ -27,6 +27,7 @@ def parse_args():
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
     parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
     parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly')
+    parser.add_argument('--max-batch-size', type = int, default = 120, help = 'Maximimum size of batches. All batches contain exactly the same question.')
 
     parser.add_argument('--per-model', action = 'store_true', help = 'Write one CSV per model in stdout.')
     parser.add_argument('--output-dir', help = 'Return one CSV per model, and save them to this directory.')
@@ -76,11 +77,7 @@ def main(args):
     logging.info(f'About to answer {len(questions) * len(args.models) * 2} questions in total.')
     answers = {}
     for model in args.models:
-        qa = QuestionAnswerer(model, device = args.device, max_length = 20)
-        # model_answers = {
-        #     f'{k}-{model}': v
-        #     for k, v in qa.answerQueries(questions).items()
-        # }
+        qa = QuestionAnswerer(model, device = args.device, max_length = 20, max_batch_size = args.max_batch_size)
         model_answers = qa.answerQueries(questions)
         del qa
 
@@ -90,8 +87,30 @@ def main(args):
             logging.info(f"{model}:\t{empty('parametric')} empty parametrics, {empty('counterfactual')} empty counterfactuals, {empty('contextual')} empty contextuals")
             logging.info(f"\t{count('Parametric')} parametrics, {count('Counterfactual')} counterfactuals, {count('Other')} others")
 
-            with open(os.path.join(args.output_dir, model + '.csv'), 'w') as out:
+            model_filename = os.path.join(args.output_dir, model + '.csv')
+            with open(model_filename, 'w') as out:
                 printParametricCSV(out, questions, model_answers)
+
+            empties = {f'{x}_empty': empty(x) for x in ['parametric', 'counterfactual', 'contextual']}
+            counts = {x: count(x) for x in ['Parametric', 'Counterfactual', 'Other']}
+
+            # count_bar = wandb.plot.bar(
+            #     wandb.Table(
+            #         data = [model, k, v],
+            #         columns = ['model_name', 'metric', 'value'],
+            #     ), 
+            #     'model_name',
+            #     'value',
+            #     stack = 'metric',
+            # )
+
+            base = dict(
+                model = model,
+                # count_bar = count_bar,
+            )
+            wandb.log(base | empties | counts)
+            wandb.save(model_filename)
+
         elif args.per_model:
             printParametricCSV(sys.stdout, questions, model_answers)
         else:
