@@ -163,7 +163,7 @@ class QuestionAnswerer:
 
         output['comparison'] = [
             'Parametric' if self.streq(a, p) else
-            'Counterfactual' if self.streq(a, c) else
+            'Contextual' if self.streq(a, c) else
             'Other'
             for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
         ]
