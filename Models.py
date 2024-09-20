@@ -6,6 +6,8 @@ from torch import FloatTensor, LongTensor, BoolTensor, Tensor
 import torch
 import ipdb
 
+from atlas.src.model_io import load_atlas_model
+
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
     'llama-70b': 'meta-llama/Meta-Llama-3.1-70B-Instruct',
@@ -27,6 +29,7 @@ Model_dict = {
     'roberta-large': 'FacebookAI/roberta-large',
     'roberta-squad': 'deepset/roberta-base-squad2',
     'mixtral': 'mistralai/Mixtral-8x22B-Instruct-v0.1',
+    'atlas': 'data/models/atlas_nq/xl',
     'dummy': '',
 }
 
@@ -48,6 +51,9 @@ class Model(nn.Module):
 
         if 't5' in name:
             return Seq2SeqModel(name, device)
+
+        if name in ('atlas'):
+            return AtlasModel(name, device)
 
         return DecoderOnlyModel(name, device)
 
@@ -165,6 +171,82 @@ class LargeDecoderOnlyModel(DecoderOnlyModel):
         logging.info(f'Deleting large model {self.name}')
         del self.model
         torch.cuda.empty_cache()
+
+class RetrievalAugmentedModel(Model):
+    @staticmethod
+    def atlas_options(size: str):
+        return Options.from_dict(
+            index_mode="flat",
+            save_index_n_shards=128,
+            qa_prompt_format="question: {question} answer: <extra_id_0>",
+            max_lm_context_ratio=0.5,
+            min_lm_context_ratio=0.5,
+            mlm_mean_noise_span_length=3,
+            mlm_noise_density=0.15,
+            retriever_format="{title} {text}",
+            encoder_format="{query} title: {title} context: {text}",
+            n_to_rerank_with_retrieve_with_rerank=128,
+            freeze_retriever_steps=-1,
+            filtering_overretrieve_ratio=2,
+            temperature_gold=0.01,
+            temperature_score=0.01,
+            gold_score_mode="ppmean",
+            retriever_n_context=5,
+            retriever_model_path="facebook/contriever",
+            max_passages=-1,
+            n_context=1,
+            text_maxlength=200,
+            precision="fp32",
+            refresh_index="-1",
+            beta2=0.999,
+            alpha=1.0,
+            epsilon=1e-6,
+            weight_decay=0.1,
+            scheduler="cosine",
+            clip=1.0,
+            lr=1e-4,
+            dropout=0.1,
+            accumulation_steps=1,
+            total_steps=1000,
+            warmup_steps=1000,
+            eval_data=[],
+            train_data=[],
+            per_gpu_embedder_batch_size=16 * 512,
+            per_gpu_batch_size=1,
+            checkpoint_dir="experiments/",
+            name="another_experiment",
+            # model_path = f'data/models/atlas_nq/{size}',
+            # load_index_path = f'data/indices/atlas_nq/wiki/{size}',
+            reader_model_type = f'google/t5-{size}-lm-adapt',
+        )
+
+    def __init__(self, name: str, device: str):
+        super().__init__(name, device)
+
+        size = Model_dict[name].split('/')[-1]
+        opt = self.atlas_options(size)
+        self.model = load_atlas_model(
+            Model_dict[name],
+            opt,
+            reset_params = True,
+            eval_only = True,
+        )
+
+        self.context_prefix = self.model.retriever_tokenize('Context:')
+
+    def has_context(self, ids: LongTensor) -> bool:
+        return (ids[:self.context_prefix.shape[0]] == self.context_prefix).any()
+
+    @torch.no_grad()
+    def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
+        if self.has_context(query.input_ids):
+            # I should remove the context and place is nicely as the passages.'
+
+        query_enc, labels, decoder_input_ids = self.model.tokenize(
+            query.input_ids,
+            answer.input_ids,
+            target_tokens = None,
+        )
 
 class DummyModel(Model):
     def __init__(self):
