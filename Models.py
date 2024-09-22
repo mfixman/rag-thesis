@@ -6,7 +6,13 @@ from torch import FloatTensor, LongTensor, BoolTensor, Tensor
 import torch
 import ipdb
 
+import sys
+import os
+
+sys.path.append('./atlas/')
+from atlas.src.atlas import Atlas
 from atlas.src.model_io import load_atlas_model
+from atlas.src.options import Options
 
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
@@ -29,7 +35,7 @@ Model_dict = {
     'roberta-large': 'FacebookAI/roberta-large',
     'roberta-squad': 'deepset/roberta-base-squad2',
     'mixtral': 'mistralai/Mixtral-8x22B-Instruct-v0.1',
-    'atlas': 'data/models/atlas_nq/xl',
+    'atlas': 'atlas/data/models/atlas_nq/xl',
     'dummy': '',
 }
 
@@ -53,7 +59,7 @@ class Model(nn.Module):
             return Seq2SeqModel(name, device)
 
         if name in ('atlas'):
-            return AtlasModel(name, device)
+            return RetrievalAugmentedModel(name, device)
 
         return DecoderOnlyModel(name, device)
 
@@ -62,6 +68,15 @@ class Model(nn.Module):
         self.name = name
         self.model_name = Model_dict[name]
         self.device = device
+
+    # [n] -> (n, w)
+    def tokenise(self, phrases: list[str]) -> BatchEncoding:
+        return self.tokenizer(
+            phrases,
+            return_tensors = 'pt',
+            return_attention_mask = True,
+            padding = True,
+        ).to(self.device)
 
 class DecoderOnlyModel(Model):
     def __init__(self, name: str, device: str = 'cuda'):
@@ -172,7 +187,7 @@ class LargeDecoderOnlyModel(DecoderOnlyModel):
         del self.model
         torch.cuda.empty_cache()
 
-class RetrievalAugmentedModel(Model):
+class RetrievalAugmentedModel(Seq2SeqModel):
     @staticmethod
     def atlas_options(size: str):
         return Options.from_dict(
@@ -220,33 +235,52 @@ class RetrievalAugmentedModel(Model):
             reader_model_type = f'google/t5-{size}-lm-adapt',
         )
 
+    class DummyAtlas(Atlas):
+        def __init__(self):
+            pass
+
+        def generate(self, input_ids, attention_mask, **kwargs):
+            logging.info('Called dummy generate')
+            outputs = []
+            for ids, mask in zip(input_ids, attention_mask):
+                outputs.append(self.reader.generate(
+                    input_ids = ids,
+                    attention_mask = mask,
+                    num_return_sequences=1,
+                    **kwargs,
+                ))
+
+            return torch.cat(outputs, axis = 0)
+
     def __init__(self, name: str, device: str):
-        super().__init__(name, device)
+        Model.__init__(self, name, device)
 
         size = Model_dict[name].split('/')[-1]
         opt = self.atlas_options(size)
-        self.model = load_atlas_model(
+        self.atlas, _, _, _, _, _, _ = load_atlas_model(
             Model_dict[name],
             opt,
             reset_params = True,
             eval_only = True,
         )
 
-        self.context_prefix = self.model.retriever_tokenize('Context:')
+        self.tokenizer = self.atlas.reader_tokenizer
+        self.model = self.DummyAtlas()
+        self.model.__dict__.update(self.atlas.__dict__)
 
-    def has_context(self, ids: LongTensor) -> bool:
-        return (ids[:self.context_prefix.shape[0]] == self.context_prefix).any()
+        self.prompt = ''
+        self.cf_prompt = ''
 
-    @torch.no_grad()
-    def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
-        if self.has_context(query.input_ids):
-            # I should remove the context and place is nicely as the passages.'
-
-        query_enc, labels, decoder_input_ids = self.model.tokenize(
-            query.input_ids,
-            answer.input_ids,
-            target_tokens = None,
-        )
+    # [n] -> (n, w)
+    def tokenise(self, phrases: list[str]) -> BatchEncoding:
+        return self.tokenizer(
+            phrases,
+            return_tensors = 'pt',
+            return_attention_mask = True,
+            padding = True,
+            # padding = 'max_length',
+            # max_length = 100,
+        ).to(self.device)
 
 class DummyModel(Model):
     def __init__(self):

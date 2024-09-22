@@ -55,15 +55,6 @@ class QuestionAnswerer:
                 not stop_tokens.isdisjoint(self.llm.tokenizer.decode(v))
         ]).to(self.device)
 
-    # [n] -> (n, w)
-    def tokenise(self, phrases: list[str]) -> BatchEncoding:
-        return self.llm.tokenizer(
-            phrases,
-            return_tensors = 'pt',
-            return_attention_mask = True,
-            padding = True,
-        ).to(self.device)
-
     # (n, w) -> (n, w)
     def batch_encode(self, tokens: LongTensor) -> BatchEncoding:
         attention_mask = tokens != self.llm.tokenizer.pad_token_id
@@ -129,7 +120,7 @@ class QuestionAnswerer:
 
     def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], parametric: LongTensor, counterfactual: LongTensor) -> dict[str, Any]:
         output: dict[str, Any] = {}
-        ctx_tokens = self.tokenise([
+        ctx_tokens = self.llm.tokenise([
             q.format(prompt = self.llm.cf_prompt, context = context)
             for q, context in zip(questions, counterfactuals)
         ])
@@ -147,7 +138,7 @@ class QuestionAnswerer:
     def answerChunk(self, questions: list[Object], use_counterfactuals: bool = True) -> dict[str, Any]:
         output: dict[str, Any] = {}
 
-        base_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
+        base_tokens = self.llm.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
         parametric = self.generate(base_tokens)
 
         output['parametric'] = self.decode(parametric)
