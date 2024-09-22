@@ -1,1 +1,25 @@
 \section{Introduction and Objectives}
+% This structure is copied from Nikolai Manchev.
+
+\subsection{Problem Background}
+
+In recent years, Large Language Models (LLMs) have become ubiquitous in solving general problems across a wide range of tasks, from text generation to question answering and logic problems.
+However, recent research suggests that using these models alone might not be the most effective way to solve problems that are not directly related to text generation \citep{treeofthoughts}.
+
+One approach to improving the performance on knowledge problems for LLMs is Retrieval-Augmented Generation (RAG) \citep{rag}. RAG involves retrieving relevant context related to a query and incorporating it into the model's input, enhancing the model's ability to generate accurate and contextually appropriate responses.
+
+As RAG-enhanced systems become more widespread, studies on the performance of different retrieval systems and their interaction with LLMs have become crucial.
+Many explore the performance of these downstream tasks depending on both the retriever and the generator \citep{can_rag_models_reason,fewshotlearners}, examining whether the knowledge is \textit{grounded} in the context.
+Retrieval-Augmented models, such as \textsc{Atlas} \citep{atlas_foundational} and \textsc{Retro} \citep{retro}, use this approach to fine-tune a model on both a large body of knowledge and an existing index for context retrieval.
+
+This project aims to understand the performance of various LLMs by measuring their \textit{knowledge grounding} on a dataset consisting of a large variety of questions across a wide range of topics.
+We follow the approach by \citeauthor{factual_recall} of running queries with counterfactual context to understand whether a particular answer originates from the model's inherent knowledge (i.e., its training data) or from the provided context (i.e., the context retrieved by RAG).
+
+This thesis builds on this knowledge and improve our understanding of how different LLMs interact with the given context in the problem of question answering.
+Specifically, we investigate whether these interactions vary depending on the type of question being answered, contributing to a more nuanced understanding of LLM performance in diverse knowledge domains.
+
+\subsection{Thesis Objectives}
+
+\subsection{Report Structure}
+
+\subsection{Conclusion}
