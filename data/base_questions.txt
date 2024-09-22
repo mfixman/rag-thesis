@@ -5,6 +5,16 @@ What is the primary profession of {person}? The primary profession of {person} i
 What is {person} primarily known for? {person} is primarily known for
 What's the main nationality of {person}? {person} is
 What educational institution did {person} attend? {person} attended
+What was the native language of {person}? The native language of {person} was
+Who was {person}'s most influential mentor? The most influential mentor of {person} was
+What was {person}'s religious affiliation? The religious affiliation of {person} was
+What was {person}'s primary field of study? The primary field of study of {person} was
+What was {person}'s most famous work or invention? The most famous work or invention of {person} was
+What historical period did {person} live in? {person} lived during the
+What was {person}'s family's social class? {person}'s family belonged to the
+What was {person}'s political ideology? The political ideology of {person} was
+What was {person}'s preferred artistic or scientific medium? The preferred medium of {person} was
+What was {person}'s cultural background? The cultural background of {person} was
 
 What country is {city} in? {city} is in
 What's the highest administrative subdivision {city} is part of? {city} is part of
@@ -13,6 +23,16 @@ What major river is nearest to {city}? The nearest major river to {city} is
 What is the time zone of {city}? The time zone of {city} is
 What is the current population of {city}? The current population of {city} is
 What is the altitude of {city} above sea level? {city} is at an altitude of
+What is the primary language spoken in {city}? The primary language spoken in {city} is
+What is the predominant architectural style in {city}? The predominant architectural style in {city} is
+What is the main economic industry of {city}? The main economic industry of {city} is
+What is the average annual temperature in {city}? The average annual temperature in {city} is
+What is the nearest major body of water to {city}? The nearest major body of water to {city} is
+What is the most famous landmark in {city}? The most famous landmark in {city} is
+What is the primary mode of public transportation in {city}? The primary mode of public transportation in {city} is
+What is the name of the airport serving {city}? The airport serving {city} is
+What is the sister city of {city}? The sister city of {city} is
+What is the traditional cuisine {city} is known for? The traditional cuisine {city} is known for is
 
 Who is credited with the discovery of {principle}? {principle} was discovered by
 Which scientific discipline encompasses {principle}? {principle} is encompassed by
@@ -25,12 +45,29 @@ When was {element} first isolated? {element} was first isolated in
 What's the atomic number of {element}? The atomic number of {element} is
 What is the melting point of {element}? The melting point of {element} is
 In which group of the periodic table is {element} found? {element} is found in group
+What's the standard atomic weight of {element}? The standard atomic weight of {element} is
+What's the electron configuration of {element}? The electron configuration of {element} is
+What's the most common oxidation state of {element}? The most common oxidation state of {element} is
+What's the crystal structure of {element} at room temperature? The crystal structure of {element} at room temperature is
+What's the primary isotope of {element}? The primary isotope of {element} is
+What's the electronegativity value of {element}? The electronegativity value of {element} is
+What's the ionization energy of {element}? The ionization energy of {element} is
+What's the atomic radius of {element}? The atomic radius of {element} is
+What's the boiling point of {element}? The boiling point of {element} is
+In which period of the periodic table is {element} located? {element} is located in period
 
 What genre does {book} belong to? The genre of {book} is
 Who's the author of {book}? {book} was written by
 In what year was {book} first published? {book} was first published in
 How many pages are in the original publication of {book}? The original publication of {book} has
 What is the name of the main protagonist in {book}? The main protagonist in {book} is
+
+What is the original language of {book}? The original language of {book} is
+Who is the original publisher of {book}? The publisher of {book} is
+What is the highest award {book} won? The highest award won by {book} is
+What is the opening line of {book}? The opening line of {book} is
+How many chapters are in {book}? {book} has
+How many pages are in {book}? {book} has
 
 Who painted {painting}? {painting} was painted by
 When was {painting} completed? {painting} was completed in
@@ -39,7 +76,34 @@ What materials were used to create {painting}? {painting} was created with
 Where is {painting} primarily housed? {painting} is currently in
 What are the dimensions of {painting}? The dimensions of {painting} are
 In which museum was {painting} first exhibited? {painting} was first exhibited in
+What is the dominant color in {painting}? The dominant color in {painting} is
+Who commissioned {painting}? {painting} was commissioned by
+What is the estimated value of {painting}? The estimated value of {painting} is
+What is the subject matter of {painting}? The subject matter of {painting} is
+In which country was {painting} created? {painting} was created in
 
 What year did {historical_event} happen? {historical_event} happened in the year
 Who was the primary leader associated with {historical_event}? The primary leader associated with {historical_event} was
 What was the duration of {historical_event}? {historical_event} lasted for
+In which country did {historical_event} primarily take place? {historical_event} primarily took place in
+
+What is the height of {building}? The height of {building} is
+Who was the main architect of {building}? The main architect of {building} was
+In which year was {building} completed? {building} was completed in
+In which city is {building} located? {building} is located in
+What architectural style is {building}? The architectural style of {building} is
+How many floors does {building} have? {building} has
+What is the primary construction material of {building}? The primary construction material of {building} is
+What is the total floor area of {building}? The total floor area of {building} is
+How long did it take to construct {building}? The construction of {building} took
+
+Who composed {composition}? {composition} was composed by
+In what year was {composition} first performed? {composition} was first performed in
+What is the musical genre of {composition}? The musical genre of {composition} is
+What is the opus number of {composition}? The opus number of {composition} is
+What is the key signature of {composition}? The key signature of {composition} is
+How many movements does {composition} have? {composition} has
+What is the tempo marking of {composition}? The tempo marking of {composition} is
+What is the duration of {composition}? The duration of {composition} is
+For which instrument(s) was {composition} written? {composition} was written for
+In which city was {composition} premiered? {composition} was premiered in

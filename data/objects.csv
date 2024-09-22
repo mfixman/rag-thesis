@@ -46,6 +46,16 @@ W.E.B. Du Bois,person
 William Shakespeare,person
 Wu Zetian,person
 Yuri Gagarin,person
+Amelia Earhart,person
+Galileo Galilei,person
+Genghis Khan,person
+Joan of Arc,person
+Lise Meitner,person
+Marcus Aurelius,person
+Maya Angelou,person
+Queen Nzinga,person
+Socrates,person
+Voltaire,person
 Alexandria,city
 Amsterdam,city
 Antananarivo,city
@@ -106,6 +116,16 @@ Windhoek,city
 Xi'an,city
 Yogyakarta,city
 Zanzibar City,city
+Addis Ababa,city
+Bangkok,city
+Dubai,city
+Helsinki,city
+Machu Picchu,city
+Nairobi,city
+Rio de Janeiro,city
+Samarkand,city
+Toronto,city
+Yangon,city
 Archimedes' Principle,principle
 Bernoulli's Principle,principle
 Boyle's Law,principle
@@ -136,6 +156,13 @@ Relativity,principle
 Superconductivity,principle
 Thermodynamics,principle
 Uncertainty Principle,principle
+Avogadro's Law,principle
+Coulomb's Law,principle
+Faraday's Laws of Electrolysis,principle
+Heisenberg Uncertainty Principle,principle
+Ohm's Law,principle
+Schrödinger Equation,principle
+Special Relativity,principle
 Aluminum,element
 Barium,element
 Bismuth,element
@@ -171,6 +198,14 @@ Tin,element
 Titanium,element
 Uranium,element
 Zinc,element
+Argon,element
+Boron,element
+Cobalt,element
+Fluorine,element
+Gallium,element
+Krypton,element
+Nickel,element
+Xenon,element
 1984,book
 Anna Karenina,book
 Beloved,book
@@ -216,6 +251,10 @@ To Kill a Mockingbird,book
 Ulysses,book
 War and Peace,book
 Wuthering Heights,book
+The Iliad,book
+The Tale of Genji,book
+Things Fall Apart,book
+To the Lighthouse,book
 American Gothic,painting
 Christina's World,painting
 Girl with a Pearl Earring,painting
@@ -255,6 +294,11 @@ The Treachery of Images,painting
 The Triumph of Galatea,painting
 The Wanderer above the Sea of Fog,painting
 Water Lilies,painting
+The Creation of Adam,painting
+The Girl with a Pearl Earling,painting
+The Great Wave off Kanagawa,painting
+The Thinker,painting
+Venus de Milo,painting
 Decimalisation in the UK,historical_event
 Queen Elizabeth II's Platinum Jubilee,historical_event
 Queen Victoria's Coronation,historical_event
@@ -311,3 +355,58 @@ The UK Abolition of the Slave Trade Act,historical_event
 The Unification of Italy,historical_event
 The Wedding of Prince Charles and Lady Diana,historical_event
 The Year of the Four Emperors,historical_event
+The American Revolution,historical_event
+The Black Death,historical_event
+The Cuban Missile Crisis,historical_event
+The Fall of the Berlin Wall,historical_event
+The Moon Landing,historical_event
+The Renaissance,historical_event
+The Russian Revolution,historical_event
+The Signing of the Declaration of Independence,historical_event
+Angkor Wat,building
+Buckingham Palace,building
+Burj Khalifa,building
+Chichen Itza,building
+Chrysler Building,building
+Colosseum,building
+Eiffel Tower,building
+Empire State Building,building
+Forbidden City,building
+Guggenheim Museum,building
+Hagia Sophia,building
+Louvre Pyramid,building
+Machu Picchu,building
+Neuschwanstein Castle,building
+Parthenon,building
+Petra,building
+Petronas Towers,building
+Potala Palace,building
+Sears Tower,building
+St. Basil's Cathedral,building
+Sydney Opera House,building
+Taj Mahal,building
+Adagio for Strings,composition
+Billie Jean,composition
+Bohemian Rhapsody,composition
+Canon in D,composition
+Carmina Burana,composition
+Clair de Lune,composition
+Eine kleine Nachtmusik,composition
+Für Elise,composition
+Gymnopédies,composition
+Imagine,composition
+In the Mood,composition
+Like a Rolling Stone,composition
+Lovesong,composition
+Mbube (The Lion Sleeps Tonight),composition
+Nessun Dorma,composition
+Purple Rain,composition
+Raga Malkauns,composition
+Rhapsody in Blue,composition
+Rhapsody on a Theme of Paganini,composition
+Symphony No. 5,composition
+The Blue Danube,composition
+The Four Seasons,composition
+The Planets,composition
+The Rite of Spring,composition
+Toccata and Fugue in D minor,composition

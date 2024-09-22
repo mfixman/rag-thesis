@@ -1,6 +1,0 @@
-When was {person} born?
-What was the full name of {person}?
-Where was {person} born?
-Where did {person} die?
-Is {person} alive? Otherwise, how did {person} die?
-What is the full name, including first and last name, of {person}?
