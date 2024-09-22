@@ -27,13 +27,17 @@
 
 \usepackage[hypertexnames=false,hidelinks]{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
+% \usepackage[toc,automake]{glossaries}
 
 \renewcommand{\UrlFont}{\ttfamily\upshape}
 \graphicspath{{.}{./pictures}{./figures}}
 
+\input{glossary.tex}
+
 \bibliographystyle{agsm}
 
 \newcommand{\citationneeded}{\textsuperscript{[citation needed]}}
+\newcommand{\subsubstartoc}[1]{\subsubsection*{#1}\addcontentsline{toc}{subsubsection}{\quad #1}}
 
 \begin{document}
 
@@ -78,7 +82,6 @@ I also acknowledge that this work will be subject to a variety of checks for aca
 
 \section*{Acknowledgements}
 
-
 \clearpage{}
 \input{abstract}
 
@@ -107,6 +110,9 @@ I also acknowledge that this work will be subject to a variety of checks for aca
 % \begin{small}
 	\bibliography{knowledge_grounding.bib}
 % \end{small}
+
+% \clearpage{}
+% \printglossaries{}
 
 \clearpage{}
 

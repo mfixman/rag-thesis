@@ -22,9 +22,13 @@ Specifically, we investigate whether these interactions vary depending on the ty
 
 \subsection{Thesis Questions \& Objectives}
 
-In order to understand knowledge grounding in LLMs, this thesis is structured around three different objectives.
+This thesis is structured around three different objectives to deepen our understanding knowledge grounding in large language models.
+
+% We propose the creation of a novel dataset of questions designed for testing LLMs' ability to distinguish between parametric and contextual knowledge.
+% This dataset is used to investigate the factors influencing an LLM's choice of answer, and hypothesise that we can use perplexity scores as a predictor of where a particular answer originates.
 
 \subsubsection{Creating a representative dataset of questions}
+\label{questions_objective}
 
 The research of this thesis requires a large dataset of questions from a variety of categories to test large language models.
 In order to understand knowledge grounding in these models, we require a dataset with the following properties.
@@ -54,8 +58,23 @@ Since it might be useful for future research, it will also be presented as its o
 
 \subsubsection{When does a model choose the provided context knowledge over its inherent knowledge?}
 
-\subsubsection{Can we predict whether a particular answer came from inherent or contextual knowledge?}
+Currently, little is understood about the factors and mechanisms that control whether an LLM will generate text respecting either the context or the memorised information.
+
+Previous research found out that, when the context of a query contradicts the ground knowledge of a model, the answer picked depends on the type and size of the model used \citep{factual_recall}.
+
+This thesis extends this research by testing the representative set of questions and counterfactuals described in the previous section with both Seq2Seq and Decoder-only models of various sizes.
+We also research the cases when the answer doesn't correspond to either the parametric or contextual knowledge, and why the model chooses a third type of answer when adding counterfactual context.
+
+This thesis also gathers insights from answering this question on different categories and patterns of questions to find out if this depends on what is being asked.
+
+\subsubsection{Can we use the perplexity score of an answer to predict whether it came from inherent or contextual knowledge?}
+
+\Citeauthor{factual_recall} showed that there is a correlation between the probability of a large language model choosing a parametric answer over a counterfactual contextual answer and the amount of times this answer appears in the ground truth data of the model.
+This gives us clues on whether the result of a query came from parametric or contextual knowledge if we have access to this ground truth, as is the case in models like Pythia \citep{pythia}.
+
+Unfortunately, most so-called open-source large language models do not give us access to the source data being used to train it and therefore do not allow this kind of analysis.
+
+The \textbf{perplexity} score of answer gives a measure of how ``certain'' a large language model is of its answer \citep{how_can_we_know}.
+We hypothesise that we can use this metric to serve as a reliable indicator of whether a particular answer was memorised by the LLM or was derived from the provided context.
 
 \subsection{Report Structure}
-
-\subsection{Conclusion}
