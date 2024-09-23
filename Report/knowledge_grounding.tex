@@ -27,7 +27,6 @@
 
 \usepackage[hypertexnames=false,hidelinks]{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
-% \usepackage[toc,automake]{glossaries}
 
 \usepackage{listings}
 \newcommand{\lstencoding}{latin1}
@@ -36,8 +35,6 @@
 
 \renewcommand{\UrlFont}{\ttfamily\upshape}
 \graphicspath{{.}{./pictures}{./figures}}
-
-\input{glossary.tex}
 
 \bibliographystyle{agsm}
 
@@ -102,8 +99,8 @@ I also acknowledge that this work will be subject to a variety of checks for aca
 \clearpage{}
 \input{methodology}
 
-\clearpage{}
-\input{methodology_old}
+% \clearpage{}
+% \input{methodology_old}
 
 \clearpage{}
 \input{results}
@@ -115,10 +112,12 @@ I also acknowledge that this work will be subject to a variety of checks for aca
 \input{conclusions}
 
 \clearpage{}
+\input{glossary}
+
+\clearpage{}
 \begin{small}
 	\bibliography{knowledge_grounding.bib}
 \end{small}
-
 
 \clearpage{}
 
