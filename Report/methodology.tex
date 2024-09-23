@@ -1,274 +1,56 @@
 \section{Methods}
 
-\newcommand{\param}{\ensuremath{p}}
-\newcommand{\cparam}{\ensuremath{\overline{p}}}
-\newcommand{\noctx}{\ensuremath{Q}}
-\newcommand{\ctx}{\ensuremath{W}}
-\newcommand{\NLL}{\text{NLL}}
-\newcommand{\Perp}{\text{PPL}}
+\subsection{Creating a representative dataset of questions}
 
-\newcommand{\cats}{7}
-\newcommand{\baseqs}{68}
-\newcommand{\things}{312}
-\newcommand{\qs}{3840}
+As shown in \Cref{questions_objective}, our codebase requires the creation of a new dataset of questions with three main properties.
 
-\subsection{Models and Resources Used}
-\label{models_and_resources}
-
-\begin{itemize}
-	\item \textbf{Reader Models}
-		\begin{itemize}
-			\item Llama-8B.
-			\item Llama-70B.
-			\item Flan-T5-XL.
-			\item Flan-T5-XXL.
-			\item \textsl{Atlas?}
-		\end{itemize}
-	\item \textbf{Questions}
-		\begin{itemize}
-			\item Our own dataset, shown in \cref{appendixA}.
-			\item \textsl{Maybe add \textsf{Natural Questions}, \textsf{HotpotQA}, and/or \textsf{BioASQ} as in \textup{\textsf{RAGGED} \citep{ragged}}}.
-		\end{itemize}
-\end{itemize}
-
-\subsection{Preprocessing and Inference Methodology}
-
-\subsubsection{Source Data Preparation}
-\label{preparation}
-
-Our source data is prepared by extending the ideas presented by \citeauthor{factual_recall}.
-Instead of using one simple question, our approach consists of separating this data into \cats{} categories, where each category has a set of base questions and another set of objects that are paired together and presented to our models.
-
-This work contains \cats{} categories in the configuration shown by \cref{categories_numbers}, for a total of \qs{} questions.
-The full list of questions can be found in \cref{appendixA}.
-
-\begin{table}[h]
-	\centering
-	\scriptsize
-	\begin{tabular}{l | r r r}
-		\toprule
-			\bfseries Category & \bfseries Questions & \bfseries Objects & \bfseries Total \\
-		\midrule
-			Person           & 14 &  47 &  658 \\
-			City             & 14 &  60 &  840 \\
-			Principle        & 10 &  30 &  300 \\
-			Element          & 10 &  35 &  350 \\
-			Book             & 10 &  45 &  450 \\
-			Painting         & 14 &  39 &  546 \\
-			Historical Event & 6  &  56 &  336 \\
-		\midrule
-			Total & \baseqs{} & \things{} & \qs{} \\
-		\bottomrule
-	\end{tabular}
-	\caption{The amount of questions for each category. The full list of questions can be found in \cref{appendixA}. This is still a work in progress and I expect to add more questions.}
-	\label{categories_numbers}
-\end{table}
-
-We enhance the zero-shot learning prompt used by \citeauthor{fewshotlearners} by using the prompt format example format presented \citeauthor{how_can_we_know} for calibrating the T5 language model by adding both the question and the first part of the answer.
-
-\subsubsection{Prompting}
-\label{prompting}
-
-There is plenty of research that suggests that for zero-shot problems \citep{fewshotlearners,beyondfewshot}, it's convenient to create a minimal prompt \citep{how_can_we_know,factual_recall}.
-This is helpful when later calculating the perplexity of the answers, as it tends to bias for short answers without any extra information that might change the individual probabilities of each token.
-
-Examples of the prompting format explained in \cref{preparation,prompting} can be found in \cref{source_data_example}.
-For later queries, this is enhanced with context as in \cref{sampling}.
-
-\begin{table}[h]
-	\setlength{\fboxsep}{0pt}
-	\setlength{\fboxrule}{1pt}
-	\newcommand{\rep}[1]{\fcolorbox{Gray}{Gray!80}{\textit{#1}}}
-
-	\centering
-	\scriptsize
-	\begin{tabular}{l | c | l}
-		\toprule
-			\bfseries Base Question & \bfseries Object & \bfseries Final Question \\
-		\midrule
-			\begin{minipage}{.39\textwidth}
-				\ttfamily
-				What is the date of birth of \rep{\{person\}}? \\ The date of birth of \rep{\{person\}} is \\[1ex]
-				In what city was \rep{\{person\}} born? \\ \rep{\{person\}} was born in \\[1ex]
-				What country is \rep{\{city\}} in? \\ \rep{\{city\}} is in
-			\end{minipage} &
-			\begin{minipage}{.16\textwidth}
-				\centering
-				\ttfamily
-				\fcolorbox{Gray!50}{Gray!50}{\textcolor{Red}{Che~Guevara}} \\[1ex]
-				\fcolorbox{Gray!50}{Gray!50}{\textcolor{Sepia}{Confucius}} \\[1ex]
-				\fcolorbox{Gray!50}{Gray!50}{\textcolor{BurntOrange}{Cairo}} \\[1ex]
-				\fcolorbox{Gray!50}{Gray!50}{\textcolor{ForestGreen}{Mumbai}}
-			\end{minipage} &
-			\begin{minipage}{.45\textwidth}
-				\ttfamily
-				Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is \\[1ex]
-				Q: What is the date of birth of \textcolor{Sepia}{Confucius}? \\ A: The date of birth of \textcolor{Sepia}{Confucius} is \\[1ex]
-				Q: In what city was \textcolor{Red}{Che~Guevara} born? \\ A: \textcolor{Red}{Che~Guevara} was born in \\[1ex]
-				Q: In what city was \textcolor{Sepia}{Confucius} born? \\ A: \textcolor{Sepia}{Confucius} was born in \\[1ex]
-				Q: What country is \textcolor{BurntOrange}{Cairo} in? \\ A: \textcolor{BurntOrange}{Cairo} is in \\[1ex]
-				Q: What country is \textcolor{ForestGreen}{Mumbai} in? \\ A: \textcolor{ForestGreen}{Mumbai} is in
-			\end{minipage} \\
-		\bottomrule
-	\end{tabular}
-	\caption{Some examples of the base-question and object generation that are fed to the models for finding parametric answers.}
-	\label{source_data_example}
-\end{table}
-
-
-% \begin{figure}[h]
-% 	\fbox{
-% 		\begin{minipage}[c][50pt]{.45\textwidth}
-% 			\ttfamily
-% 			Answer the following question in a few words and with no formatting.
-% 		\end{minipage}
-% 	} \hfill{}
-% 	\fbox{
-% 		\begin{minipage}[c][50pt]{.45\textwidth}
-% 			\ttfamily
-% 			Answer the following question using the previous context in a few words and with no formatting.
-% 		\end{minipage}
-% 	}
-% 	\caption{The prompts appended before the questions used for finding parametric and counterparametric data, respectively.}
-% 	\label{prompts}
-% \end{figure}
-
-\subsubsection{Generating and scoring parametric answers}
-\label{generating_and_scoring}
-
-We query each of the models listed in \cref{models_and_resources} with the data from the previous subsubsections.
-
-To ensure results are simple to interpret and not affected by randomness, we follow the example of Hsia~et.~al \citep{ragged} and use greedy decoding to find the answer.
-While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
-
-The negative log-likelihood of an answer $x$ is calculated in base of the conditional probability of generating each token given the prior tokens.
-We can use this value to calculate the perplexity, which measures the level of ``surprise'' of a particular answer.
-
-\begin{equation}
-	\begin{aligned}
-		&\NLL \left( x_1, \dots, x_N \right | Q) &&= - \frac{1}{N} \sum^N_{i = 1} \log P \left( x_i \mid Q, x_{i - 1}, \dots, x_1 \right) \\
-		&\Perp \left( x_1, \dots, x_N \mid Q \right) &&= e^{\NLL \left(x_1, \dots, x_N \mid Q \right)}
-	\end{aligned}
-\end{equation}
-
-We can ensure that the probabilities are calculated based on the intended tokens rather than the ``most probable'' generated ones by using teacher forcing \citep{teacher_forcing}.
-
-\subsubsection{Shuffling to generate counterparametric answers}
-
-Previous work related to finding per token probabilities of answers in large language models focus on either a pre-existing list of questions or on a single question format \citep{factual_recall}.
-This approach does not work for our use case for three reasons.
 \begin{enumerate}
-	\item Having \baseqs{} different types of questions, rather than just 1, makes finding counterfactual answers technically challenging.
-	\item Our focus is not on finding \emph{counterfactual} answers, but \emph{counterparametric} ones.
-		We do not care about correctness; we care about answers not being parametric.
-	\item Since we are measuring perplexity of these answers, we focus on answers that are generated by the same base question and the same model.
-		This way we ensure that the format of the answer is the same.
+	\item Questions should have short an unambiguous answers. \label{q_short}
+	\item They must cover a large set of topics, eras, and places. \label{q_widespread}
+	\item They must allow for the creation of sensible counterfactuals by having sets of questions with the same answer format. \label{q_counterfactual}
 \end{enumerate}
 
-We propose a novel way of generating counterparametric answers while focusing on these three points: rather than generating new answers for each question, counterfactual answers are randomly sampled from the parametric answers corresponding to the same base question.
-An example of this approach can be seen in \cref{sampling}.
+To address items 1 and 3, we follow the approach done by \citeauthor{factual_recall} in creating questions which have a question with a particular ``object'' as its nucleus.
 
-\begin{table}
+This way, it's possible to create counterfactuals that have the same format of the original answer by randomly sampling from the set of answers.
+
+% \begin{table}[h]
+% 
+% 	\scriptsize
+% 	\centering
+% 	\begin{tabular}{l l l l}
+% 		\toprule
+% 			\bfseries Base Question & \bfseries Object & \bfseries Answer & \bfseries Counterparametric \\
+% 		\midrule
+% 			\multirow{3}{200pt}{ \ttfamily%
+% 				Q: What is the date of birth of \rep{\{person\}}? \\ \hspace{-2pt} A: The date of birth of \rep{\{person\}} is
+% 			} & Che Guavara & Something & Something \\
+% 			& Isaac Newton & & \\
+% 			& Ibn al-Haytham & & \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
+\begin{table}[H]
 	\newcommand{\vwidth}[1]{\begin{minipage}[t][][t]{38ex}\ttfamily #1\end{minipage}}
+	\newcommand{\rep}[1]{{\setlength{\fboxsep}{0pt}\fcolorbox{Gray}{Gray!80}{\textit{#1}}}}
 
 	\centering
 	\scriptsize
 
-	\begin{tabularx}{\textwidth}{>{\ttfamily}p{28ex} >{\ttfamily}l >{\ttfamily}l >{\ttfamily}X}
+	\begin{tabularx}{\textwidth}{>{\ttfamily}l@{\hspace{3pt}}>{\ttfamily}l@{\hspace{3pt}}>{\ttfamily}l@{\hspace{3pt}}>{\ttfamily}r@{\hspace{12pt}}>{\ttfamily}X}
 		\toprule
-			\rmfamily \bfseries Base Question & \rmfamily \bfseries \parbox{40pt}{Parametric \\ Answer} & \rmfamily \bfseries \parbox{40pt}{Counterparametric Answer} & \rmfamily \bfseries \parbox{100pt}{Question with counterparametric context} \\
+			\rmfamily \bfseries Base Question & \rmfamily \bfseries Object & \rmfamily \bfseries \parbox{40pt}{Parametric \\ Answer} & \rmfamily \bfseries \parbox{50pt}{\hspace{-40pt} \raggedleft Counterparametric Answer} & \rmfamily \bfseries \parbox{100pt}{Question with counterparametric context} \\
 		\midrule
-			What is the date of birth of \textcolor{Red}{Che~Guevara}? &  \textcolor{Red}{June~14,~1928} & \textcolor{DarkOrchid}{June~21,~1947} & \vwidth{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{DarkOrchid}{June~21,~1947}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} \vspace{4pt} \\
-			What is the date of birth of \textcolor{Apricot}{Ibn~al-Haytham}? &  \textcolor{Apricot}{965~AD} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Apricot}{Ibn~al-Haytham}? \\ A: The date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is} \vspace{4pt} \\
-			What is the date of birth of \textcolor{Blue}{Boyan~Slat}? &  \textcolor{Blue}{27~January~1994} & \textcolor{Brown}{February~23,~1868} & \vwidth{Context: [the date of birth of \textcolor{Blue}{Boyan~Slat} is \textcolor{Brown}{February~23,~1868}]. \\ Q: What is the date of birth of \textcolor{Blue}{Boyan~Slat}? \\ A: The date of birth of \textcolor{Blue}{Boyan~Slat} is} \vspace{4pt} \\
-			What is the date of birth of \textcolor{Brown}{W.E.B~Du~Bois}? &  \textcolor{Brown}{February~23,~1868} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Brown}{W.E.B~Du~Bois}? \\ A: The date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is} \vspace{4pt} \\
-			What is the date of birth of \textcolor{Cerulean}{Stephen~Hawking}? &  \textcolor{Cerulean}{January~8,~1942} & \textcolor{Apricot}{965~AD} & \vwidth{Context: [the date of birth of \textcolor{Cerulean}{Stephen~Hawking} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Cerulean}{Stephen~Hawking}? \\ A: The date of birth of \textcolor{Cerulean}{Stephen~Hawking} is} \vspace{4pt} \\
-			What is the date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi}? &  \textcolor{DarkOrchid}{June~21,~1947} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi}? \\ A: The date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi} is} \vspace{2pt} \\
+			\multirow{6}{70pt}[-150pt]{\fbox{\parbox{60pt}{Q: What is the date of birth of \protect\rep{\{person\}}? \\ A: The date of birth of \protect\rep{\{person\}} is}}} & \textcolor{Red}{Che~Guevara} &  \textcolor{Red}{June~14,~1928} & \textcolor{DarkOrchid}{June~21,~1947} & \vwidth{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{DarkOrchid}{June~21,~1947}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} \vspace{4pt} \\
+			& \textcolor{Apricot}{Ibn~al-Haytham} &  \textcolor{Apricot}{965~AD} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Apricot}{Ibn~al-Haytham}? \\ A: The date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is} \vspace{4pt} \\
+			& \textcolor{Blue}{Boyan~Slat} &  \textcolor{Blue}{27~January~1994} & \textcolor{Brown}{February~23,~1868} & \vwidth{Context: [the date of birth of \textcolor{Blue}{Boyan~Slat} is \textcolor{Brown}{February~23,~1868}]. \\ Q: What is the date of birth of \textcolor{Blue}{Boyan~Slat}? \\ A: The date of birth of \textcolor{Blue}{Boyan~Slat} is} \vspace{4pt} \\
+			& \textcolor{Brown}{W.E.B~Du~Bois} &  \textcolor{Brown}{February~23,~1868} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Brown}{W.E.B~Du~Bois}? \\ A: The date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is} \vspace{4pt} \\
+			& \textcolor{Cerulean}{Stephen~Hawking} &  \textcolor{Cerulean}{January~8,~1942} & \textcolor{Apricot}{965~AD} & \vwidth{Context: [the date of birth of \textcolor{Cerulean}{Stephen~Hawking} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Cerulean}{Stephen~Hawking}? \\ A: The date of birth of \textcolor{Cerulean}{Stephen~Hawking} is} \vspace{4pt} \\
+			& \textcolor{DarkOrchid}{Shirin~Ebadi} &  \textcolor{DarkOrchid}{June~21,~1947} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi}? \\ A: The date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi} is} \vspace{2pt} \\
 		\bottomrule
 	\end{tabularx}
-	\caption{Example of the sampling done to produce counterparametric answers. Counterparametric answers are generated by sampling a random answer from the parametric answers from the same base questions; to ensure that no parametric and counterparametric pair are identical, we only sample between different parametric answers. Note that the same parametric answer can appear several times as a counterparametric in different questions.}
+	% \caption{Example of the sampling done to produce counterparametric answers. Counterparametric answers are generated by sampling a random answer from the parametric answers from the same base questions; to ensure that no parametric and counterparametric pair are identical, we only sample between different parametric answers. Note that the same parametric answer can appear several times as a counterparametric in different questions.}
+	\caption{asdf}
 	\label{sampling}
 \end{table}
-
-\subsubsection{Counterparametric and contextual perplexity scores}
-
-\footnotetext[1]{I am finding it hard to explain this subsubsection. Maybe I should add pseudocode here.}
-
-This works extends the approach of analysing answers found in \citationneeded{} and explained in \cref{generating_and_scoring} by also calculating the perplexity of \emph{alternative} answers to each question.
-
-That is, we take the result of applying each model to both the answer with and without counterparametric context, and we calculate the perplexity scores of getting both the parametric and counterparametric answer to each one of these.
-This produces four different scores which are detailed in \cref{perplexity_table}: one for each answer using either empty and counterparametric context.
-
-\begin{figure}
-	\footnotesize
-	\newcommand{\vmini}[1]{\begin{minipage}[c][25pt][c]{.3\textwidth}\centering $#1$\end{minipage}}
-
-	\centering
-	\renewcommand{\arraystretch}{3}
-		\begin{tabular}{  l >{\centering}p{.2\textwidth} | >{\centering}p{.3\textwidth} | p{.3\textwidth} | }
-		\cline{3-4}
-			& & \multicolumn{2}{c|}{\raisebox{11pt}{\bfseries Tokens}} \\[-15pt]
-		\cline{3-4}
-			& & \raisebox{11pt}{Parametric $\param$} & \raisebox{11pt}{\hspace{20pt} Counterparametric $\cparam$} \\[-15pt]
-		\hline
-			\multicolumn{1}{ | c | }{\multirow[b]{2}{*}{\rotatebox{90}{\bfseries \centering \hspace{1pt} Context}}}
-			& \begin{minipage}[c][25pt][t]{.2\textwidth} \centering Empty \\[1pt] $\noctx$ \end{minipage} &
-			\vmini{ \Perp \left( \param_1, \dots, \param_N \mid \noctx \right) } &
-			\vmini{ \Perp \left( \cparam_1, \dots, \cparam_{\bar{N}} \mid \noctx \right) } \\
-		\cline{2-4}
-			\multicolumn{1}{ | c | }{} & \begin{minipage}[c][25pt][t]{.2\textwidth} \centering Counterparametric \\[1pt] \ctx \end{minipage}  &
-			\vmini{ \Perp \left( \param_1, \dots, \param_N \mid \ctx \right) } &
-			\vmini{ \Perp \left( \cparam_1, \dots, \cparam_{\bar{N}} \mid \ctx \right) } \\
-		\hline
-	\end{tabular}
-	\caption{Four different perplexity values: one for each set of tokens, and one for each query context..}
-	\label{perplexity_table}
-\end{figure}
-
-By definition, the tokens of the parametric answer $\param_1, \dots, \param_N$ are the ones corresponding to the lowest perplexity answer for the query without any context.
-This is not the case for the tokens of the counterparametric answer $\cparam_1, \dots, \cparam_{\bar{N}}$, which produces the inequality in \cref{perplexity_noctx}.
-
-\begin{equation}
-	\Perp \left( \param_1, \dots, \param_N \mid Q \right) \leq \Perp \left( \cparam_1, \dots, \cparam_{\bar{N}} \mid Q \right)
-	\label{perplexity_noctx}
-\end{equation}
-
-Finding the result of the inequality for the queries with the counterparametric context $W$ is one of the main goals of this research.
-In fact, we know that if the perplexity of the parametric tokens $\param_1, \dots, \param_N$ is greater than the tokens for the counterparametric answer $\cparam_1, \dots, \cparam_{\bar{N}}$ then the answer was memorised.
-Otherwise, the answer was generated in-context.
-
-\begin{equation}
-	\text{Answer Source } =
-	\begin{cases}
-		\text{Memory} & \text{if } P \left( \param_1, \dots, \param_N \mid W \right) < P \left( \cparam_1, \dots, \cparam_{\bar{N}} \mid W \right) \\
-		\text{Context} & \text{otherwise}
-	\end{cases}
-	\label{perplexity_ctx}
-\end{equation}
-
-\vfill{}
-
-\subsubsection{Comparing the Final Answers}
-
-There is a third case that's not present in \cref{perplexity_noctx,perplexity_ctx}: the case where the answer comes from neither the model's memory nor the query's context, but that instead the model generates a third answer combining both.
-
-There are several cases where this can happen.
-The most interesting are explained in \cref{results_others}, while the full results can be found in \cref{appendixB}.
-
-In particular, we categorise the final answers in one of three groups depending on whether the answer with minimal perplexity on the query with the counterfactual context $W$ is equal to the parametric answer, to the counterparametric answer, or to something else.
-
-\begin{gather}
-	\text{Group} =
-	\begin{cases}
-		\text{Parametric} & \text{if } \left( \nexists \, x_1, \dots, x_N \right) \; \Perp \left( x_1, \dots, x_N \mid W \right) < A \\
-		\text{Counterparametric} & \text{if } \left( \nexists \, x_1, \dots, x_N \right) \; \Perp \left( x_1, \dots, x_N \mid W \right) < B \\
-		\text{Other} & \text{otherwise}
-	\end{cases} \label{group} \\
-	\intertext{where}
-	\begin{aligned}
-		A = \Perp \left( \param_1, \dots, \param_N \mid W \right) \\
-		B = \Perp \left( \cparam_1, \dots, \cparam_{\bar{N}} \mid W \right)
-	\end{aligned} \notag{}
-\end{gather}
-
-There is a correlation between \cref{group} and \cref{perplexity_ctx}: an answer in the Parametric group will come from the model's memory, and an answer in the Counterparametric group will come from the query's (counterparametric) context.

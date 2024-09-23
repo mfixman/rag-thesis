@@ -13,7 +13,6 @@
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
-\usepackage{listings}
 \usepackage{makecell}
 \usepackage{microtype}
 \usepackage{multirow}
@@ -28,6 +27,11 @@
 \usepackage[hypertexnames=false,hidelinks]{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
 % \usepackage[toc,automake]{glossaries}
+
+\usepackage{listings}
+\newcommand{\lstencoding}{latin1}
+% \usepackage{listingsutf8}
+% \newcommand{\lstencoding}{utf8/latin1}
 
 \renewcommand{\UrlFont}{\ttfamily\upshape}
 \graphicspath{{.}{./pictures}{./figures}}
@@ -96,6 +100,9 @@ I also acknowledge that this work will be subject to a variety of checks for aca
 
 \clearpage{}
 \input{methodology}
+
+\clearpage{}
+\input{methodology_old}
 
 \clearpage{}
 \input{results}
