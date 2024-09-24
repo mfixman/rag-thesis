@@ -24,7 +24,7 @@ Each one of these categories has a number of questions that are assigned one of 
 The full list of base questions and objects for all categories can be found in \cref{appendixA}.
 The total amount of these and composition of the 4760 questions can be found in \cref{category_amounts}.
 
-\begin{table}[htb]
+\begin{table}[h]
 	\centering
 	\scriptsize
 	\begin{tabular}{>{\bfseries}l r r r}
@@ -48,11 +48,11 @@ The total amount of these and composition of the 4760 questions can be found in 
 	\label{category_amounts}
 \end{table}
 
+\newpage{}
+
 \subsection{When does a model choose the provided context knowledge over its inherent knowledge?}
 
-\subsubsection{Decoder-Only Models}
-
-The results of running the experiment on the two Llama decoder-only models can be found in \cref{llama_table,llama_results}.
+The results of running the queries created in \cref{creating_dataset} with added counterfactual context on each of the four models the four models can be found in \cref{total_table,total_results}.
 
 \begin{table}[htbp]
 	\centering
@@ -63,23 +63,33 @@ The results of running the experiment on the two Llama decoder-only models can b
 		\midrule
 			\ttfamily llama-3.1-8B & 745 & 3662 & 353 \\
 			\ttfamily llama-3.1-70B & 1070 & 3303 & 387 \\
+		\midrule
+			\ttfamily flan-t5-xl  & 248 & 4284 & 228 \\
+			\ttfamily flan-t5-xxl & 242 & 4304 & 214 \\
 		\bottomrule
 	\end{tabular}
 	\caption{Results when running all entries on a decoder-only model.}
-	\label{llama_table}.
+	\label{total_table}.
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\textwidth]{llama_amount.png}
-	\caption{Resulting entries when running the queries from \cref{creating_dataset} with the Llama models}
-	\label{llama_results}
+	\subfigure[Decoder-only models]{
+		\raggedright
+		\includegraphics[width=.48\textwidth]{llama_amount.png}
+	}%
+	\subfigure[Seq2Seq models]{
+		\raggedleft
+		\includegraphics[width=.48\textwidth]{flan_amount.png}
+	}
+	\caption{Results by type depending on which model; these are the same results as \cref{total_table}.}
+	\label{total_results}
 \end{figure}
 
-We can see from these results that larger models tend to get their answers from their parametric memory, even in the face of contradictory context.
-This is further discussed in \cref{discussion}.
+As hypothesised in \cref{intro_models_numbers}, there are vast differences on how the models of different types and sizes act when presented with a context that contradicts their knowledge.
+This is investigated further in \cref{discussion}.
 
-A similar pattern emerges in most (but not all) of the categories, which can be seen in \cref{llama_cats_table,llama_cats_result}.
+A similar pattern emerges in most (but not all) of the categories, which can be seen in \cref{llama_cats_table,llama_cats_result,flan_cats_table,flan_cats_result}.
 
 \begin{table}[htbp]
 	\centering
@@ -111,37 +121,7 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\label{llama_cats_result}
 \end{figure}
 
-\subsubsection{Seq2Seq Models}
-
-The results of running the experiments with the Seq2Seq Flan-T5 models can be found in \cref{flan_table,flan_results}.
-
-\begin{table}[htbp]
-	\centering
-	\footnotesize
-	\begin{tabular}{l r r r}
-		\toprule
-			& \bfseries Parametric & \bfseries Contextual & \bfseries Other \\
-		\midrule
-			\ttfamily flan-t5-xl  & 248 & 4284 & 228 \\
-			\ttfamily flan-t5-xxl & 242 & 4304 & 214 \\
-		\bottomrule
-	\end{tabular}
-	\caption{Results when running all entries on a Seq2Seq model.}
-	\label{flan_table}
-\end{table}
-
-\begin{figure}[htpb]
-	\centering
-	\includegraphics[width=.75\textwidth]{flan_amount.png}
-	\caption{Resulting entries when running the queries from \cref{creating_dataset} with the Flan-T5 models.}
-	\label{flan_results}
-\end{figure}
-
-Unlike the Decoder-only models, the results are almost identical between the small and large models.
-
-The reason for this will be discussed later. \Cref{flan_cats_table,flan_cats_result} contain this information grouped by category.
-
-\begin{table}[htpb]
+\begin{table}[h]
 	\centering
 	\footnotesize
 	\begin{tabular}{>{\bfseries}l | r r r | r r r}
@@ -160,4 +140,13 @@ The reason for this will be discussed later. \Cref{flan_cats_table,flan_cats_res
 			Composition      &   0 &  228 & 22 &   7 &  240 &  3 \\
 		\bottomrule
 	\end{tabular}
+	\caption{Results for running each one of the 10 categories separately on the Seq2Seq models.}
+	\label{flan_cats_table}
 \end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{flan_allcats.png}
+	\caption{Results of running Seq2Seq models on the queried data, grouped by category. This plots the information shown in \cref{flan_cats_table}.}
+	\label{flan_cats_result}
+\end{figure}
