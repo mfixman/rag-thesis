@@ -3,15 +3,15 @@
 \subsection{Creating a representative dataset of questions}
 \label{creating_dataset}
 
-As shown in \Cref{questions_objective}, our codebase requires the creation of a new dataset of questions with three main properties.
+As argued in \Cref{questions_objective}, our codebase requires the creation of a new dataset of questions with three main properties.
 
 \begin{enumerate}
-	\item Questions should have short an unambiguous answers. \label{q_short}
+	\item The questions should have short an unambiguous answers. \label{q_short}
 	\item They must cover a large set of topics, eras, and places. \label{q_widespread}
 	\item They must allow for the creation of sensible counterfactuals by having sets of questions with the same answer format. \label{q_counterfactual}
 \end{enumerate}
 
-To address these items, we follow the approach done by \citeauthor{factual_recall} in creating base questions that refer to a specific object, so all the answers for the same base question have a similar format.
+To address these items, we follow the approach done by \citeauthor{factual_recall} in creating base questions that refer to a specific object, so all the answers for the same base question have a similar format and creating counterfactual answers is easy.
 
 Since this thesis requires a set of questions that covers a large set of topics, eras, and places, we enhance this method by creating a set of categories, each of which has a large set of base questions and another set of objects that can be matched.
 An example of this approach is shown in \cref{source_data_example}.
@@ -76,7 +76,7 @@ This list of questions will enable the research on whether the answers given by 
 
 \subsubsection{Model Selection}
 
-In order to get a general understanding of large language models with added context, we test the queries generated in \cref{creating_dataset} into models of different types and sizes.
+In order to get a general understanding of large language models with added context, we test the queries generated in \cref{creating_dataset} into four models of different types and sizes.
 
 \begin{table}[h]
 	\centering
@@ -99,11 +99,10 @@ The Llama models \citep{llama3} are Decoder-only models with a dense transformer
 \subsubsection{What type of answer does each model select for each question?}
 
 The first step to understanding the knowledge grounding of large language models is to create queries that contain counterparametric data as part of the context.
-This way, it's easy to know whether an answer came from the model's memory, the queries' context, or neither of these.
+By comparing the result to the existing answers it becomes trivial to understand whether an answer came from the model's memory, the queries' context, or neither of these.
 
 Following the approach of \citeauthor{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer (given by the original query).
 Later, we add this ``counterfactual'' answer to the context, to form a new query and query the same model again.
-This approach is detailed in \cref{action_diagram}.
 
 \begin{figure}[ht]
 	\centering
@@ -112,13 +111,13 @@ This approach is detailed in \cref{action_diagram}.
 	\label{action_diagram}
 \end{figure}
 
-To ensure that the results are simple to interpret and minimise the chance that the result is affected by randomness, once we select the queries we follow the example of \citeauthor{ragged} and use Greedy Decoding to find the answer.
+To ensure that the results are simple to interpret and minimise the effect of randomness, once we select the queries we follow the example of \citeauthor{ragged} and use Greedy Decoding to find the answer.
 
 % While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
 
 We compare the parametric answer to the previous values to come to one of three cases: either this answer is identical to the \textbf{Parametric} answer and the model inferred it from its grounded knowledge, to the \textbf{Counterparametric} answer and the model inferred it from the context, or the answer is different to these two and the model inferred it from some \textbf{Other} place.
 
-\Cref{counterparametric_table} contains an example of the shuffling done for this experiment.
+This approach is detailed in \cref{action_diagram}, and \cref{counterparametric_table} contains an example of the shuffling done for this experiment.
 
 \begin{table}[p]
 	\newcommand{\vwidth}[1]{\begin{minipage}[t][][t]{38ex}\ttfamily #1\end{minipage}}
@@ -127,16 +126,14 @@ We compare the parametric answer to the previous values to come to one of three 
 	\centering
 	\scriptsize
 
-	\begin{tabularx}{\textwidth}{>{\ttfamily}l@{\hspace{0pt}}|>{\ttfamily}c@{\hspace{0pt}}>{\ttfamily}c@{\hspace{0pt}}>{\ttfamily}c@{\hspace{22pt}}>{\ttfamily}X}
+	\begin{tabularx}{\textwidth}{>{\ttfamily}l@{\hspace{0pt}}|>{\ttfamily}c@{\hspace{1pt}}>{\ttfamily}c@{\hspace{0pt}}>{\ttfamily}c@{\hspace{22pt}}>{\ttfamily}X}
 		\toprule
-			\rmfamily \bfseries Base Question & \rmfamily \bfseries Object & \rmfamily \bfseries \parbox{40pt}{Parametric \\ Answer} & \rmfamily \bfseries \parbox{50pt}{Counterparametric Answer} & \rmfamily \bfseries \parbox{100pt}{Question with counterparametric context} \\
+			\rmfamily \bfseries Base Question & \rmfamily \bfseries Object & \rmfamily \bfseries \parbox{40pt}{\centering Parametric Answer} & \rmfamily \bfseries \parbox{75pt}{\centering Counterparametric Answer} & \rmfamily \bfseries \parbox{100pt}{Question with counterparametric context} \\
 		\midrule
 			\multirow{4}{65pt}[-100pt]{Q: What is the date of birth of \protect\rep{\{person\}}? \\ A: The date of birth of \protect\rep{\{person\}} is} & \textcolor{Red}{Che~Guevara} &  \textcolor{Red}{June~14,~1928} & \textcolor{Apricot}{965~AD} & \vwidth{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} \vspace{4pt} \\
 			& \textcolor{Apricot}{Ibn~al-Haytham} &  \textcolor{Apricot}{965~AD} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Apricot}{Ibn~al-Haytham}? \\ A: The date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is} \vspace{4pt} \\
 			& \textcolor{Blue}{Boyan~Slat} &  \textcolor{Blue}{27~January~1994} & \textcolor{Brown}{February~23,~1868} & \vwidth{Context: [the date of birth of \textcolor{Blue}{Boyan~Slat} is \textcolor{Brown}{February~23,~1868}]. \\ Q: What is the date of birth of \textcolor{Blue}{Boyan~Slat}? \\ A: The date of birth of \textcolor{Blue}{Boyan~Slat} is} \vspace{4pt} \\
 			& \textcolor{Brown}{W.E.B~Du~Bois} &  \textcolor{Brown}{February~23,~1868} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Brown}{W.E.B~Du~Bois}? \\ A: The date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is} \vspace{4pt} \\
-			% & \textcolor{Cerulean}{Stephen~Hawking} &  \textcolor{Cerulean}{January~8,~1942} & \textcolor{Apricot}{965~AD} & \vwidth{Context: [the date of birth of \textcolor{Cerulean}{Stephen~Hawking} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Cerulean}{Stephen~Hawking}? \\ A: The date of birth of \textcolor{Cerulean}{Stephen~Hawking} is} \vspace{4pt} \\
-			% & \textcolor{DarkOrchid}{Shirin~Ebadi} &  \textcolor{DarkOrchid}{June~21,~1947} & \textcolor{Red}{June~14,~1928} & \vwidth{Context: [the date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi}? \\ A: The date of birth of \textcolor{DarkOrchid}{Shirin~Ebadi} is} \vspace{2pt} \\
 		\midrule
 			\multirow{2}{65pt}[-25pt]{Q: What country is \protect\rep{\{city\}} in? \\ A: \protect\rep{\{city\}} is in}
 			& \textcolor{BurntOrange}{Cairo} &  \textcolor{BurntOrange}{Egypt} & \textcolor{ForestGreen}{India} & \vwidth{Context: [\textcolor{BurntOrange}{Cairo} is in \textcolor{ForestGreen}{India}]. \\ Q: What country is \textcolor{BurntOrange}{Cairo} in? \\ A: \textcolor{BurntOrange}{Cairo} is in} \vspace{4pt} \\
@@ -157,22 +154,24 @@ We compare the parametric answer to the previous values to come to one of three 
 The Perplexity score of an answer is normally used to measure the inverse of the certainty that the model has of a particular answer \citep{fewshotlearners,retro}.
 In a sense, it's the ``surprise'' of a model that a certain answer is correct.
 
-We can define the probability of model $Q$ choosing a token $x_n$ with context $x_1, \dots, x_{n - 1}$ by calculating the softmax value of all the logits for the possible words for this token.
+We can define the probability of a model choosing a token $x_n$ with context $x_1, \dots, x_{n - 1}$ from a query $Q$ by calculating the softmax value of all the logits for the possible words for this token.
 
-This probability of the tokens corresponding to a particular answer $x_1, \dots, x_n$ can be accumulated to calculate the negative log-likelihood NLL, which is used to calculate the perplexity PPL using the formulas from \cref{eq:nll,eq:ppl}.
+The probabilities of the tokens if an answer can be accumulated to calculate the negative log-likelihood $\NLL$, which is used to calculate the perplexity $\PPL$ using the formulas from \cref{eq:nll,eq:ppl}.
 
 \begin{align}
 	\NLL \left( x_1, \dots, x_n \mid Q \right) &= - \frac{1}{n} \sum^n_{i = 1} \log_2 P \left( x_i \mid Q, x_1, \dots, x_{i - 1} \right) \label{eq:nll} \\
 	\PPL \left( x_1, \dots, x_n \mid Q \right) &= {2 ^ {\text{NLL} \left( x_1, \dots, x_n \mid Q \right)}} \label{eq:ppl}
 \end{align}
 
+\newpage{}
+
 \subsubsection{Perplexity of the parametric answer with counterfactual context and vice-versa}
 
 Note that the token $x_n$ does not necessarily have to be the result of applying the query $x_1, \dots, x_{n - 1}$ to a model.
 
-We instead use teacher-forcing \citep{teacher_forcing} to calculate the perplexity scores of the parametric answers for both the regular query and the one with counterfactual context, and the perplexity scores of the contextual answers for these two queries.
+Therefore, it becomes necessary to use teacher-forcing \citep{teacher_forcing} to feed some answer to the model regardless of what's the answer to this particular query. This allows us to calculate the perplexity scores of the parametric answers for both the regular query and the one with counterfactual context, and the perplexity scores of the contextual answers for these two queries.
 
-For a given parametric answer $p_1, \dots, p_n$ and randomly chosen counterparametric answer $q_1, \dots, q_m$, we can gather four different perplexity scores as shown in \cref{perplexity_table}.
+For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterparametric answer $q_1, \dots, q_m$, a query without context $Q$, and a query with this counterparametric context $Q'$ we can calculate four different perplexity scores as shown in \cref{perplexity_table}.
 
 \begin{table}[h]
 	\footnotesize
@@ -203,7 +202,7 @@ For a given parametric answer $p_1, \dots, p_n$ and randomly chosen counterparam
 Since the parametric answer is by definition the response of the model to the regular query, $P_0 \leq P_1$.
 In fact, the perplexity of the parametric value is lower than the perplexity of any other answer on query $Q$.
 
-\Cref{method22} is equivalent to asking whether $P_2 \lesseqqgtr P_3$, or whether there is a different sequence of tokens that has any lower perplexity of these two.
+The question in \cref{method22} is equivalent to asking whether $P_2 \lesseqqgtr P_3$, or whether there is a different sequence of tokens that has any lower perplexity of these two.
 
 \subsubsection{Predicting whether an answer came from memory or from context}
 
