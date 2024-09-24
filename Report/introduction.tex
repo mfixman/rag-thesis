@@ -13,7 +13,7 @@ Many explore the performance of these downstream tasks depending on both the ret
 Retrieval-Augmented models, such as \textsc{Atlas} \citep{atlas_foundational} and \textsc{Retro} \citep{retro}, use this approach to fine-tune a model on both a large body of knowledge and an existing index for context retrieval.
 
 This project aims to understand the performance of various LLMs by measuring their \textit{knowledge grounding} on a dataset consisting of a large variety of questions across a wide range of topics.
-We follow the approach by \citeauthor{factual_recall} of running queries with counterfactual context to understand whether a particular answer originates from the model's inherent knowledge (i.e., its training data) or from the provided context (i.e., the context retrieved by RAG).
+We follow the approach by \citeauthor{factual_recall} of running queries with counterparametric context to understand whether a particular answer originates from the model's inherent knowledge (i.e., its training data) or from the provided context (i.e., the context retrieved by RAG).
 
 This thesis builds on this knowledge and improve our understanding of how different LLMs interact with the given context in the problem of question answering.
 Specifically, we investigate whether these interactions vary depending on the type of question being answered, contributing to a more nuanced understanding of LLM performance in diverse knowledge domains.
@@ -35,21 +35,21 @@ In order to understand knowledge grounding in these models, we require a dataset
 \begin{enumerate}
 	\item The dataset must contain questions that have short, unambiguous answers.
 	\item The questions must cover a large set of topics.
-	\item It must allow for the creation of counterfactual answers in the same format as correct ones to test contextual versus inherent knowledge.
+	\item It must allow for the creation of counterparametric answers in the same format as correct ones to test contextual versus inherent knowledge.
 \end{enumerate}
 
 The existing literature uses various existing question-and-answer datasets, none of which are useful for this research.\footnotemark{}
 \begin{description}
 	\item[Natural Questions Dataset] Created by Google Research \citep{natural_questions}, and commonly used in research related to understanding the answers of LLMs in question-and-answer problems \citep{ragged,when_not_to_trust_llms,can_rag_models_reason}.
-		While the dataset provides an excellent range of questions and existing literature to compare these results to, the lack of categorisation is an obstacle in our objective to generate counterfactual answers.
+		While the dataset provides an excellent range of questions and existing literature to compare these results to, the lack of categorisation is an obstacle in our objective to generate counterparametric answers.
 	\item[Human-Augmented Dataset] Sometimes used in research related to quality control of large language models \citep{learning_the_difference}.
 		However, the high cost associated with this dataset would limit the size of our questions.
-	\item[Countries' Capitals Question Dataset] Used in ``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, this dataset contains a single question about the capital city of certain countries which can be easily transformed to a counterfactual question.
+	\item[Countries' Capitals Question Dataset] Used in ``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, this dataset contains a single question about the capital city of certain countries which can be easily transformed to a counterparametric question.
 		This format is ideal for the research done in this thesis, but having a single question pattern will not allow a deep dive into the source of each answer in a general question.
 \end{description}
 
 Instead of using an existing dataset, this research takes inspiration from the paper by \citeauthor{factual_recall} to create a similar but larger dataset of questions and answers from a wide range of topics, where questions can be grouped by question pattern to ensure that their formats are similar.
-This way, we can emulate the approach of that paper of using the answer from a certain question as the counterfactual of another.
+This way, we can emulate the approach of that paper of using the answer from a certain question as the counterfactual question of another.
 
 This dataset will be used to test the remaining questions of this thesis.
 Since it might be useful for future research, it will also be presented as its own result.

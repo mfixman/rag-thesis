@@ -8,10 +8,10 @@ As argued in \Cref{questions_objective}, our codebase requires the creation of a
 \begin{enumerate}
 	\item The questions should have short an unambiguous answers. \label{q_short}
 	\item They must cover a large set of topics, eras, and places. \label{q_widespread}
-	\item They must allow for the creation of sensible counterfactuals by having sets of questions with the same answer format. \label{q_counterfactual}
+	\item They must allow for the creation of sensible counterparametric answers (different than what the model would normally answer) by having sets of questions with the same answer format. \label{q_counterfactual}
 \end{enumerate}
 
-To address these items, we follow the approach done by \citeauthor{factual_recall} in creating base questions that refer to a specific object, so all the answers for the same base question have a similar format and creating counterfactual answers is easy.
+To address these items, we follow the approach done by \citeauthor{factual_recall} in creating base questions that refer to a specific object, so all the answers for the same base question have a similar format and creating counterparametric answers is easy.
 
 Since this thesis requires a set of questions that covers a large set of topics, eras, and places, we enhance this method by creating a set of categories, each of which has a large set of base questions and another set of objects that can be matched.
 An example of this approach is shown in \cref{source_data_example}.
@@ -102,7 +102,7 @@ The first step to understanding the knowledge grounding of large language models
 By comparing the result to the existing answers it becomes trivial to understand whether an answer came from the model's memory, the queries' context, or neither of these.
 
 Following the approach of \citeauthor{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer (given by the original query).
-Later, we add this ``counterfactual'' answer to the context, to form a new query and query the same model again.
+Later, we add this \emph{counterparametric answer} to the context, to form a new query and query the same model again.
 
 \begin{figure}[ht]
 	\centering
@@ -115,9 +115,9 @@ To ensure that the results are simple to interpret and minimise the effect of ra
 
 % While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
 
-We compare the parametric answer to the previous values to come to one of three cases: either this answer is identical to the \textbf{Parametric} answer and the model inferred it from its grounded knowledge, to the \textbf{Counterparametric} answer and the model inferred it from the context, or the answer is different to these two and the model inferred it from some \textbf{Other} place.
+We compare the parametric answer to the previous values to come to one of three cases: either this answer is identical to the \textbf{Parametric} answer and the model inferred it from its memor, to the \textbf{Contextual} answer and the model inferred it from the context, or the answer is different to these two and the model inferred it from some \textbf{Other} place.
 
-This approach is detailed in \cref{action_diagram}, and \cref{counterparametric_table} contains an example of the shuffling done for this experiment.
+This approach is detailed in \cref{action_diagram}; \cref{counterparametric_table} contains an example of the shuffling done for this experiment.
 
 \begin{table}[p]
 	\newcommand{\vwidth}[1]{\begin{minipage}[t][][t]{38ex}\ttfamily #1\end{minipage}}
@@ -166,11 +166,11 @@ The probabilities of the tokens if an answer can be accumulated to calculate the
 
 \newpage{}
 
-\subsubsection{Perplexity of the parametric answer with counterfactual context and vice-versa}
+\subsubsection{Perplexity of the parametric answer with counterparametric context and vice-versa}
 
 Note that the token $x_n$ does not necessarily have to be the result of applying the query $x_1, \dots, x_{n - 1}$ to a model.
 
-Therefore, it becomes necessary to use teacher-forcing \citep{teacher_forcing} to feed some answer to the model regardless of what's the answer to this particular query. This allows us to calculate the perplexity scores of the parametric answers for both the regular query and the one with counterfactual context, and the perplexity scores of the contextual answers for these two queries.
+Therefore, it becomes necessary to use teacher-forcing \citep{teacher_forcing} to feed some answer to the model regardless of what's the answer to this particular query. This allows us to calculate the perplexity scores of the parametric answers for both the regular query and the one with counterparametric context, and the perplexity scores of the contextual answers for these two queries.
 
 For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterparametric answer $q_1, \dots, q_m$, a query without context $Q$, and a query with this counterparametric context $Q'$ we can calculate four different perplexity scores as shown in \cref{perplexity_table}.
 
@@ -191,7 +191,7 @@ For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterpara
 			$P_0 = \PPL \left( p_1, \dots, p_n \mid Q \right)$ &
 			$P_1 = \PPL \left( q_1, \dots, q_{m} \mid Q \right)$ \\
 		\cline{2-4}
-			\multicolumn{1}{ | c | }{} & Using counterfactual context &
+			\multicolumn{1}{ | c | }{} & Using counterparametric context &
 			$P_2 = \PPL \left( p_1, \dots, p_n \mid Q' \right)$ &
 			$P_3 = \PPL \left( q_1, \dots, q_{m} \mid Q' \right)$ \\
 		\hline
@@ -207,6 +207,6 @@ The question in \cref{method22} is equivalent to asking whether $P_2 \lesseqqgtr
 
 \subsubsection{Predicting whether an answer came from memory or from context}
 
-One question remains: if the response of the query with counterfactual context $Q'$ is $x_1, \dots, x_n$, how can we predict whether this answer is came from the model's memory $p$, from the given context $q$, or something else?
+One question remains: if the response of the query with counterparametric context $Q'$ is $x_1, \dots, x_n$, how can we predict whether this answer is came from the model's memory $p$, from the given context $q$, or something else?
 
 We propose investigating the value of the perplexity $\PPL \left( x_1, \dots, x_n \mid Q' \right)$ and comparing it to the distribution of perplexities on parametric and contextual answers. TODO: Maybe include a KDE or a K-S test here.
