@@ -1,0 +1,102 @@
+\begin{figure}[p]
+	\centering
+	\scriptsize
+
+	\newcommand{\tokbox}[1]{\fbox{\strut\centering #1}}
+
+	\begin{minipage}{.47\textwidth}
+		\centering \textbf{Base Query} $Q$ \\ \fbox{\parbox[][6em]{\textwidth}{\ttfamily Q: Where is The Son of Man primarily housed? \\ A: The Son of Man is currently in}}
+	\end{minipage} \hfill{}
+	\begin{minipage}{.47\textwidth}
+		\centering \textbf{Query with Counterparametric Context} $Q'$ \\ \fbox{\parbox[][6em]{\textwidth}{\ttfamily [Context: The Son of Man is housed in in the refectory of the Convent of Santa Maria delle Grazie in Milan, Italy] \\ Q: Where is The Son of Man primarily housed? \\ A: The Son of Man is currently in}}
+	\end{minipage} \\[1em]
+
+	\begin{minipage}{.47\textwidth}
+		\centering \textbf{Parametric Answer Tokens} $p_1, \dots, p_n$ \\ \fbox{
+			\parbox[][6em]{.98\textwidth}{
+				\ttfamily
+				\tokbox{ the}\tokbox{ collection}\tokbox{ of}\tokbox{ the}\tokbox{ National}
+				\tokbox{ Gallery}\tokbox{ of}\tokbox{ Canada}\tokbox{ in}\tokbox{ Ottawa}\tokbox{,}
+				\tokbox{ Ontario}\tokbox{,}\tokbox{ Canada}
+			}
+		}
+	\end{minipage} \hfill{}
+	\begin{minipage}{.47\textwidth}
+		\centering \textbf{Counterparametric Answer Tokens} $q_1, \dots, q_m$ \\ \fbox{
+			\parbox[][6em]{.98\textwidth}{
+				\ttfamily
+				\tokbox{ the}\tokbox{ ref}\tokbox{ect}\tokbox{ory}\tokbox{ of}\tokbox{ the}\tokbox{ Con}\tokbox{vent}
+				\tokbox{ of}\tokbox{ Santa}\tokbox{ Maria}\tokbox{ delle}\tokbox{ Graz}\tokbox{ie}
+				\tokbox{ in}\tokbox{ Milan}\tokbox{,}\tokbox{ Italy}
+			}
+		}
+	\end{minipage} \\[1em]
+
+	\begin{minipage}{.47\textwidth}
+		\centering $P \left( p_i \mid Q', p_1, \dots, p_{i - 1} \right)$  \\ \fbox{
+			\parbox[][6em]{.98\textwidth}{
+				\ttfamily
+				\tokbox{0.94}\tokbox{4e-05}\tokbox{0.87}\tokbox{0.93}\tokbox{0.06}
+				\tokbox{0.92}\tokbox{0.26}\tokbox{0.04}\tokbox{0.61}\tokbox{0.98}\tokbox{0.72}
+				\tokbox{0.49}\tokbox{0.59}\tokbox{0.90}
+			}
+		}
+	\end{minipage} \hfill{}
+	\begin{minipage}{.47\textwidth}
+		\centering $P \left( q_i \mid Q', q_1, \dots, q_{i - 1} \right)$ \\ \fbox{
+			\parbox[][6em]{.98\textwidth}{
+				\ttfamily
+				\tokbox{0.94}\tokbox{0.96}\tokbox{0.99}\tokbox{1.00}\tokbox{0.98}\tokbox{0.99}\tokbox{0.99}\tokbox{1.00}
+				\tokbox{0.99}\tokbox{0.99}\tokbox{0.99}\tokbox{0.99}\tokbox{0.99}\tokbox{0.99}
+				\tokbox{0.96}\tokbox{0.99}\tokbox{0.98}\tokbox{0.99}
+			}
+		}
+	\end{minipage} \\[1em]
+
+	\begin{minipage}{.47\textwidth}
+		\centering $\NLL \left( p_1, \dots, p_n \mid Q' \right)$  \\ \fbox{
+			\parbox[][6em][]{.98\textwidth}{
+				\begin{equation*}
+					- \frac{1}{n} \sum^n_{i = 1} \log_2 P \left( p_i \mid Q', p_1, \dots, p_{i - 1} \right) = 2.0566
+				\end{equation*}
+			}
+		}
+	\end{minipage} \hfill{}
+	\begin{minipage}{.47\textwidth}
+		\centering $\NLL \left( q_1, \dots, q_m \mid Q' \right)$  \\ \fbox{
+			\parbox[][6em][]{.98\textwidth}{
+				\begin{equation*}
+					- \frac{1}{n} \sum^m_{i = 1} \log_2 P \left( q_i \mid Q', q_1, \dots, q_{i - 1} \right) = 0.0154
+				\end{equation*}
+			}
+		}
+	\end{minipage} \\[1em]
+
+	\begin{minipage}{.47\textwidth}
+		\centering $P_2 = \PPL \left( p_1, \dots, p_n \mid Q' \right)$  \\ \fbox{
+			\parbox[][6em][]{.98\textwidth}{
+				\begin{equation*}
+					P_2 = 2 ^ {\displaystyle \NLL \left( q_1, \dots, q_m \mid Q' \right)} = 4.1599
+				\end{equation*}
+			}
+		}
+	\end{minipage} \hfill{}
+	\begin{minipage}{.47\textwidth}
+		\centering $P_3 = \PPL \left( q_1, \dots, q_m \mid Q' \right)$  \\ \fbox{
+			\parbox[][6em][]{.98\textwidth}{
+				\begin{equation*}
+					P_3 = 2 ^ {\displaystyle \NLL \left( q_1, \dots, q_m \mid Q' \right)} = 1.0107
+				\end{equation*}
+			}
+		}
+	\end{minipage} \\[1em]
+
+	\fbox{\parbox[][6em]{\textwidth}{
+		\begin{equation*}
+			P_2 > P_3 \qquad \Longrightarrow \qquad \text{\bfseries Contextual}
+		\end{equation*}
+	}}
+
+	\caption{Example of perplexity calculation for the parametric and counterparametric answers in a query with the counterparametric context. Note that, due to teacher forcing, the calculation finds the probability of the next token $p_i$ \textit{given the previous tokens of the searched answer $p_1, \dots, p_{i - 1}$} rather than given the most likely tokens. For example, once we feed the string ``\texttt{National Gallery of Canada in}'', the probability of the next token being ``\texttt{Ottawa}'' is very high.}
+	\label{example_perplexity}
+\end{figure}

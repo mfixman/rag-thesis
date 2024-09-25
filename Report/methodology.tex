@@ -213,7 +213,7 @@ We can define the probability of a model choosing a token $x_n$ with context $x_
 The probabilities of the tokens if an answer can be accumulated to calculate the negative log-likelihood $\NLL$, which is used to calculate the perplexity $\PPL$ using the formulas from \cref{eq:nll,eq:ppl}.
 
 \begin{align}
-	\NLL \left( x_1, \dots, x_n \mid Q \right) &= - \frac{1}{n} \sum^n_{i = 1} \log_2 P \left( x_i \mid Q, x_1, \dots, x_{i - 1} \right) \label{eq:nll} \\
+	\NLL \left( x_1, \dots, x_n \mid Q \right) &= - \frac{1}{n} \sum^n_{i = 1} \log_2 P \left( x_i \mid Q, x_1, \dots, x_{i - 1} \right) \label{eq:nll} \\[1ex]
 	\PPL \left( x_1, \dots, x_n \mid Q \right) &= {2 ^ {\text{NLL} \left( x_1, \dots, x_n \mid Q \right)}} \label{eq:ppl}
 \end{align}
 
@@ -229,22 +229,21 @@ For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterpara
 
 \begin{table}[h]
 	\footnotesize
-	\newcommand{\vmini}[1]{$#1$}
-
 	\centering
+
 	\renewcommand{\arraystretch}{3}
-		\begin{tabular}{  l >{\centering}p{.2\textwidth} | >{\centering}p{.3\textwidth} | p{.3\textwidth} | }
+	\begin{tabular}{  l >{\centering}p{.2\textwidth} | >{\centering}p{.3\textwidth} | p{.3\textwidth} | }
 		\cline{3-4}
 			& & \multicolumn{2}{c|}{\raisebox{11pt}{\bfseries Tokens}} \\[-15pt]
 		\cline{3-4}
 			& & \raisebox{11pt}{Parametric $p$} & \raisebox{11pt}{\hspace{20pt} Counterparametric $q$} \\[-15pt]
 		\hline
 			\multicolumn{1}{ | c | }{\multirow[b]{2}{*}{\rotatebox{90}{\bfseries \centering  Context}}}
-			& Regular Query &
+			& Base Query &
 			$P_0 = \PPL \left( p_1, \dots, p_n \mid Q \right)$ &
 			$P_1 = \PPL \left( q_1, \dots, q_{m} \mid Q \right)$ \\
 		\cline{2-4}
-			\multicolumn{1}{ | c | }{} & Using counterparametric context &
+			\multicolumn{1}{ | c | }{} & Counterparametric Context &
 			$P_2 = \PPL \left( p_1, \dots, p_n \mid Q' \right)$ &
 			$P_3 = \PPL \left( q_1, \dots, q_{m} \mid Q' \right)$ \\
 		\hline
@@ -256,10 +255,15 @@ For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterpara
 Since the parametric answer is by definition the response of the model to the regular query, $P_0 \leq P_1$.
 In fact, the perplexity of the parametric value is lower than the perplexity of any other answer on query $Q$.
 
-The question in \cref{method22} is equivalent to asking whether $P_2 \lesseqqgtr P_3$, or whether there is a different sequence of tokens that has any lower perplexity of these two.
+\Cref{example_perplexity} contains an example of the calculation of the perplexity values for a particular query.
 
 \subsubsection{Predicting whether an answer came from memory or from context}
 
-One question remains: if the response of the query with counterparametric context $Q'$ is $x_1, \dots, x_n$, how can we predict whether this answer is came from the model's memory $p$, from the given context $q$, or something else?
+One question remains: if the response of the query with counterparametric context $Q'$ is a certain answer $x_1, \dots, x_n$, how can we predict whether this answer is came from the model's memory $p$ or from the given context $q$ without requiring an extra query?
 
-We propose investigating the value of the perplexity $\PPL \left( x_1, \dots, x_n \mid Q' \right)$ and comparing it to the distribution of perplexities on parametric and contextual answers. TODO: Maybe include a KDE or a K-S test here.
+We propose investigating the value of the perplexity $\PPL \left( x_1, \dots, x_n \mid Q' \right)$ and comparing it to the distribution of perplexities on the answers with added parametric context $P_2$ and $P_3$.
+For simplicity reasons, we are obviating the case when the preferred answer is neither of these; instead, we focus on whether the parametric or counterparametric answer are more likely.\footnotemark{}
+
+\footnotetext{TODO: Maybe include a KDE or a K-S test here.}
+
+\input{example_perplexity}
