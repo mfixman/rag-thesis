@@ -57,9 +57,6 @@ def main(args):
     )
     logging.getLogger().addFilter(LogTimeFilter())
 
-    if not args.rand:
-        random.seed(0)
-
     if args.offline:
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
     else:
@@ -77,6 +74,9 @@ def main(args):
     logging.info(f'About to answer {len(questions) * len(args.models) * 2} questions in total.')
     answers = {}
     for model in args.models:
+        if not args.rand:
+            random.seed(0)
+
         qa = QuestionAnswerer(model, device = args.device, max_length = 20, max_batch_size = args.max_batch_size)
         model_answers = qa.answerQueries(questions)
         del qa
@@ -85,7 +85,7 @@ def main(args):
             empty = lambda s: sum([x == '' for x in model_answers[s]])
             count = lambda s: sum([x == s for x in model_answers['comparison']])
             logging.info(f"{model}:\t{empty('parametric')} empty parametrics, {empty('counterfactual')} empty counterfactuals, {empty('contextual')} empty contextuals")
-            logging.info(f"\t{count('Parametric')} parametrics, {count('Counterfactual')} counterfactuals, {count('Other')} others")
+            logging.info(f"\t{count('Parametric')} parametrics, {count('Contextual')} contextual, {count('Other')} others")
 
             model_filename = os.path.join(args.output_dir, model + '.csv')
             with open(model_filename, 'w') as out:
