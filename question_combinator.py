@@ -91,26 +91,6 @@ def main(args):
             with open(model_filename, 'w') as out:
                 printParametricCSV(out, questions, model_answers)
 
-            empties = {f'{x}_empty': empty(x) for x in ['parametric', 'counterfactual', 'contextual']}
-            counts = {x: count(x) for x in ['Parametric', 'Counterfactual', 'Other']}
-
-            # count_bar = wandb.plot.bar(
-            #     wandb.Table(
-            #         data = [model, k, v],
-            #         columns = ['model_name', 'metric', 'value'],
-            #     ), 
-            #     'model_name',
-            #     'value',
-            #     stack = 'metric',
-            # )
-
-            base = dict(
-                model = model,
-                # count_bar = count_bar,
-            )
-            wandb.log(base | empties | counts)
-            wandb.save(model_filename)
-
         elif args.per_model:
             printParametricCSV(sys.stdout, questions, model_answers)
         else:

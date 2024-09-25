@@ -3,6 +3,7 @@ warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 import itertools
 import logging
+import math
 import torch
 import typing
 
@@ -104,13 +105,14 @@ class QuestionAnswerer:
     @torch.no_grad()
     def batch_probability(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
         entropies = self.llm.logits(query, answer).log_softmax(dim = 2)
+        entropies /= math.log(2)
         probs = torch.where(
             answer.input_ids == self.llm.tokenizer.pad_token_id,
             torch.nan,
             entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
         )
 
-        return torch.exp(-torch.nanmean(probs, dim = 1))
+        return torch.pow(2, -torch.nanmean(probs, dim = 1))
 
     # (n, w) -> [n]
     def decode(self, tokens: LongTensor) -> list[str]:
@@ -166,6 +168,12 @@ class QuestionAnswerer:
             'Contextual' if self.streq(a, c) else
             'Other'
             for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
+        ]
+
+        output['preference'] = [
+            'Parametric' if pp > cp else
+            'Contextual'
+            for pp, cp in zip(output['ctx_proba'], output['ctx_cf_proba'])
         ]
 
         return output
