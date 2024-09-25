@@ -117,9 +117,9 @@ To ensure that the results are simple to interpret and minimise the effect of ra
 
 We compare the parametric answer to the previous values to come to one of three cases: either this answer is identical to the \textbf{Parametric} answer and the model inferred it from its memor, to the \textbf{Contextual} answer and the model inferred it from the context, or the answer is different to these two and the model inferred it from some \textbf{Other} place.
 
-This approach is detailed in \cref{action_diagram}; \cref{counterparametric_table} contains an example of the shuffling done for this experiment.
+This approach is detailed in \cref{action_diagram}; \cref{counterparametric_table} contains an example of the shuffling done for this experiment while \cref{category_example} contains an example of each of the three categories.
 
-\begin{table}[p]
+\begin{table}[htbp]
 	\newcommand{\vwidth}[1]{\begin{minipage}[t][][t]{38ex}\ttfamily #1\end{minipage}}
 	\newcommand{\rep}[1]{{\setlength{\fboxsep}{0pt}\fcolorbox{Gray}{Gray!80}{\textit{#1}}}}
 
@@ -144,6 +144,30 @@ This approach is detailed in \cref{action_diagram}; \cref{counterparametric_tabl
 	\label{counterparametric_table}
 \end{table}
 
+\begin{table}[htbp]
+	\centering
+	\scriptsize
+
+	\begin{tabularx}{\textwidth}{>{\ttfamily}X >{\ttfamily}l c}
+		\toprule
+			\bfseries \textrm Query & \bfseries \textrm Answer & \bfseries Category \\
+		\midrule
+			\parbox{235pt}{Context: [the nearest major body of water to \textcolor{Dandelion}{Windhoek} is the \textcolor{RoyalPurple}{Rio de la Plata}] \\ Q: What is the nearest major body of water to \textcolor{Dandelion}{Windhoek}? \\ A: The nearest major body of water to \textcolor{Dandelion}{Windhoek} is} &
+			\textcolor{Dandelion}{the Atlantic Ocean} & 
+			\bfseries \textcolor{ForestGreen}{Parametric} \\[8ex]
+			%
+			\parbox{235pt}{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} &
+			\textcolor{Apricot}{965~AD} &
+			\bfseries \textcolor{Maroon}{Contextual} \\[8ex]
+			%
+			\parbox{235pt}{Context: [\textcolor{Purple}{Rome} is in \textcolor{Salmon}{Georgia}] \\ Q: What country is \textcolor{Purple}{Rome} in? \\ A: \textcolor{Purple}{Rome} is in} &
+			\textcolor{BlueViolet}{the United States} &
+			\bfseries \textcolor{MidnightBlue}{Other} \\[4ex]
+		\bottomrule
+	\end{tabularx}
+	\caption{Example for results with \textbf{Parametric}, \textbf{Contextual}, and \textbf{Other} values. Note that, in the third query, the model is interpreting the question as referring to Rome in the US State of Georgia, rather than the country of Georgia.}
+	\label{category_example}
+\end{table}
 
 \subsection{Can we use the perplexity score of an answer to predict whether it came from inherent or contextual knowledge?}
 \label{method_perplexity}
