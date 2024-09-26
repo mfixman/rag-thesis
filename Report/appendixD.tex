@@ -9,7 +9,7 @@ The latest version of the source code, including the input data generated in \cr
 	basicstyle = \ttfamily\scriptsize,
 	numbers = left,
 	numberstyle = \scriptsize,
-	numbesep = 5pt,
+	numbersep = 5pt,
 	backgroundcolor = \color{Gray!10},
 	inputencoding = \lstencoding,
 	breaklines = true,
@@ -22,11 +22,10 @@ The latest version of the source code, including the input data generated in \cr
     frame = single,
 	title = \lstname,
 	captionpos = b,
-	titlepos = t,
 }
 
 \lstinputlisting[caption = \texttt{knowledge\_grounder.py} is the main entry point and contains mostly argument parsing and output printing.]{../knowledge_grounder.py}
-\lstinputlisting[caption = \texttt{QuestionAnswerer.py} contains the \texttt{QuestionAnswerer} class, which deals with the logic of answering parametric and counterfactual questions from a model]{../QuestionAnswerer.py}
-\lstinputlisting[caption = \texttt{Models.py} contains the list of models, and includes code that differentiates them.]{../Models.py}
+\lstinputlisting[caption = \texttt{QuestionAnswerer.py} contains the \texttt{QuestionAnswerer} class which deals with the logic of answering parametric and counterfactual questions from a model]{../QuestionAnswerer.py}
+\lstinputlisting[caption = \texttt{Models.py} contains the list of models and includes code that differentiates them.]{../Models.py}
 \lstinputlisting[caption = \texttt{Utils.py} contains various useful functions]{../Utils.py}
 \lstinputlisting[caption = \texttt{test\_QuestionAnswerer.py} is used to test some of the complicated bits of logic in QuestionAnswerer.]{../test_QuestionAnswerer.py}
