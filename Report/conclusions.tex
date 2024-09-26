@@ -2,6 +2,39 @@
 
 \subsection{Future Work}
 
+\subsubsection{Better Categorisation of the Answers}
+
+To test whether two answers are equal and to know whether an answer came from parametric or contextual knowledge, the code in this thesis checks for string equality among after removing a few stop simple words such as `the'.
+
+This solution might not be enough, and some answers classified as \textbf{Other} should have been classifier as something else.
+\Cref{bad_others} provides some examples of answers where this is the case.
+
+\begin{table}[h]
+	\centering
+	\scriptsize
+	\begin{tabular}{>{\ttfamily}l@{\hspace{20pt}}>{\ttfamily}c@{\hspace{1pt}}>{\ttfamily}c@{\hspace{1pt}}c@{\hspace{1pt}}c}
+		\toprule
+			\bfseries \rmfamily Query & \bfseries \rmfamily Parametric Answer & \bfseries \rmfamily Query Answer & \bfseries Comparison & \bfseries Expected \\
+		\midrule
+			\parbox{100pt}{[Context: The primary leader associated with The Construction of Hadrian's Wall was Napoleon Bonaparte] \\ Q: Who was the primary leader associated with The Construction of Hadrian's Wall? \\ A: The primary leader associated with The Construction of Hadrian's Wall was} &
+			Emperor Hadrian &
+			\parbox[c][][c]{75pt}{\centering Hadrian, \\ the Roman Emperor} &
+			\bfseries \textcolor{MidnightBlue}{Other} &
+			\bfseries \textcolor{ForestGreen}{Parametric} \vspace{4pt} \\
+		\midrule
+			\parbox{100pt}{[Context: Che Guevara was born in Kensington, London, England] \\ Q: In what city was Che Guevara born? \\ A: Che Guevara was born in} &
+			Rosario, Argentina &
+			London &
+			\bfseries \textcolor{MidnightBlue}{Other} &
+			\bfseries \textcolor{Maroon}{Contextual} \\
+		\bottomrule
+	\end{tabular}
+	\caption{Example of incorrectly-categorised answers. These were categorised as "Other", since their answer strings are different from both parametric and contextual answers. However, a closer look reveals that this is just either answer with a slight formatting difference.}
+	\label{bad_others}
+\end{table}
+
+A more complete solution might include using another LLM to compare whether two answers are truly equal.
+
 \subsubsection{Knowledge Grounding in Retrieval-Augmented LMs}
 
 This thesis was originally based on a preprint, ``Knowledge Grounding in Retrieval-Augmented LMs: An Empirical Study'' \citep{knowledge_grounding_retrieval_augmented}, and contains work towards understanding how large language models retrieve data which can ultimately help prevent hallucinations.
