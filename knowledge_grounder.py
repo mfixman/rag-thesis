@@ -2,140 +2,107 @@ import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
 from argparse import ArgumentParser, BooleanOptionalAction, RawDescriptionHelpFormatter
-from pathlib import Path
-import itertools
+import csv
 import logging
-import sys
+import random
+import ipdb
+import itertools
+import os
+
+import wandb
 
 from Models import *
 from QuestionAnswerer import *
 from Utils import *
-from RagEnhancer import *
 
 def parse_args():
-    default_prompt = 'Answer the following question using as few words as possible. Context: [{context}]; Question: [{question}]; Answer:'
-
     parser = ArgumentParser(
-        description = 'Ask me a question',
-        formatter_class = RawDescriptionHelpFormatter,
-        epilog = f'''
-Use the --list-models option for the full list of supported models.
-
-Default prompt:
-```
-{default_prompt}
-```
-
-Example usage: 
-
-# Test llama and falcon2 on the questions in
-# datas/questions.txt using both no context and
-# the counterfactuals fount in datas/counterfactuals.txt.
-python models.py                               \\
-    --device cuda                              \\
-    --models llama falcon2                     \\
-    --empty-context                            \\
-    --rag-const-file datas/counterfactuals.txt \\
-    datas/questions.txt
-'''
+        description = 'Combines questions and data and optionally provides parametric data'
     )
-    parser.add_argument(
-        '--models',
-        type = str.lower,
-        choices = Model_dict.keys(),
-        default = ['llama'],
-        nargs = '+',
-        metavar = 'model',
-        help = 'Which model or models to use',
-    )
-    parser.add_argument('--list-models', action = 'store_true', help = 'List all available models')
 
-    parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cuda')
-    parser.add_argument('-l', '--max-length', type = int, default = 100, help = 'Max length of answer')
+    parser.add_argument('--no-except', action = 'store_true', help = 'Do not go to IPDB console on exception.')
+    parser.add_argument('--lim-questions', type = int, help = 'Question limit')
+    parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cuda', help = 'Inference device')
+    parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
+    parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
+    parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly')
+    parser.add_argument('--max-batch-size', type = int, default = 120, help = 'Maximimum size of batches. All batches contain exactly the same question.')
 
-    parser.add_argument('--custom-prompt', metavar = 'PROMPT', default = default_prompt, help = 'Use a custom prompt for the questions instead of the default one. {context} and {question} fill to the context and question, respectively')
+    parser.add_argument('--per-model', action = 'store_true', help = 'Write one CSV per model in stdout.')
+    parser.add_argument('--output-dir', help = 'Return one CSV per model, and save them to this directory.')
 
-    parser.add_argument('--rag', action = 'store_true', default = False, help = 'Whether to enhance the answer with RAG')
-    parser.add_argument('--rag-dummy', action = 'store_true', default = False, help = 'Use dummy dataset for RAG')
-
-    parser.add_argument('--raw-answers', action = 'store_true', help = 'Write the answers from these files')
-    parser.add_argument('--empty-context', '--empty', action = 'store_true', default = True, help = 'Whether to use an empty context as base')
-    parser.add_argument('--linear-context', '--linear', action = 'store_true', help = 'List of files with equal amount of lines as question file.')
-    parser.add_argument('--combined-context', '--combined', action = 'store_true', help = 'List of files whose lines will get intermixed.')
-    parser.add_argument('--full-context', '--full', action = 'store_true', help = 'Files with data to inject to RAG extractor.')
-
-    parser.add_argument('--input-files', nargs = '+', default = [], help = 'Alternative way to add files from all --rag-X-files contexts.')
-    parser.add_argument('--full-context-shuffles', metavar = 'N', type = int, help = 'If --full-context is specified, shuffle the input N times and return a summary of the results')
-
-    parser.add_argument('--logits', action = BooleanOptionalAction, default = False, help = 'Whether to also output logits')
-
-    parser.add_argument('question_file', type = open, nargs = '?', help = 'File with questions')
+    parser.add_argument('base_questions_file', type = open, help = 'File with questions')
+    parser.add_argument('things_file', type = open, help = 'File with things to combine')
 
     args = parser.parse_args()
-    if args.list_models:
-        for k, v in [('     \033[1mModel Name', 'Huggingface Model\033[0m')] + list(Model_dict.items()):
-            print(f'{k:>15s} | {v:<60s}')
 
-        sys.exit(0)
+    args.base_questions = [x.strip() for x in args.base_questions_file if any(not y.isspace() for y in x)]
+    args.things = [{k: v for k, v in p.items()} for p in csv.DictReader(args.things_file)]
 
-    if args.question_file is None:
-        sys.exit('question_file must be specified!')
+    del args.base_questions_file
+    del args.things_file
 
-    if args.full_context is None and args.full_context_shuffles is not None:
-        sys.exit('--full-context-shuffles requires --full-context')
-
-    if args.full_context_shuffles is not None:
-        raise NotImplemented('--full-context-shuffles not implemented yet')
-
-    args.context = {Path(file).stem: [x.strip() for x in open(file)] for file in args.input_files}
-    args.questions = [q.strip() for q in args.question_file if not q.isspace()]
-    del args.question_file
+    if args.per_model and args.output_dir:
+        raise ValueError('Only one of --per-model and --output-dir can be specified.')
 
     return args
 
-def main():
+def main(args):
     logging.getLogger('transformers').setLevel(logging.ERROR)
     logging.basicConfig(
         format='[%(asctime)s] %(message)s',
         level=logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S'
     )
+    logging.getLogger().addFilter(LogTimeFilter())
 
-    logging.info('Starting')
+    if args.offline:
+        os.environ['TRANSFORMERS_OFFLINE'] = '1'
+    else:
+        wandb.init(project = 'question-combinator', config = args)
 
-    args = parse_args()
+    logging.info('Getting questions')
+    questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
 
-    rags = []
-    if args.empty_context:
-        rags.append(EmptyRAG())
-    if args.rag:
-        rags.append(RAG(dummy = False))
-    if args.rag_dummy:
-        rags.append(RAG(dummy = True))
-    if args.full_context:
-        rags.append(FullRAG(args.context))
-    if args.linear_context:
-        for k, v in args.context.items():
-            rags.append(LinearRAG({k: v}, args.questions))
-    if args.combined_context:
-        for c in itertools.permutations(args.context.items()):
-            rags.append(LinearRAG(dict(c), args.questions))
+    if args.output_dir:
+        try:
+            os.mkdir(args.output_dir)
+        except FileExistsError:
+            pass
 
-    prevs = []
-    if args.raw_answers:
-        for k, v in args.context.items():
-            prevs.append(RawAnswerRAG(k, v, args.questions))
-
-    questions = prepareQuestions(rags = rags, prompt = args.custom_prompt, questions = args.questions)
-
+    logging.info(f'About to answer {len(questions) * len(args.models) * 2} questions in total.')
     answers = {}
     for model in args.models:
-        answerer = QuestionAnswerer(Model.fromName(model, device = args.device), device = args.device, max_length = args.max_length)
-        answers |= {(q, 'model-' + r): v for (q, r), v in answerer.query_dict(questions).items()}
+        if not args.rand:
+            random.seed(0)
 
-    printCSV(prevs, answers, include_logits = args.logits)
+        qa = QuestionAnswerer(model, device = args.device, max_length = 20, max_batch_size = args.max_batch_size)
+        model_answers = qa.answerQueries(questions)
+        del qa
 
-    logging.info('Done!')
+        if args.output_dir:
+            empty = lambda s: sum([x == '' for x in model_answers[s]])
+            count = lambda s: sum([x == s for x in model_answers['comparison']])
+            logging.info(f"{model}:\t{empty('parametric')} empty parametrics, {empty('counterfactual')} empty counterfactuals, {empty('contextual')} empty contextuals")
+            logging.info(f"\t{count('Parametric')} parametrics, {count('Contextual')} contextual, {count('Other')} others")
+
+            model_filename = os.path.join(args.output_dir, model + '.csv')
+            with open(model_filename, 'w') as out:
+                printParametricCSV(out, questions, model_answers)
+
+        elif args.per_model:
+            printParametricCSV(sys.stdout, questions, model_answers)
+        else:
+            answers |= model_answers
+
+    if answers:
+        logging.info('Writing CSV')
+        printParametricCSV(sys.stdout, questions, answers)
 
 if __name__ == '__main__':
-    main()
+    args = parse_args()
+    if args.no_except:
+        main(args)
+    else:
+        with ipdb.launch_ipdb_on_exception():
+            main(args)
