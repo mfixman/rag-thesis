@@ -114,7 +114,7 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\label{llama_cats_table}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[p]
 	\centering
 	\includegraphics[width=\textwidth]{llama_allcats.png}
 	\caption{Results of running decoder-only models on the queried data, grouped by category. This plots the information shown in \cref{llama_cats_table}.}
@@ -144,7 +144,7 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\label{flan_cats_table}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[p]
 	\centering
 	\includegraphics[width=\textwidth]{flan_allcats.png}
 	\caption{Results of running Seq2Seq models on the queried data, grouped by category. This plots the information shown in \cref{flan_cats_table}.}
@@ -161,16 +161,17 @@ These are accumulated in three distributions, depending on answer type, which ar
 \begin{table}[h]
 	\centering
 	\footnotesize
-	\begin{tabular}{>{\bfseries}l | r r r | r r r}
+	\begin{tabular}{>{\bfseries}l | r r | r r}
 		\toprule
-			& \multicolumn{3}{|c}{\ttfamily llama-3.1-8B} & \multicolumn{3}{|c}{\ttfamily llama-3.1-70B} \\
-			& \bfseries Parametric & \bfseries Contextual & \bfseries Other & \bfseries Parametric & \bfseries Contextual & \bfseries Other \\
+			& \multicolumn{2}{|c}{\ttfamily llama-3.1-8B} & \multicolumn{2}{|c}{\ttfamily llama-3.1-70B} \\
+			& \bfseries Parametric & \bfseries Contextual & \bfseries Parametric & \bfseries Contextual \\
 		\midrule
-			mean & 1.34 & 1.16 & 1.63 & 1.38 & 1.18 & 1.45 \\
-			std  & 0.35 & 0.23 & 0.77 & 0.38 & 0.27 & 0.53 \\
-			25\% & 1.13 & 1.04 & 1.24 & 1.14 & 1.05 & 1.17 \\
-			50\% & 1.23 & 1.09 & 1.39 & 1.26 & 1.10 & 1.29 \\
-			75\% & 1.43 & 1.18 & 1.68 & 1.50 & 1.20 & 1.46 \\
+			count &  313 & 4447 &  383 & 4377  \\
+			mean  & 1.67 & 1.20 & 1.56 & 1.22  \\
+			std   & 0.79 & 0.32 & 0.46 & 0.31  \\
+			25\%  & 1.28 & 1.05 & 1.28 & 1.06  \\
+			50\%  & 1.43 & 1.10 & 1.43 & 1.12  \\
+			75\%  & 1.78 & 1.23 & 1.68 & 1.25  \\
 		\bottomrule
 	\end{tabular}
 	\caption{Distribution of perplexity values for Decoder-only models}
@@ -180,16 +181,17 @@ These are accumulated in three distributions, depending on answer type, which ar
 \begin{table}[h]
 	\centering
 	\footnotesize
-	\begin{tabular}{>{\bfseries}l | r r r | r r r}
+	\begin{tabular}{>{\bfseries}l | r r | r r}
 		\toprule
-			& \multicolumn{3}{|c}{\ttfamily flan-T5-XL} & \multicolumn{3}{|c}{\ttfamily flan-T5-XXL} \\
-			& \bfseries Parametric & \bfseries Contextual & \bfseries Other & \bfseries Parametric & \bfseries Contextual & \bfseries Other \\
+			& \multicolumn{2}{|c}{\ttfamily flan-T5-XL} & \multicolumn{2}{|c}{\ttfamily flan-T5-XXL} \\
+			& \bfseries Parametric & \bfseries Contextual & \bfseries Parametric & \bfseries Contextual \\
 		\midrule
-			mean & 2.41 & 1.90 &  6.44 & 10.31 & 1.93 & 3.48 \\
-			std  & 1.06 & 1.53 & 12.44 & 16.99 & 5.61 & 6.50 \\
-			25\% & 1.50 & 1.21 &  2.55 &  1.10 & 1.02 & 1.22 \\
-			50\% & 2.29 & 1.41 &  3.39 &  1.52 & 1.09 & 1.93 \\
-			75\% & 3.15 & 1.85 &  6.97 &  7.21 & 1.28 & 3.30 \\
+			count &  651 & 4109 &   507 & 4253 \\
+			mean  & 6.38 & 1.56 & 11.75 & 1.27 \\
+			std   & 9.07 & 0.56 & 18.47 & 0.75 \\
+			25\%  & 3.21 & 1.19 &  2.41 & 1.02 \\
+			50\%  & 4.71 & 1.39 &  3.89 & 1.09 \\
+			75\%  & 7.14 & 1.71 &  7.70 & 1.24 \\
 		\bottomrule
 	\end{tabular}
 	\caption{Distribution of perplexity values for Seq2Seq models}
@@ -208,4 +210,14 @@ These are accumulated in three distributions, depending on answer type, which ar
 	}
 	\caption{Perplexity distribution according to model type and size. These represent the same distributions as \cref{perplexity_llama_table,perplexity_flan_table}.}
 	\label{perplexity_results}
+\end{figure}
+
+\begin{figure}[p]
+	\includegraphics[width=\textwidth]{llama_catboxes.png}
+	\caption{Box plots representing the distribution of the perplexities when running both Llama models, grouped by category.}
+\end{figure}
+
+\begin{figure}[p]
+	\includegraphics[width=\textwidth]{flan_catboxes.png}
+	\caption{Box plots representing the distribution of the perplexities when running both Flan-T5 models, grouped by category.}
 \end{figure}
