@@ -47,7 +47,7 @@ class Question:
 
     # Return a query from the format of this Question.
     def format(self, *, prompt: Optional[str] = None, context: Optional[str] = None, use_question: bool = True, use_later: bool = True) -> str:
-        [question, later] = self.question.format_map({self.category: self.obj}).split('?', 1)
+        [question, later] = self.base_question.format_map({self.category: self.obj}).split('?', 1)
         question += '?'
 
         formatted = ''
@@ -68,24 +68,21 @@ class Question:
 # Returns the set product of a list of base question with the respective set of objects.
 def combine_questions(base_questions: list[str], objects: list[dict[str, str]], lim_questions: Optional[int] = None) -> list[Question]:
     questions = []
-    cat_positions = defaultdict(lambda: set())
     for bq in base_questions:
         for obj in objects:
-            obj = Question.orNothing(obj = obj['obj'], category = obj['category'], base_question = bq)
+            obj = Question.orNothing(obj = obj['object'], category = obj['category'], base_question = bq)
             if obj is None:
                 continue
 
             questions.append(obj)
-            cat_positions[obj.base_question].add(len(questions) - 1)
 
     if lim_questions is None:
-        return questions, cat_positions
+        return questions
 
     keep_nums = {x: e for e, x in enumerate(random.sample(range(len(questions)), lim_questions))}
     short_questions = [questions[x] for x in keep_nums.keys()]
-    short_cat_positions = {k: {keep_nums[t] for t in v & set(keep_nums)} for k, v in cat_positions.items() if not v.isdisjoint(keep_nums)}
 
-    return short_questions, short_cat_positions
+    return short_questions
 
 # Given a list of questions and a list of answers, produce a list of integers that would provide the
 # index to a randomly sampled counterfactual.

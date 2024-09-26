@@ -101,7 +101,7 @@ def main(args):
 
 if __name__ == '__main__':
     args = parse_args()
-    if args.debug:
+    if not args.debug:
         main(args)
     else:
         with ipdb.launch_ipdb_on_exception():

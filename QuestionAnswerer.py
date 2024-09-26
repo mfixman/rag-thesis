@@ -8,7 +8,7 @@ import typing
 
 from Models import Model
 from typing import Optional, Union, Any
-from Utils import Question, find_counerfactual_flips, chunk_questions
+from Utils import Question, sample_counterfactual_flips, chunk_questions
 
 from collections import defaultdict
 from transformers import BatchEncoding
