@@ -12,8 +12,7 @@ from typing import Optional, Any
 
 from torch import FloatTensor, LongTensor, BoolTensor
 
-import ipdb
-
+# Custom filter that does not print a log if it printed another one at most `rate_limit` seconds ago.
 class LogTimeFilter(logging.Filter):
     def __init__(self):
         super().__init__()
@@ -30,21 +29,25 @@ class LogTimeFilter(logging.Filter):
 
         return False
 
+# A question contains combines a base_question and an object into something that can be queried.
 @dataclass
-class Object:
-    thing: str
+class Question:
     category: str
-    question: str
+    obj: str
+    base_question: str
 
+    # Static constructor: return a question combining an object and an object if the category
+    # matches; return None otherwise.
     @staticmethod
-    def orNothing(thing: str, category: str, question: str) -> Optional['Object']:
-        if not f'{{{category}}}' in question:
+    def orNothing(obj: str, category: str, base_question: str) -> Optional['Question']:
+        if not f'{{{category}}}' in base_question:
             return None
 
-        return Object(thing = thing, category = category, question = question)
+        return Question(obj = obj, category = category, base_question = base_question)
 
+    # Return a query from the format of this Question.
     def format(self, *, prompt: Optional[str] = None, context: Optional[str] = None, use_question: bool = True, use_later: bool = True) -> str:
-        [question, later] = self.question.format_map({self.category: self.thing}).split('?', 1)
+        [question, later] = self.question.format_map({self.category: self.obj}).split('?', 1)
         question += '?'
 
         formatted = ''
@@ -62,17 +65,18 @@ class Object:
 
         return formatted.strip()
 
-def combine_questions(base_questions: list[str], things: list[dict[str, str]], lim_questions: Optional[int] = None) -> tuple[list[Object], dict[str, set[int]]]:
+# Returns the set product of a list of base question with the respective set of objects.
+def combine_questions(base_questions: list[str], objects: list[dict[str, str]], lim_questions: Optional[int] = None) -> list[Question]:
     questions = []
     cat_positions = defaultdict(lambda: set())
     for bq in base_questions:
-        for thing in things:
-            obj = Object.orNothing(thing = thing['thing'], category = thing['category'], question = bq)
+        for obj in objects:
+            obj = Question.orNothing(obj = obj['obj'], category = obj['category'], base_question = bq)
             if obj is None:
                 continue
 
             questions.append(obj)
-            cat_positions[obj.question].add(len(questions) - 1)
+            cat_positions[obj.base_question].add(len(questions) - 1)
 
     if lim_questions is None:
         return questions, cat_positions
@@ -83,16 +87,18 @@ def combine_questions(base_questions: list[str], things: list[dict[str, str]], l
 
     return short_questions, short_cat_positions
 
-def findFlips2(questions: list[Object], answers: list[str]) -> list[int]:
+# Given a list of questions and a list of answers, produce a list of integers that would provide the
+# index to a randomly sampled counterfactual.
+def sample_counterfactual_flips(questions: list[Question], answers: list[str]) -> list[int]:
     flips = [-1 for _ in questions]
 
-    for q, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].question):
+    for q, es_iter in itertools.groupby(range(len(questions)), key = lambda e: questions[e].base_question):
         es = set(es_iter)
 
         for e in es:
             rest = [x for x in es if answers[x] != answers[e]]
             if not rest:
-                logging.warn(f'Unitary question "{q}". Identity flip!')
+                logging.error(f'Unitary question "{q}". This means that all answers in this chunk are identical, and the results will be incorrect.')
                 flips[e] = e
                 continue
 
@@ -102,10 +108,11 @@ def findFlips2(questions: list[Object], answers: list[str]) -> list[int]:
     assert all(x != -1 for x in flips)
     return flips
 
-def chunkByQuestion(questions: list[Object], max_batch_size: int) -> list[list[Object]]:
-    result: list[list[Object]] = []
+# Chunk a list of question into batches of size or at most `max_batch_size`.
+def chunk_questions(questions: list[Question], max_batch_size: int) -> list[list[Question]]:
+    result: list[list[Question]] = []
 
-    for q, chunk_iter in itertools.groupby(questions, key = lambda x: x.question):
+    for q, chunk_iter in itertools.groupby(questions, key = lambda x: x.base_question):
         chunk = list(chunk_iter)
         if not result or len(chunk) + len(result[-1]) > max_batch_size:
             result.append([])
@@ -114,7 +121,8 @@ def chunkByQuestion(questions: list[Object], max_batch_size: int) -> list[list[O
 
     return result
 
-def printParametricCSV(out: typing.TextIO, questions: list[Object], answer: dict[str, str]):
+# Prints a CSV file with the questions and resulting answers.
+def print_parametric_csv(out: typing.TextIO, questions: list[Question], answer: dict[str, str]):
     fieldnames = ['Num', 'Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())
 
     writer = csv.DictWriter(
@@ -127,7 +135,7 @@ def printParametricCSV(out: typing.TextIO, questions: list[Object], answer: dict
     writer.writeheader()
 
     for e, (question, *answers) in enumerate(itertools.zip_longest(questions, *answer.values())):
-        question = typing.cast(Object, question)
+        question = typing.cast(Question, question)
 
         param = dict(zip(answer.keys(), answers))
-        writer.writerow({'Num': str(e), 'Category': question.category, 'Base_Question': ''.join(question.question.partition('?')[0:2]), 'Thing': question.thing, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)
+        writer.writerow({'Num': str(e), 'Category': question.category, 'Base_Question': ''.join(question.base_question.partition('?')[0:2]), 'Thing': question.obj, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)

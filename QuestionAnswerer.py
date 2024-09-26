@@ -1,29 +1,27 @@
 import warnings
 warnings.simplefilter(action = 'ignore', category = FutureWarning)
 
-import itertools
 import logging
 import math
 import torch
 import typing
 
-from torch.nn.utils.rnn import pad_sequence
-from torch.nn.functional import pad
-
 from Models import Model
 from typing import Optional, Union, Any
-from Utils import Object, findFlips2, chunkByQuestion
+from Utils import Question, find_counerfactual_flips, chunk_questions
 
 from collections import defaultdict
 from transformers import BatchEncoding
-
-import ipdb
-import sys
 
 FloatTensor = torch.Tensor
 LongTensor = torch.Tensor
 BoolTensor = torch.Tensor
 
+# A QuestionAnswerer is the main class to answer queries with a given model.
+# Example Usage:
+#   qa = QuestionAnswerer('llama', device = 'cuda', max_length = 20, max_batch_size = 75)
+#   output = qa.answerQueries(Utils.combine_questions(base_questions, objects))
+# The list of models can be found in `Model_dict` in `Models.py`.
 class QuestionAnswerer:
     device: str
     max_length: int
@@ -47,6 +45,7 @@ class QuestionAnswerer:
         model = typing.cast(Model, model)
         self.llm = model
 
+        # Generated list of stop tokens: period, newline, and various different end tokens.
         stop_tokens = {'.', '\n'}
         self.stop_token_ids = torch.tensor([
             v
@@ -56,110 +55,32 @@ class QuestionAnswerer:
                 not stop_tokens.isdisjoint(self.llm.tokenizer.decode(v))
         ]).to(self.device)
 
-    # [n] -> (n, w)
-    def tokenise(self, phrases: list[str]) -> BatchEncoding:
-        return self.llm.tokenizer(
-            phrases,
-            return_tensors = 'pt',
-            return_attention_mask = True,
-            padding = True,
-        ).to(self.device)
-
-    # (n, w) -> (n, w)
-    def batch_encode(self, tokens: LongTensor) -> BatchEncoding:
-        attention_mask = tokens != self.llm.tokenizer.pad_token_id
-        return BatchEncoding(dict(
-            input_ids = tokens,
-            attention_mask = attention_mask,
-        ))
-
-    # (n, w) -> (n, w)
-    def generate(self, query: BatchEncoding) -> LongTensor:
-        generated = self.llm.model.generate(
-            input_ids = query.input_ids,
-            attention_mask = query.attention_mask,
-            max_new_tokens = self.max_length,
-            min_new_tokens = self.max_length,
-            tokenizer = self.llm.tokenizer,
-            do_sample = False,
-            temperature = None,
-            top_p = None,
-            return_dict_in_generate = True,
-            pad_token_id = self.llm.tokenizer.pad_token_id,
-            eos_token_id = self.llm.tokenizer.eos_token_id,
-            bos_token_id = self.llm.tokenizer.bos_token_id,
-        )
-
-        sequences = generated.sequences[:, -self.max_length:]
-        ignores = torch.cumsum(torch.isin(sequences, self.stop_token_ids), dim = 1) > 0
-        sequences[ignores] = self.llm.tokenizer.pad_token_id
-
-        return sequences
-
-    # (n, w0), (n, w1) -> (n)
-    def probability(self, query: BatchEncoding, answer: LongTensor) -> list[float]:
-        probs = self.batch_probability(query, self.batch_encode(answer))
-        return probs.cpu().tolist()
-
-    # (n, w0), (n, w1) -> (n)
-    @torch.no_grad()
-    def batch_probability(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
-        entropies = self.llm.logits(query, answer).log_softmax(dim = 2)
-        entropies /= math.log(2)
-        probs = torch.where(
-            answer.input_ids == self.llm.tokenizer.pad_token_id,
-            torch.nan,
-            entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
-        )
-
-        return torch.pow(2, -torch.nanmean(probs, dim = 1))
-
-    # (n, w) -> [n]
-    def decode(self, tokens: LongTensor) -> list[str]:
-        decoded = self.llm.tokenizer.batch_decode(
-            tokens,
-            skip_special_tokens = True,
-            clean_up_tokenization_spaces = True,
-        )
-        return [x.strip() for x in decoded]
-
-    @staticmethod
-    def streq(a: str, b: str) -> bool:
-        a = a.lower().replace('the', '').replace(',', '').strip()
-        b = b.lower().replace('the', '').replace(',', '').strip()
-        return a[:len(b)] == b[:len(a)]
-
-    def answerCounterfactuals(self, questions: list[Object], counterfactuals: list[str], parametric: LongTensor, counterfactual: LongTensor) -> dict[str, Any]:
-        output: dict[str, Any] = {}
-        ctx_tokens = self.tokenise([
-            q.format(prompt = self.llm.cf_prompt, context = context)
-            for q, context in zip(questions, counterfactuals)
-        ])
-
-        contextual = self.generate(ctx_tokens)
-
-        output['contextual'] = self.decode(contextual)
-        output['ctx_proba'] = self.probability(ctx_tokens, contextual)
-
-        output['ctx_param_proba'] = self.probability(ctx_tokens, parametric)
-        output['ctx_cf_proba'] = self.probability(ctx_tokens, counterfactual)
-
-        return output
-
-    def answerChunk(self, questions: list[Object], use_counterfactuals: bool = True) -> dict[str, Any]:
+    # Query data related to a list of questions, and return a dict with information about these runs.
+    # Output elements:
+    #  parametric: Parametric answer, as a string.
+    #  base_proba: Perplexity of parametric answer in base query.
+    #  counterfactual: Randomly selected counterfactual answer.
+    #  base_cf_proba: Perplexity of counterfacutal answer in base query.
+    #  contextual: Contextual answer, as a string.
+    #  ctx_proba: Perplexity of contextual answer.
+    #  ctx_param_proba: Perplexity of parametric answer when running contextual query.
+    #  ctx_cf_proba: Perplexity of counterfactual answer when running contextual query.
+    #  comparison: Comparison between parametric and contextual answer. Where does this answer come from?
+    #  preference: Comparison between perplexity of paramertic and counterfactual answer on contextual query. Which one is the least surprising?
+    def answerChunk(self, questions: list[Question]) -> dict[str, Any]:
         output: dict[str, Any] = {}
 
         base_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
         parametric = self.generate(base_tokens)
 
         output['parametric'] = self.decode(parametric)
-        output['base_proba'] = self.probability(base_tokens, parametric)
+        output['base_proba'] = self.perplexity(base_tokens, parametric)
 
-        flips = findFlips2(questions, output['parametric'])
+        flips = sample_counterfactual_flips(questions, output['parametric'])
         counterfactual = parametric[flips]
 
         output['counterfactual'] = self.decode(counterfactual)
-        output['base_cf_proba'] = self.probability(base_tokens, counterfactual)
+        output['base_cf_proba'] = self.perplexity(base_tokens, counterfactual)
 
         output |= self.answerCounterfactuals(questions, output['counterfactual'], parametric, counterfactual)
 
@@ -178,11 +99,41 @@ class QuestionAnswerer:
 
         return output
 
+
+    # Given a list of questions with assigned counterfactuals, run contextual queries and return
+    # a dictionary containing information about these runs.
+    # Parameter list:
+    #  questions: list of questions to ask.
+    #  counterfactuals: counterfactual answers, as string.
+    #  parametric: parametric answer, as set of tokens.
+    #    This will be used to calculate the perplexity of this answer with the counterfactual context.
+    #  counterfactual: counterfacutal answers, as a set of tokens.
+    #    This is necessary since the same string might have several encodings, but we need exactly the same one generated by the model
+    #    in the first place.
+    def answerCounterfactuals(self, questions: list[Question], counterfactuals: list[str], parametric: LongTensor, counterfactual: LongTensor) -> dict[str, Any]:
+        output: dict[str, Any] = {}
+        ctx_tokens = self.tokenise([
+            q.format(prompt = self.llm.cf_prompt, context = context)
+            for q, context in zip(questions, counterfactuals)
+        ])
+
+        contextual = self.generate(ctx_tokens)
+
+        output['contextual'] = self.decode(contextual)
+        output['ctx_proba'] = self.perplexity(ctx_tokens, contextual)
+
+        output['ctx_param_proba'] = self.perplexity(ctx_tokens, parametric)
+        output['ctx_cf_proba'] = self.perplexity(ctx_tokens, counterfactual)
+
+        return output
+
+    # Answer a list of Questions: run the queries, gather counterfactual values, run the queries
+    # with counterfactual context, and return a `dict` with information to print.
     @torch.no_grad()
-    def answerQueries(self, questions: list[Object]) -> dict[str, Any]:
+    def answerQueries(self, questions: list[Question]) -> dict[str, Any]:
         output: defaultdict[str, list[Any]] = defaultdict(lambda: [])
 
-        chunks = chunkByQuestion(questions, max_batch_size = self.max_batch_size)
+        chunks = chunk_questions(questions, max_batch_size = self.max_batch_size)
         logging.info(f'Answering {len(questions)} queries in {len(chunks)} chunks.')
 
         for e, chunk in enumerate(chunks, start = 1):
@@ -194,3 +145,87 @@ class QuestionAnswerer:
                 output[k] += v
 
         return dict(output)
+
+    # Tokenise a list of phrases.
+    # [n] -> (n, w)
+    def tokenise(self, phrases: list[str]) -> BatchEncoding:
+        return self.llm.tokenizer(
+            phrases,
+            return_tensors = 'pt',
+            return_attention_mask = True,
+            padding = True,
+        ).to(self.device)
+
+    # Generate an attention mask for a sequence of tokens.
+    # (n, w) -> (n, w)
+    def batch_encode(self, tokens: LongTensor) -> BatchEncoding:
+        attention_mask = tokens != self.llm.tokenizer.pad_token_id
+        return BatchEncoding(dict(
+            input_ids = tokens,
+            attention_mask = attention_mask,
+        ))
+
+    # Use Greedy decoding to generate an answer to a certain query.
+    # (n, w) -> (n, w)
+    def generate(self, query: BatchEncoding) -> LongTensor:
+        generated = self.llm.model.generate(
+            input_ids = query.input_ids,
+            attention_mask = query.attention_mask,
+            max_new_tokens = self.max_length,
+            min_new_tokens = self.max_length,
+            tokenizer = self.llm.tokenizer,
+            do_sample = False,
+            temperature = None,
+            top_p = None,
+            return_dict_in_generate = True,
+            pad_token_id = self.llm.tokenizer.pad_token_id,
+            eos_token_id = self.llm.tokenizer.eos_token_id,
+            bos_token_id = self.llm.tokenizer.bos_token_id,
+        )
+
+        # Ensure that all the sequences only contain <PAD> after their first stop token.
+        sequences = generated.sequences[:, -self.max_length:]
+        ignores = torch.cumsum(torch.isin(sequences, self.stop_token_ids), dim = 1) > 0
+        sequences[ignores] = self.llm.tokenizer.pad_token_id
+
+        return sequences
+
+    # Return the perplexity of a certain sequence of tokens being the answer to a
+    # certain query, as a list of floats in CPU.
+    # (n, w0), (n, w1) -> (n)
+    def perplexity(self, query: BatchEncoding, answer: LongTensor) -> list[float]:
+        probs = self.batch_perplexity(query, self.batch_encode(answer))
+        return probs.cpu().tolist()
+
+    # Return the perplexity of a certain sequence of tokens being the answer to a
+    # certain query.
+    # (n, w0), (n, w1) -> (n)
+    @torch.no_grad()
+    def batch_perplexity(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
+        entropies = self.llm.logits(query, answer).log_softmax(dim = 2)
+        entropies /= math.log(2)
+        probs = torch.where(
+            answer.input_ids == self.llm.tokenizer.pad_token_id,
+            torch.nan,
+            entropies.gather(index = answer.input_ids.unsqueeze(2), dim = 2).squeeze(2),
+        )
+
+        return torch.pow(2, -torch.nanmean(probs, dim = 1))
+
+    # Decode a sequence of tokens into a list of strings.
+    # (n, w) -> [n]
+    def decode(self, tokens: LongTensor) -> list[str]:
+        decoded = self.llm.tokenizer.batch_decode(
+            tokens,
+            skip_special_tokens = True,
+            clean_up_tokenization_spaces = True,
+        )
+        return [x.strip() for x in decoded]
+
+    # Compare strings for equality to later check whether an answer is parametric or contextual.
+    # For simplicity, we remove stop words and gather only the subset of words.
+    @staticmethod
+    def streq(a: str, b: str) -> bool:
+        a = a.lower().replace('the', '').replace(',', '').strip()
+        b = b.lower().replace('the', '').replace(',', '').strip()
+        return a[:len(b)] == b[:len(a)]

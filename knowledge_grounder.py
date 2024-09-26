@@ -20,7 +20,7 @@ def parse_args():
         description = 'Combines questions and data and optionally provides parametric data'
     )
 
-    parser.add_argument('--no-except', action = 'store_true', help = 'Do not go to IPDB console on exception.')
+    parser.add_argument('--debug', action = 'store_true', help = 'Go to IPDB console on exception.')
     parser.add_argument('--lim-questions', type = int, help = 'Question limit')
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cuda', help = 'Inference device')
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
@@ -59,10 +59,10 @@ def main(args):
     if args.offline:
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
     else:
-        wandb.init(project = 'question-combinator', config = args)
+        wandb.init(project = 'knowledge-grounder', config = args)
 
     logging.info('Getting questions')
-    questions, cat_positions = combine_questions(args.base_questions, args.things, args.lim_questions)
+    questions = combine_questions(args.base_questions, args.things, args.lim_questions)
 
     if args.output_dir:
         try:
@@ -88,20 +88,20 @@ def main(args):
 
             model_filename = os.path.join(args.output_dir, model + '.csv')
             with open(model_filename, 'w') as out:
-                printParametricCSV(out, questions, model_answers)
+                print_parametric_csv(out, questions, model_answers)
 
         elif args.per_model:
-            printParametricCSV(sys.stdout, questions, model_answers)
+            print_parametric_csv(sys.stdout, questions, model_answers)
         else:
             answers |= model_answers
 
     if answers:
         logging.info('Writing CSV')
-        printParametricCSV(sys.stdout, questions, answers)
+        print_parametric_csv(sys.stdout, questions, answers)
 
 if __name__ == '__main__':
     args = parse_args()
-    if args.no_except:
+    if args.debug:
         main(args)
     else:
         with ipdb.launch_ipdb_on_exception():

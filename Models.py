@@ -6,6 +6,7 @@ from torch import FloatTensor, LongTensor, BoolTensor, Tensor
 import torch
 import ipdb
 
+# Dictionary of models, containing all of the models aliases and their respective models.
 Model_dict = {
     'llama': 'meta-llama/Meta-Llama-3.1-8B-Instruct',
     'llama-70b': 'meta-llama/Meta-Llama-3.1-70B-Instruct',
@@ -30,6 +31,8 @@ Model_dict = {
     'dummy': '',
 }
 
+# Virtual class containing a model.
+# Derived classes should reimplement __init__ and logits.
 class Model(nn.Module):
     name: str
     model_name: str
@@ -38,6 +41,8 @@ class Model(nn.Module):
     tokenizer: AutoTokenizer
     model: AutoModelForCausalLM
 
+    # Construct a model from a certain name.
+    # This should be the main constructor of models.
     @staticmethod
     def fromName(name: str, device: str = 'cpu') -> 'Model':
         if name == 'dummy':
@@ -57,6 +62,11 @@ class Model(nn.Module):
         self.model_name = Model_dict[name]
         self.device = device
 
+    @torch.no_grad()
+    def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
+        raise NotImplemented('logits called from generic Model class')
+
+# Decoder-only model, such as llama.
 class DecoderOnlyModel(Model):
     def __init__(self, name: str, device: str = 'cuda'):
         super().__init__(name, device)
@@ -105,12 +115,11 @@ class DecoderOnlyModel(Model):
 
         return self.model(input_ids, attention_mask = attention_mask).logits[:, w0 - 1 : w0 + w1 - 1]
 
+# Seq2Seq model, such as Flan-T5.
 class Seq2SeqModel(Model):
     def __init__(self, name: str, device: str = 'cpu'):
         super().__init__(name, device)
 
-        # self.prompt = 'Answer the following question in a few words, and write a period at the end of the answer.'
-        # self.cf_prompt = 'Answer the following question in a few words using the previous context, and write a period at the end of the answer.'
         self.prompt = ''
         self.cf_prompt = ''
 
@@ -154,8 +163,11 @@ class Seq2SeqModel(Model):
             decoder_input_ids = decoder_input_ids,
         ).logits[:, : answer.input_ids.shape[1]]
 
+# Large decoder-only model.
+# Similar to DecoderOnlyModel, but eagerly deletes the model when the class is deleted.
+# Assumes you need 2 GPUs to run this.
 class LargeDecoderOnlyModel(DecoderOnlyModel):
-    def __init__(self, name, device: str = 'cpu'):
+    def __init__(self, name, device: str = 'cuda'):
         if torch.cuda.device_count() < 2:
             raise ValueError(f'At least two GPUs are needed to run {name}')
 
@@ -166,6 +178,7 @@ class LargeDecoderOnlyModel(DecoderOnlyModel):
         del self.model
         torch.cuda.empty_cache()
 
+# Dummy model, used for testing.
 class DummyModel(Model):
     def __init__(self):
         nn.Module.__init__(self)
@@ -200,6 +213,7 @@ class DummyModel(Model):
     def shape(self):
         return (1, 2, 3)
 
+# If called separately, just print the names of the models.
 def main():
     print(f'{"Model Name":>15} | {"Huggingface Model":<40}')
     print((15 + 1) * '-' + '|' + (40 + 1) * '-')
