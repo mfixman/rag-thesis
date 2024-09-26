@@ -7,15 +7,15 @@ import torch
 import typing
 
 from Models import Model
-from typing import Optional, Union, Any
+from typing import Optional, Union, Any, TypeAlias
 from Utils import Question, sample_counterfactual_flips, chunk_questions
 
 from collections import defaultdict
 from transformers import BatchEncoding
 
-FloatTensor = torch.Tensor
-LongTensor = torch.Tensor
-BoolTensor = torch.Tensor
+FloatTensor: TypeAlias = torch.Tensor
+LongTensor: TypeAlias = torch.Tensor
+BoolTensor: TypeAlias = torch.Tensor
 
 # A QuestionAnswerer is the main class to answer queries with a given model.
 # Example Usage:

@@ -2,9 +2,8 @@ import logging
 
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM, BatchEncoding
 from torch import nn, tensor
-from torch import FloatTensor, LongTensor, BoolTensor, Tensor
+from torch import FloatTensor, Tensor
 import torch
-import ipdb
 
 # Dictionary of models, containing all of the models aliases and their respective models.
 Model_dict = {
@@ -64,7 +63,7 @@ class Model(nn.Module):
 
     @torch.no_grad()
     def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
-        raise NotImplemented('logits called from generic Model class')
+        raise NotImplementedError('logits called from generic Model class')
 
 # Decoder-only model, such as llama.
 class DecoderOnlyModel(Model):

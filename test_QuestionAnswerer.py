@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import torch
 from torch import tensor
 
-from QuestionAnswerer import *
+from QuestionAnswerer import QuestionAnswerer
 
 pad = 128002
 class QuestionAnswererTests(unittest.TestCase):

@@ -4,13 +4,10 @@ import itertools
 import random
 import time
 import typing
-import sys
 
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Optional, Any
-
-from torch import FloatTensor, LongTensor, BoolTensor
+from typing import Optional
 
 # Custom filter that does not print a log if it printed another one at most `rate_limit` seconds ago.
 class LogTimeFilter(logging.Filter):

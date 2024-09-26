@@ -1,1 +1,31 @@
 \section{Source Code of the Experiments}
+
+The latest version of the source code, including the input data generated in \cref{creating_dataset}, is available in \url{https://github.com/mfixman/rag-thesis}\footnotemark{}.
+
+\footnotetext{TODO: Move all of this to a new repo.}
+
+\lstset{
+	language = Python,
+	basicstyle = \ttfamily\scriptsize,
+	numbers = left,
+	numberstyle = \scriptsize,
+	numbesep = 5pt,
+	backgroundcolor = \color{Gray!20},
+	inputencoding = \lstencoding,
+	breaklines = true,
+	breakatwhitespace = true,
+    commentstyle = \color{Gray},
+    keywordstyle = \color{blue},
+    stringstyle = \color{ForestGreen},
+	showspaces = false,
+	showstringspaces = false,
+    frame = single,
+	title = \lstname,
+	captionpos = b,
+	titlepos = t,
+}
+
+\lstinputlisting[caption = \texttt{knowledge\_grounder.py} is the main entry point and contains mostly argument parsing and output printing.]{../knowledge_grounder.py}
+\lstinputlisting[caption = \texttt{QuestionAnswerer.py} contains the \texttt{QuestionAnswerer} class, which deals with the logic of answering parametric and counterfactual questions from a model]{../QuestionAnswerer.py}
+\lstinputlisting[caption = \texttt{Models.py} contains the list of models, and includes code that differentiates them.]{../Models.py}
+\lstinputlisting[caption = \texttt{Utils.py} contains various usedul functions]{../Utils.py}
