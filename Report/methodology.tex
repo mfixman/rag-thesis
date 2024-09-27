@@ -3,9 +3,12 @@
 \subsection{Creating a representative dataset of questions}
 \label{creating_dataset}
 
+As argued in \cref{questions_objective}, the research of this thesis requires a large dataset of questions from a variety of categories to test large language models.
+
 \subsubsection{Dataset Description}
 
-As argued in \cref{questions_objective}, the research of this thesis requires a large dataset of questions from a variety of categories to test large language models.
+The dataset we aim to create for this research is designed to be a comprehensive and versatile tool for evaluating large language models.
+By choosing this criteria when selecting questions, we ensure that the dataset will provide meaningful insights into knowledge grounding of large language models across a wide spectrum of knowledge domains.
 
 In order to understand knowledge grounding in these LLMs, we require a dataset with the following properties:
 \begin{enumerate}
@@ -22,7 +25,8 @@ In order to understand knowledge grounding in these LLMs, we require a dataset w
 \end{enumerate}
 
 The existing literature uses various existing question-and-answer datasets.
-Due to several reasons none are particularly useful for this line of research, but they might provide some ideas for the final dataset.
+We believe that none of these datasets are a good fit for this research for not following some of the three desired properties.
+However, understanding them can be useful when designing the final dataset.
 
 \begin{description}
 	\item[Natural Questions Dataset] Created by Google Research \citep{natural_questions}, and commonly used in research related to understanding the answers of LLMs in question-and-answer problems \citep{ragged,when_not_to_trust_llms,can_rag_models_reason}.
@@ -46,7 +50,7 @@ To address these items, we follow the approach done by \citeauthor{factual_recal
 Since this thesis requires a set of questions that covers a large set of topics, eras, and places, we enhance this method by creating a set of categories, each of which has a large set of base questions and another set of objects that can be matched.
 An example of this approach is shown in \cref{source_data_example}.
 
-\begin{table}[ht]
+\begin{table}[htb]
 	\setlength{\fboxsep}{0pt}
 	\setlength{\fboxrule}{1pt}
 	\newcommand{\rep}[1]{{\setlength{\fboxsep}{0pt}\fcolorbox{Gray}{Gray!80}{\textit{#1}}}}
@@ -106,48 +110,95 @@ This list of questions will enable the research on whether the answers given by 
 
 \subsubsection{Model Selection}
 
-In order to get a general understanding of large language models with added context, we test the queries generated in \cref{creating_dataset} into four models of different types and sizes.
+In order to get a general understanding of large language models with added context, we test the queries generated in \cref{creating_dataset} into four models of different types and sizes, which are listed in \cref{model_list}.
 
-\begin{table}[ht]
+\begin{table}[htb]
 	\centering
 	\begin{tabular}{>{\bfseries}c@{\hspace{20pt}}l l}
 		\toprule
 			& \bfseries Seq2Seq Model & \bfseries Decoder-Only Model \\
 		\midrule
-			Small & \ttfamily Flan-T5-XL & \ttfamily Meta-Llama-3.1-8B-Instruct \\
-			Large & \ttfamily Flan-T5-XXL & \ttfamily Meta-Llama-3.1-70B-Instruct \\
+			Smaller & \ttfamily Flan-T5-XL & \ttfamily Meta-Llama-3.1-8B-Instruct \\
+			Larger & \ttfamily Flan-T5-XXL & \ttfamily Meta-Llama-3.1-70B-Instruct \\
 		\bottomrule
 	\end{tabular}
 	\caption{The four large language models chosen for this research.}
+	\label{model_list}
 \end{table}
 
-The Flan-T5 models \citep{flant5} are an extension to the original Seq2Seq T5 models \citep{t5} which are fine-tuned to particular NLP tasks framed as text-to-text problems.
-Compared to T5, it's generally better at following instructions and has improved zero-shot performance.
+Both Sequence-to-Sequence models are based on T5 models \citep{t5}, which employ an encoder-decoder architecture: while an encoder processed the input sequence into a context vector, and an decoder generates an input sequence from this vector.
+The \texttt{Flan-T5} models are fine-tuned to follow instructions, and have improved zero-shot performance compared to the original T5 models \citep{flant5}.
 
-The Llama models \citep{llama3} are Decoder-only models with a dense transformer architecture that are fine-tuned for instruction-following tasks, and are specially adept at complex prompts.
+\texttt{Flan-T5-XL} contains approximately 3 billion parameters, and is considerably bigger than the base Flan-T5 model, which should improve the accuracy of its parametric answers.
+
+\texttt{Flan-T5-XXL} contains 11 billion parameters, so it should have higher accuracy on the parametric answers as the \texttt{XL} model.
+However, how the higher amount of parameters will affect the experiments that we are running is still unknown.
+
+Unlike Seq2Seq models, Decoder-only models focus on the generation of text based on the previous tokens.
+In a sense, given a sequence of tokens they solve the problem of predicting the following token, repeating sequentially until some final token is found.
+
+These architectures leverages autoregressive attention \citep{attention_is_all_you_need}, where each token attends to its preceding tokens, maintaining the temporal order of the sequence.
+This approach allows them to generate coherent and contextually relevant text by sampling from this learned distribution, while also capturing long-range dependencies and complex patterns in language.
+
+The Llama models \citep{llama3} use this architecture and fine-tune it to tasks of instruction-following, and are specially adept at complex prompts.
+
+The Decoder-only model \texttt{Meta-Llama-3.1-8B-Instruct} has 8 billion parameters, while \texttt{Meta-Llama-3.1-70B-Instruct} has 70 billion.
+Meta provides an even larger model, \texttt{Meta-Llama-3.1-405B-Instruct}, that is too large to easily experiment with.
+However, we expect the difference between this model and the \texttt{70B} model to be roughly the same as the difference between the \texttt{70B} and \texttt{8B} models.
+
+The properties of the models are summarised in \cref{model_card}.
+
+\begin{table}[htbp]
+	\centering
+	\footnotesize
+	\begin{tabular}{>{\ttfamily}l l l r r}
+		\toprule
+			\rmfamily \bfseries Model & \bfseries Type & \bfseries Developer & \bfseries Parameters & \bfseries Context \\
+		\midrule
+			Flan-T5-XL & Seq2Seq & Google Brain & 3 Billion & 512 Tokens \\
+			Flan-T5-XXL & Seq2Seq & Google Brain & 11 Billion & 512 Tokens \\
+			Meta-Llama-3.1-8B-Instruct & Decoder-Only & Meta AI & 8 Billion & 128k Tokens \\
+			Meta-Llama-3.1-70B-Instruct & Decoder-Only & Meta AI & 70 Billion & 128k Tokens \\
+		\bottomrule
+	\end{tabular}
+	\caption{Model cards of the large language models used in this research.}
+	\label{model_card}
+\end{table}
 
 \subsubsection{What type of answer does each model select for each question?}
 
 The first step to understanding the knowledge grounding of large language models is to create queries that contain counterparametric data as part of the context.
 By comparing the result to the existing answers it becomes trivial to understand whether an answer came from the model's memory, the queries' context, or neither of these.
 
-Following the approach of \citeauthor{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer (given by the original query).
-Later, we add this \emph{counterparametric answer} to the context, to form a new query and query the same model again.
+Following the approach of \citeauthor{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer which is given by the original query.
+An example of this shuffling is in \cref{counterparametric_table}.
 
-\begin{figure}[ht]
+Later, we add this \emph{counterparametric answer} to the context, to form a new query and query the same model again; this is exemplified in \cref{category_example}.
+
+To ensure that the results are simple to interpret and minimise the effect of randomness, once we select the queries we follow the example of \citeauthor{ragged} and use Greedy Decoding to find the answer.
+While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
+
+We compare the parametric answer to the previous values to come to one of three cases:
+\begin{description}
+	\item[\Parametric{}] answers are equal to the answer given by the model when queried without context.
+		This answer would come from the parametric memory of the model, and could potentially include hallucinations not fixed by RAG.
+	\item[\Contextual{}] answers are equal to the context given in the query.
+	\item[\Other] answers are neither of these, and this answer comes from a mis-interpretation of the input by the model or from some other source.
+\end{description}
+
+To minimise the amount of problems caused by large language models generating extra information, we define two strings to be equal by removing all text after a period or an \texttt{<EOS>} token, removing punctuation and stop words, and finding whether one is a subsequence of another.
+
+This approach to compare strings is not enough, and understanding whether two answers are identical is an ongoing problem.
+This is explained in the Future~Work section in \cref{other_problems}.
+
+The approach to finding out the source of knowledge of each query is specified in \cref{action_diagram}.
+
+\begin{figure}[tb]
 	\centering
 	\fbox{\includegraphics[width=.75\textwidth]{Method.png}}
 	\caption{Example diagram of steps used to calculate the two sets of answers, \textit{parametric} and \textit{contextual}, and to compare them to answer the question in this objective. Many of the terms in this diagram are explained in the \protect\hyperref[glossary]{Glossary}.}
 	\label{action_diagram}
 \end{figure}
-
-To ensure that the results are simple to interpret and minimise the effect of randomness, once we select the queries we follow the example of \citeauthor{ragged} and use Greedy Decoding to find the answer.
-
-% While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
-
-We compare the parametric answer to the previous values to come to one of three cases: either this answer is identical to the \textbf{Parametric} answer and the model inferred it from its memor, to the \textbf{Contextual} answer and the model inferred it from the context, or the answer is different to these two and the model inferred it from some \textbf{Other} place.
-
-This approach is detailed in \cref{action_diagram}; \cref{counterparametric_table} contains an example of the shuffling done for this experiment while \cref{category_example} contains an example of each of the three categories.
 
 \begin{table}[htbp]
 	\centering
@@ -170,7 +221,7 @@ This approach is detailed in \cref{action_diagram}; \cref{counterparametric_tabl
 			\bfseries \textcolor{MidnightBlue}{Other} \\[12pt]
 		\bottomrule
 	\end{tabularx}
-	\caption{Example for results with \textbf{Parametric}, \textbf{Contextual}, and \textbf{Other} values. Note that, in the third query, the model is interpreting the question as asking about Rome in the US State of Georgia, rather than the country of Georgia.}
+	\caption{Example for results with \Parametric{}, \Contextual{}, and \Other{} values. Note that, in the third query, the model is interpreting the question as asking about Rome in the US State of Georgia, rather than the country of Georgia.}
 	\label{category_example}
 \end{table}
 
@@ -230,7 +281,7 @@ This approach is detailed in \cref{action_diagram}; \cref{counterparametric_tabl
 
 \newpage{}
 
-\subsection{Can we use the perplexity score of an answer to predict whether it came from inherent or contextual knowledge?}
+\subsection{Studying the Role of Perplexity Scores of the Provided Answers}
 \label{method_perplexity}
 
 \subsubsection{Perplexity Score}

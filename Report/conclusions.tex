@@ -3,10 +3,11 @@
 \subsection{Future Work}
 
 \subsubsection{Better Categorisation of the Answers}
+\label{other_problems}
 
 To test whether two answers are equal and to know whether an answer came from parametric or contextual knowledge, the code in this thesis checks for string equality among after removing a few stop simple words such as `the'.
 
-This solution might not be enough, and some answers classified as \textbf{Other} should have been classifier as something else.
+This solution might not be enough, and some answers classified as \Other{} should have been classifier as something else.
 \Cref{bad_others} provides some examples of answers where this is the case.
 
 \begin{table}[ht]
@@ -29,7 +30,7 @@ This solution might not be enough, and some answers classified as \textbf{Other}
 			\bfseries \textcolor{Maroon}{Contextual} \\
 		\bottomrule
 	\end{tabular}
-	\caption{Example of incorrectly-categorised answers. These were categorised as "Other", since their answer strings are different from both parametric and contextual answers. However, a closer look reveals that this is just either answer with a slight formatting difference.}
+	\caption{Example of incorrectly-categorised answers. These were categorised as "\Other{}", since their answer strings are different from both parametric and contextual answers. However, a closer look reveals that this is just either answer with a slight formatting difference.}
 	\label{bad_others}
 \end{table}
 

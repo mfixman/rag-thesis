@@ -59,7 +59,7 @@ The results of running the queries created in \cref{creating_dataset} with added
 	\footnotesize
 	\begin{tabular}{l r r r}
 		\toprule
-			\bfseries Model & \bfseries Parametric & \bfseries Contextual & \bfseries Other \\
+			\bfseries Model & \Parametric{} & \Contextual{} & \Other{} \\
 		\midrule
 			\ttfamily llama-3.1-8B & 745 & 3662 & 353 \\
 			\ttfamily llama-3.1-70B & 1070 & 3303 & 387 \\
@@ -97,7 +97,7 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\begin{tabular}{>{\bfseries}l | r r r | r r r}
 		\toprule
 			& \multicolumn{3}{c|}{\ttfamily \bfseries llama-3.1-8B} & \multicolumn{3}{c}{\ttfamily \bfseries llama-3.1-70B} \\
-			& \bfseries Parametric & \bfseries Contextual & \bfseries Other & \bfseries Parametric & \bfseries Contextual & \bfseries Other \\
+			& \Parametric{} & \Contextual{} & \Other{} & \Parametric{} & \Contextual{} & \Other{} \\
 		\midrule
 			Person           &  40 &  833 & 96 & 209 & 614 & 146 \\
 			City             & 117 & 1007 & 66 & 166 & 966 &  58 \\
@@ -127,7 +127,7 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\begin{tabular}{>{\bfseries}l | r r r | r r r}
 		\toprule
 			& \multicolumn{3}{|c}{\ttfamily flan-t5-xl} & \multicolumn{3}{|c}{\ttfamily flan-t5-xxl} \\
-			& \bfseries Parametric & \bfseries Contextual & \bfseries Other & \bfseries Parametric & \bfseries Contextual & \bfseries Other \\
+			& \Parametric{} & \Contextual{} & \Other{} & \Parametric{} & \Contextual{} & \Other{} \\
 		\midrule
 			Person           &  32 &  900 & 37 &  23 &  890 & 56 \\
 			City             & 120 & 1030 & 40 &  78 & 1093 & 19 \\
@@ -165,7 +165,7 @@ These are accumulated in three distributions, depending on answer type, which ar
 	\begin{tabular}{>{\bfseries}l | r r | r r}
 		\toprule
 			& \multicolumn{2}{|c}{\ttfamily llama-3.1-8B} & \multicolumn{2}{|c}{\ttfamily llama-3.1-70B} \\
-			& \bfseries Parametric & \bfseries Contextual & \bfseries Parametric & \bfseries Contextual \\
+			& \Parametric{} & \Contextual{} & \Parametric{} & \Contextual{} \\
 		\midrule
 			count &  313 & 4447 &  383 & 4377  \\
 			mean  & 1.67 & 1.20 & 1.56 & 1.22  \\
@@ -185,7 +185,7 @@ These are accumulated in three distributions, depending on answer type, which ar
 	\begin{tabular}{>{\bfseries}l | r r | r r}
 		\toprule
 			& \multicolumn{2}{|c}{\ttfamily flan-T5-XL} & \multicolumn{2}{|c}{\ttfamily flan-T5-XXL} \\
-			& \bfseries Parametric & \bfseries Contextual & \bfseries Parametric & \bfseries Contextual \\
+			& \Parametric{} & \Contextual{} & \Parametric{} & \Contextual{} \\
 		\midrule
 			count &  651 & 4109 &   507 & 4253 \\
 			mean  & 6.38 & 1.56 & 11.75 & 1.27 \\
