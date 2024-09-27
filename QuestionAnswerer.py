@@ -76,34 +76,37 @@ class QuestionAnswerer:
         base_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
         parametric = self.generate(base_tokens)
 
-        out_parametric = self.decode(parametric)
-        out_base_proba = self.perplexity(base_tokens, parametric)
+        parametric_output = self.decode(parametric)
+        base_proba_output = self.perplexity(base_tokens, parametric)
         for run in range(self.runs_per_question):
-            run_output = out_parametric | out_base_proba
+            run_output = dict(
+                parametric = parametric_output,
+                base_proba = base_proba_output,
+            )
 
-            flips = sample_counterfactual_flips(questions, output['parametric'])
+            flips = sample_counterfactual_flips(questions, run_output['parametric'])
             counterfactual = parametric[flips]
 
             run_output['counterfactual'] = self.decode(counterfactual)
             run_output['base_cf_proba'] = self.perplexity(base_tokens, counterfactual)
 
-            run_output |= self.answerCounterfactuals(questions, output['counterfactual'], parametric, counterfactual)
+            run_output |= self.answerCounterfactuals(questions, run_output['counterfactual'], parametric, counterfactual)
 
             run_output['comparison'] = [
                 'Parametric' if self.streq(a, p) else
                 'Contextual' if self.streq(a, c) else
                 'Other'
-                for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
+                for p, c, a in zip(run_output['parametric'], run_output['counterfactual'], run_output['contextual'])
             ]
 
             run_output['preference'] = [
                 'Parametric' if pp > cp else
                 'Contextual'
-                for pp, cp in zip(output['ctx_proba'], output['ctx_cf_proba'])
+                for pp, cp in zip(run_output['ctx_proba'], run_output['ctx_cf_proba'])
             ]
 
-            for k, v in run_ouptut:
-                output[k].expand(v)
+            for k, v in run_output.items():
+                output[k].extend(v)
 
         return output
 

@@ -71,7 +71,7 @@ def main(args):
         except FileExistsError:
             pass
 
-    logging.info(f'About to answer {len(questions) * len(args.models) * 2} questions in total.')
+    logging.info(f'About to answer {len(questions) * len(args.models) * args.runs_per_question * 2} questions in total.')
     answers = {}
     for model in args.models:
         if not args.rand:
