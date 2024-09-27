@@ -67,11 +67,11 @@ def combine_questions(base_questions: list[str], objects: list[dict[str, str]], 
     questions = []
     for bq in base_questions:
         for obj in objects:
-            obj = Question.orNothing(obj = obj['object'], category = obj['category'], base_question = bq)
-            if obj is None:
+            q = Question.orNothing(obj = obj['object'], category = obj['category'], base_question = bq)
+            if q is None:
                 continue
 
-            questions.append(obj)
+            questions.append(q)
 
     if lim_questions is None:
         return questions

@@ -71,7 +71,7 @@ class QuestionAnswerer:
     #  comparison: Comparison between parametric and contextual answer. Where does this answer come from?
     #  preference: Comparison between perplexity of paramertic and counterfactual answer on contextual query. Which one is the least surprising?
     def answerChunk(self, questions: list[Question]) -> dict[str, Any]:
-        output: DefaultDict[str, list[Any]] = defaultdict(lambda: [])
+        output: defaultdict[str, list[Any]] = defaultdict(lambda: [])
 
         base_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
         parametric = self.generate(base_tokens)
@@ -79,7 +79,7 @@ class QuestionAnswerer:
         parametric_output = self.decode(parametric)
         base_proba_output = self.perplexity(base_tokens, parametric)
         for run in range(self.runs_per_question):
-            run_output = dict(
+            run_output: dict[str, list[Any]] = dict(
                 parametric = parametric_output,
                 base_proba = base_proba_output,
             )
