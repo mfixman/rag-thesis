@@ -26,6 +26,7 @@ class QuestionAnswerer:
     device: str
     max_length: int
     max_batch_size: int
+    runs_per_question: int
     llm: Model
 
     def __init__(
@@ -34,10 +35,12 @@ class QuestionAnswerer:
         device: str = 'cpu',
         max_length: Optional[int] = None,
         max_batch_size: Optional[int] = None,
+        runs_per_question: Optional[int] = None,
     ):
         self.device = device
         self.max_length = max_length or 100
         self.max_batch_size = max_batch_size or 120
+        self.runs_per_question = runs_per_question or 1
 
         if type(model) == str:
             model = Model.fromName(model, device = device)
@@ -68,37 +71,41 @@ class QuestionAnswerer:
     #  comparison: Comparison between parametric and contextual answer. Where does this answer come from?
     #  preference: Comparison between perplexity of paramertic and counterfactual answer on contextual query. Which one is the least surprising?
     def answerChunk(self, questions: list[Question]) -> dict[str, Any]:
-        output: dict[str, Any] = {}
+        output: DefaultDict[str, list[Any]] = defaultdict(lambda: [])
 
         base_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
         parametric = self.generate(base_tokens)
 
-        output['parametric'] = self.decode(parametric)
-        output['base_proba'] = self.perplexity(base_tokens, parametric)
+        out_parametric = self.decode(parametric)
+        out_base_proba = self.perplexity(base_tokens, parametric)
+        for run in range(self.runs_per_question):
+            run_output = out_parametric | out_base_proba
 
-        flips = sample_counterfactual_flips(questions, output['parametric'])
-        counterfactual = parametric[flips]
+            flips = sample_counterfactual_flips(questions, output['parametric'])
+            counterfactual = parametric[flips]
 
-        output['counterfactual'] = self.decode(counterfactual)
-        output['base_cf_proba'] = self.perplexity(base_tokens, counterfactual)
+            run_output['counterfactual'] = self.decode(counterfactual)
+            run_output['base_cf_proba'] = self.perplexity(base_tokens, counterfactual)
 
-        output |= self.answerCounterfactuals(questions, output['counterfactual'], parametric, counterfactual)
+            run_output |= self.answerCounterfactuals(questions, output['counterfactual'], parametric, counterfactual)
 
-        output['comparison'] = [
-            'Parametric' if self.streq(a, p) else
-            'Contextual' if self.streq(a, c) else
-            'Other'
-            for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
-        ]
+            run_output['comparison'] = [
+                'Parametric' if self.streq(a, p) else
+                'Contextual' if self.streq(a, c) else
+                'Other'
+                for p, c, a in zip(output['parametric'], output['counterfactual'], output['contextual'])
+            ]
 
-        output['preference'] = [
-            'Parametric' if pp > cp else
-            'Contextual'
-            for pp, cp in zip(output['ctx_proba'], output['ctx_cf_proba'])
-        ]
+            run_output['preference'] = [
+                'Parametric' if pp > cp else
+                'Contextual'
+                for pp, cp in zip(output['ctx_proba'], output['ctx_cf_proba'])
+            ]
+
+            for k, v in run_ouptut:
+                output[k].expand(v)
 
         return output
-
 
     # Given a list of questions with assigned counterfactuals, run contextual queries and return
     # a dictionary containing information about these runs.

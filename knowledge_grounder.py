@@ -30,6 +30,8 @@ def parse_args():
     parser.add_argument('--per-model', action = 'store_true', help = 'Write one CSV per model in stdout.')
     parser.add_argument('--output-dir', help = 'Return one CSV per model, and save them to this directory.')
 
+    parser.add_argument('--runs-per-question', type = int, default = 1, help = 'How many runs (with random counterfactuals) to do for each question.')
+
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
     parser.add_argument('things_file', type = open, help = 'File with things to combine')
 
@@ -75,7 +77,13 @@ def main(args):
         if not args.rand:
             random.seed(0)
 
-        qa = QuestionAnswerer(model, device = args.device, max_length = 20, max_batch_size = args.max_batch_size)
+        qa = QuestionAnswerer(
+            model,
+            device = args.device,
+            max_length = 20,
+            max_batch_size = args.max_batch_size,
+            runs_per_question = args.runs_per_question,
+        )
         model_answers = qa.answerQueries(questions)
         del qa
 
