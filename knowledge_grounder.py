@@ -104,7 +104,7 @@ def main(args):
 
     if answers:
         logging.info('Writing CSV')
-        print_parametric_csv(sys.stdout, questions, answers)
+        print_parametric_csv(sys.stdout, answers)
 
 if __name__ == '__main__':
     args = parse_args()

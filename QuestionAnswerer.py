@@ -84,6 +84,7 @@ class QuestionAnswerer:
                 base_proba = base_proba_output,
             )
 
+            run_output['question'] = questions
             flips = sample_counterfactual_flips(questions, run_output['parametric'])
             counterfactual = parametric[flips]
 

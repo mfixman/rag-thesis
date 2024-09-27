@@ -7,7 +7,7 @@ import typing
 
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Any
 
 # Custom filter that does not print a log if it printed another one at most `rate_limit` seconds ago.
 class LogTimeFilter(logging.Filter):
@@ -116,7 +116,7 @@ def chunk_questions(questions: list[Question], max_batch_size: int) -> list[list
     return result
 
 # Prints a CSV file with the questions and resulting answers.
-def print_parametric_csv(out: typing.TextIO, questions: list[Question], answer: dict[str, str]):
+def print_parametric_csv(out: typing.TextIO, answer: dict[str, list[Any]]):
     fieldnames = ['Num', 'Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())
 
     writer = csv.DictWriter(
@@ -128,8 +128,19 @@ def print_parametric_csv(out: typing.TextIO, questions: list[Question], answer: 
     )
     writer.writeheader()
 
-    for e, (question, *answers) in enumerate(itertools.zip_longest(questions, *answer.values())):
-        question = typing.cast(Question, question)
-
+    for e, answers in enumerate(zip(*answer.values())):
         param = dict(zip(answer.keys(), answers))
-        writer.writerow({'Num': str(e), 'Category': question.category, 'Base_Question': ''.join(question.base_question.partition('?')[0:2]), 'Thing': question.obj, 'Question': question.format(use_later = False), 'Prefix': question.format(use_question = False)} | param)
+
+        question = param['question']
+        param.pop('question')
+
+        writer.writerow(
+            {
+                'Num': str(e),
+                'Category': question.category,
+                'Base_Question': ''.join(question.base_question.partition('?')[0:2]),
+                'Object': question.obj,
+                'Question': question.format(use_later = False),
+                'Prefix': question.format(use_question = False)
+            } | param
+        )
