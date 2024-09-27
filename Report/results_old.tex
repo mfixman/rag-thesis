@@ -23,20 +23,20 @@ Some results I want to show.
 
 \subsection{Comparing the amounts of each type of answer}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=.75\textwidth]{llama_amount.png}
 	\caption{Amount of entries for each result after applying counterfactual context to Llama models. Generally, larger models tend to prefer parametric to contextual knowledge; this is further discussed in \cref{model_size_parametric}.}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=.75\textwidth]{flan_amount.png}
 	\caption{Same results for the Seq2Seq models \textsc{Flan-T5}. While these models tend to be more biased towards contextual knowledge, as discussed in \cref{model_type_parametric}, larger models still are biased towards parametric knowledge.}
 \end{figure}
 
 \subsection{Comparing the perplexity distribution for each type of answer}
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=.75\textwidth]{llama_boxplot.png}
 	\caption{Perplexity box plots for Decoder-only Llama models.}
@@ -47,7 +47,7 @@ This is discussed in \cref{discussion}.
 
 Additionally, the perplexity of contextual answers is considerably lower than the one for parametric answers.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=.75\textwidth]{flan_boxplot.png}
 	\caption{Perplexity box plots for Seq2Seq Flan models.}
