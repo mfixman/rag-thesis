@@ -3,13 +3,43 @@
 \subsection{Creating a representative dataset of questions}
 \label{creating_dataset}
 
-As argued in \Cref{questions_objective}, our codebase requires the creation of a new dataset of questions with three main properties.
+\subsubsection{Dataset Description}
 
+As argued in \cref{questions_objective}, the research of this thesis requires a large dataset of questions from a variety of categories to test large language models.
+
+In order to understand knowledge grounding in these LLMs, we require a dataset with the following properties:
 \begin{enumerate}
-	\item The questions should have short an unambiguous answers. \label{q_short}
-	\item They must cover a large set of topics, eras, and places. \label{q_widespread}
-	\item They must allow for the creation of sensible counterparametric answers (different than what the model would normally answer) by having sets of questions with the same answer format. \label{q_counterfactual}
+	\item \textbf{Questions should have short, unambiguous answers.} \\
+		Our goal is to compare these results for both equality and perplexity. Longer answers make this objective more complicated since two long, correct answers might be equivalent. Shorter answers reduce the space of possible answers that are equivalent, but not equal.
+	\item \textbf{Questions must cover a large and diverse set of topics in a comprehensive global and historical range.} \\
+	    The parametric knowledge of a model comes from a pre-existing dataset of training data, which might be biased towards certain topics or groups of people. For example, it is known that Wikipedia contains a significant geographical bias on biographies \citep{wikipedia_geographic_bias}, and that this affects the probability of giving a correct answer without context \citep{factual_recall}.
+		We require a large and diverse and set of topics to counteract potential biases.
+	\item \textbf{Questions must allow for the creation of counterparametric answers in the same format as correct ones.} \\
+		Part of the requirements of this thesis is to allow some tests of contextual versus inherent knowledge.
+	    A simple way to do this is to repeat and enhance the approach used by \citeauthor{factual_recall} of adding counterparametric answers to a query context.
+		This allows us to to easily disambiguate whether an answer came from the model's memory or from the context.
+	    This approach is only possible if the set of answers allows us to create a set of alternative answers that are plausibly correct and have the same format as the parametric answer, but are still counterparametric.
 \end{enumerate}
+
+The existing literature uses various existing question-and-answer datasets.
+Due to several reasons none are particularly useful for this line of research, but they might provide some ideas for the final dataset.
+
+\begin{description}
+	\item[Natural Questions Dataset] Created by Google Research \citep{natural_questions}, and commonly used in research related to understanding the answers of LLMs in question-and-answer problems \citep{ragged,when_not_to_trust_llms,can_rag_models_reason}.
+		While the dataset provides an excellent range of questions and existing literature to compare these results to, the lack of categorisation is an obstacle in our objective to generate counterparametric answers.
+	\item[Human-Augmented Dataset] Sometimes used in research related to quality control of large language models \citep{learning_the_difference}.
+		However, the high cost associated with this dataset would limit the size of our questions.
+	\item[Countries' Capitals Question Dataset] Used in ``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, this dataset contains a single question about the capital city of certain countries which can be easily transformed to a counterparametric question.
+		This format is ideal for the research done in this thesis, but having a single question pattern will not allow a deep dive into the source of each answer in a general question.
+\end{description}
+
+\subsubsection{Dataset Creation}
+
+Instead of using an existing dataset, this research takes inspiration from the paper by \citeauthor{factual_recall} to create a similar but larger dataset of questions and answers from a wide range of topics, where questions can be grouped by question pattern to ensure that their formats are similar.
+This way, we can emulate the approach of that paper of using the answer from a certain question as the counterfactual question of another.
+
+This dataset will be used to test the remaining questions of this thesis.
+Since it might be useful for future research, it will also be presented as its own result.
 
 To address these items, we follow the approach done by \citeauthor{factual_recall} in creating base questions that refer to a specific object, so all the answers for the same base question have a similar format and creating counterparametric answers is easy.
 
@@ -120,6 +150,31 @@ We compare the parametric answer to the previous values to come to one of three 
 This approach is detailed in \cref{action_diagram}; \cref{counterparametric_table} contains an example of the shuffling done for this experiment while \cref{category_example} contains an example of each of the three categories.
 
 \begin{table}[htbp]
+	\centering
+	\scriptsize
+
+	\begin{tabularx}{\textwidth}{>{\ttfamily}X >{\ttfamily}c c}
+		\toprule
+			\bfseries \rmfamily Question with counterparametric context & \bfseries \rmfamily Model Answer & \bfseries Category \\
+		\midrule
+			\parbox{235pt}{Context: [the nearest major body of water to \textcolor{Mahogany}{Windhoek} is the \textcolor{RoyalPurple}{Rio de la Plata}] \\ Q: What is the nearest major body of water to \textcolor{Mahogany}{Windhoek}? \\ A: The nearest major body of water to \textcolor{Mahogany}{Windhoek} is} &
+			\textcolor{Mahogany}{the Atlantic Ocean} &
+			\bfseries \textcolor{ForestGreen}{Parametric} \\[22pt]
+			%
+			\parbox{235pt}{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} &
+			\textcolor{Apricot}{965~AD} &
+			\bfseries \textcolor{Maroon}{Contextual} \\[16pt]
+			%
+			\parbox{235pt}{Context: [\textcolor{Purple}{Rome} is in \textcolor{Salmon}{Georgia}] \\ Q: What country is \textcolor{Purple}{Rome} in? \\ A: \textcolor{Purple}{Rome} is in} &
+			\textcolor{BlueViolet}{the United States} &
+			\bfseries \textcolor{MidnightBlue}{Other} \\[12pt]
+		\bottomrule
+	\end{tabularx}
+	\caption{Example for results with \textbf{Parametric}, \textbf{Contextual}, and \textbf{Other} values. Note that, in the third query, the model is interpreting the question as asking about Rome in the US State of Georgia, rather than the country of Georgia.}
+	\label{category_example}
+\end{table}
+
+\begin{table}[htbp]
 	\newcommand{\vwidth}[1]{\parbox{38ex}{\ttfamily #1}}
 	\newcommand{\rep}[1]{{\setlength{\fboxsep}{0pt}\fcolorbox{Gray}{Gray!80}{\textit{#1}}}}
 
@@ -173,30 +228,7 @@ This approach is detailed in \cref{action_diagram}; \cref{counterparametric_tabl
 	\label{counterparametric_table}
 \end{table}
 
-\begin{table}[htbp]
-	\centering
-	\scriptsize
-
-	\begin{tabularx}{\textwidth}{>{\ttfamily}X >{\ttfamily}c c}
-		\toprule
-			\bfseries \rmfamily Question with counterparametric context & \bfseries \rmfamily Model Answer & \bfseries Category \\
-		\midrule
-			\parbox{235pt}{Context: [the nearest major body of water to \textcolor{Mahogany}{Windhoek} is the \textcolor{RoyalPurple}{Rio de la Plata}] \\ Q: What is the nearest major body of water to \textcolor{Mahogany}{Windhoek}? \\ A: The nearest major body of water to \textcolor{Mahogany}{Windhoek} is} &
-			\textcolor{Mahogany}{the Atlantic Ocean} &
-			\bfseries \textcolor{ForestGreen}{Parametric} \\[22pt]
-			%
-			\parbox{235pt}{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} &
-			\textcolor{Apricot}{965~AD} &
-			\bfseries \textcolor{Maroon}{Contextual} \\[16pt]
-			%
-			\parbox{235pt}{Context: [\textcolor{Purple}{Rome} is in \textcolor{Salmon}{Georgia}] \\ Q: What country is \textcolor{Purple}{Rome} in? \\ A: \textcolor{Purple}{Rome} is in} &
-			\textcolor{BlueViolet}{the United States} &
-			\bfseries \textcolor{MidnightBlue}{Other} \\[12pt]
-		\bottomrule
-	\end{tabularx}
-	\caption{Example for results with \textbf{Parametric}, \textbf{Contextual}, and \textbf{Other} values. Note that, in the third query, the model is interpreting the question as asking about Rome in the US State of Georgia, rather than the country of Georgia.}
-	\label{category_example}
-\end{table}
+\newpage{}
 
 \subsection{Can we use the perplexity score of an answer to predict whether it came from inherent or contextual knowledge?}
 \label{method_perplexity}
@@ -217,7 +249,7 @@ The probabilities of the tokens if an answer can be accumulated to calculate the
 	\PPL \left( x_1, \dots, x_n \mid Q \right) &= {2 ^ {\text{NLL} \left( x_1, \dots, x_n \mid Q \right)}} \label{eq:ppl}
 \end{align}
 
-\newpage{}
+% \newpage{}
 
 \subsubsection{Perplexity of the parametric answer with counterparametric context and vice-versa}
 
@@ -227,7 +259,7 @@ Therefore, it becomes necessary to use teacher-forcing \citep{teacher_forcing} t
 
 For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterparametric answer $q_1, \dots, q_m$, a query without context $Q$, and a query with this counterparametric context $Q'$ we can calculate four different perplexity scores as shown in \cref{perplexity_table}.
 
-\begin{table}[h]
+\begin{table}[hbt]
 	\footnotesize
 	\centering
 
