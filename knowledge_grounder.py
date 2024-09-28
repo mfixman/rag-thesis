@@ -95,10 +95,10 @@ def main(args):
 
             model_filename = os.path.join(args.output_dir, model + '.csv')
             with open(model_filename, 'w') as out:
-                print_parametric_csv(out, questions, model_answers)
+                print_parametric_csv(out, model_answers)
 
         elif args.per_model:
-            print_parametric_csv(sys.stdout, questions, model_answers)
+            print_parametric_csv(sys.stdout, model_answers)
         else:
             answers |= model_answers
 
