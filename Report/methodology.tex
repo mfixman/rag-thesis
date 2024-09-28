@@ -288,7 +288,7 @@ The approach to finding out the source of knowledge of each query is specified i
 \newcommand{\NLL}{\text{NLL}}
 \newcommand{\PPL}{\text{PPL}}
 
-The Perplexity score of an answer is normally used to measure the inverse of the certainty that the model has of a particular answer \citep{fewshotlearners,retro}.
+The Perplexity score of an answer is normally used to measure the inverse of the certainty that the model has of a particular answer \citep{gpt3,retro}.
 In a sense, it's the ``surprise'' of a model that a certain answer is correct.
 
 We can define the probability of a model choosing a token $x_n$ with context $x_1, \dots, x_{n - 1}$ from a query $Q$ by calculating the softmax value of all the logits for the possible words for this token.
