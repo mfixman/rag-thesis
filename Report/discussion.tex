@@ -7,6 +7,82 @@
 \subsection{Model size and memorised knowledge}
 \label{model_size_parametric}
 
+\subsection{What are all of these Others?}
+
+\Cref{parametric_vs_contextual} showed that a significant minority of responses to queries with counterfactual context are \Other{}: answers that aren't equal to either the parametric nor the contextual data.
+The numbers of these entries, per model, are repeated in \cref{others_list}.
+
+\begin{table}[h]
+	\centering
+	\footnotesize
+	\begin{tabular}{>{\bfseries}l | c c c c}
+		\toprule
+			& \ttfamily Flan-T5-XL & \ttfamily Flan-T5-XXL & \ttfamily Meta-Llama-3.1-8B-Instruct & \ttfamily Meta-Llama-3.1-70B-Instruct \\
+		\midrule
+			\Other{} & 2436 & 2026 & 3284 & 4004 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Amount of \Other{} entries, that is, results where the answer was not either the parametric or contextual answer.}
+	\label{others_list}
+\end{table}
+
+By manually checking these results, we can understand the reason why the model chose these answers.
+
+\begin{description}[style=nextline]
+	\item[1. Different phrasing of a parametric answer]
+		54
+		There are many answers where the parametric chooses a certain way to phrase some answer, while the contextual information biases it to give the parametric answer with a different context.
+	\item[2. Plain incorrect answers]
+		17
+		Sometimes, adding counterfactual context to the model just causes it to produce an incorrect answer that's different the answers given by both the model and the context.
+	\item[3. Question misinterpretation due to the context]
+		12
+		Some questions can be ambiguous or have a low probability of another answer.
+		By adding a context with a counterfactual answer, the model can misinterpret the question and answer something different.
+	\item[4. Negating the context]
+		5
+		This is an interesting one: if the model has an answer in its parametric knowledge that contradicts the data on its context, then it interpret the context as part of the question and adds its negation as part of the answer.
+	\item[5. Different phrasing of the context]
+		13
+		Much less common than point 1, models sometimes give the same answer as the context but in the format of the parametric answer.
+	\item[6. Correct answer, just different than the parametric answer]
+		3
+		Some question have multiple correct answers, and adding counterfactual context can cause the model to give a different one.
+	\item[7. Mixing elements of both parametric answer and context]
+		4
+		Elements of the parametric answer are mixed with elements of the context in the model's answer.
+		This produces an incorrect answer, but it's easy to understand where it came from.
+		The cause of this is likely the greedy decoding used to find the answers, as explained in \cref{methodology_type_of_answer}.
+\end{description}
+
+\begin{table}[p]
+	\centering
+	\scriptsize
+	\begin{tabularx}{\textwidth}{>{\bfseries}c@{\hspace{2pt}}>{\ttfamily}X >{\ttfamily}p{75pt} >{\ttfamily}p{75pt} >{\ttfamily}p{75pt}}
+		\toprule
+			\bfseries Reason & \rmfamily\bfseries Question & \rmfamily\bfseries Parametric & \rmfamily\bfseries Counterfactual & \rmfamily\bfseries Contextual \\
+		\midrule
+		1. & Who was the primary leader associated with The Reforms of Diocletian? & Diocletian Himself & Caracalla, a Roman Emperor & Diocletian, a Roman Emperor \\
+		1. & In which city is Louvre Pyramid located? & Paris, France & the city of Valladolid, in the state of Yucatan, Mexico & the city of Paris, in the country of France \\
+		2. & In which period of the periodic table is Silver located? & 5 of the periodic table & 3 of the periodic table & 4 of the periodic table \\
+		3. & What was the duration of Queen Elizabeth II's Platinum Jubilee?	& 12 months & approximately 100 years & approximately 70 years \\
+		3. & What is the nearest major body of water to Cusco? & Lake Titicaca & the North Sea & the Pacific Ocean \\
+		4. & What is the name of the main protagonist in One Flew Over the Cuckoo's Nest? & Randle McMurphy & Achilles & Not Achilles \\
+		4. & What is Frida Kahlo primarily known for? & her self-portraits and her depiction of Mexican culture & his theories on communism and his critique of capitalism & her artwork and her life story, not for his theories on communism or critique of capitalism \\
+		5. & How many pages are in One Flew Over the Cuckoo's Nest? & 320 pages	& 480 pages in a standard edition & 480 pages \\
+		6. & Q: Who is credited with the discovery of Conservation of Energy? & Julius Robert Mayer & Alfred Wegener & James Joule\footnotemark[1]{} \\
+		6. & What is the name of the main protagonist in The Great Gatsby? & Nick Carraway	& Liesel Meminger & Jay Gatsby\footnotemark[2]{} \\
+		6. & What educational institution did Srinivasa Ramanujan attend? & The University of Madras & The University of Vienna & the University of Cambridge\footnotemark[3]{} \\
+		7. & What is the date of death of Vladimir Lenin? & January 21, 1924 & March 28, 1941 & March 21, 1924 \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Examples of different types of \Other{} answers when running the \texttt{Meta-Llama-3.1-8B-Instruct} model. Other models have similar reasons for these kinds of answers..}
+\end{table}
+\footnotext
+\footnotetext[1]{Discovery of the conservation of energy is credited to both Julius Robert Mayer and James Joule.}
+\footnotetext[2]{Nick Carraway and Jay Gatsby are co-protagonists in The Great Gatsby.}
+\footnotetext[3]{Srinivasa Ramanujan attended both the University of Madras and the University of Cambridge.}
+
 \subsection{Differences in perplexity scores for larger and smaller models}
 
 \subsubsection{Can we use this to predict from where an answer came from?}

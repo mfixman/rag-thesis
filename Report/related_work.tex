@@ -67,12 +67,10 @@ In particular, the performance of the models decreases strongly in Decoder-only 
 
 This paper also introduces a novel way to test this hypothesis by creating a dataset with questions and counterfactual context, an example of which is shown in \cref{query_example}.
 
-\begin{center}
-	\begin{lstlisting}[caption={Example of queries used in \citep{factual_recall}. These queries form the basis and inspiration for the dataset creation done in this thesis}, label={query_example},basicstyle=\ttfamily\small, keywordstyle=\bfseries, keywords={country,in-context city},captionpos=b,frame=single,breaklines=true,linewidth=300pt]
-The capital of {country} is {in-context city}
+\begin{lstlisting}[caption={Example of queries used in \citep{factual_recall}. These queries form the basis and inspiration for the dataset creation done in this thesis}, label={query_example},basicstyle=\ttfamily\small,keywordstyle=\rmfamily\bfseries,keywords={country,in,context,city},captionpos=b,frame=single,breaklines=true,xrightmargin=.15\textwidth,xleftmargin=.15\textwidth,float=h]
+The capital of {country} is {in context city}
 Q: What is the capital of {country}?
 A:
-	\end{lstlisting}
-\end{center}
+\end{lstlisting}
 
 By adding counterparametric information to the context, this method allows us to understand whether an answer came is parametric (that is, came from the memory of the model) or contextual (that is, came from the provided context).
