@@ -21,8 +21,9 @@ Specifically, we investigate whether these interactions vary depending on the ty
 \subsection{Research Question}
 
 How do we know what large language models really know?
+This thesis attempts to answer this question by asking a different but related question:
 
-This thesis attempts to answer this question by asking a different but related question: \textbf{What happens when the context in a query contradicts the parametric knowledge of this model?}
+\textbf{How does a large language model respond when given information that contradicts its inherent knowledge, and why?}
 
 The rest of this section gives an overview of the steps we take to answer this question.
 
@@ -33,13 +34,29 @@ This thesis is structured around three different sub-objectives to deepen our un
 % We propose the creation of a novel dataset of questions designed for testing LLMs' ability to distinguish between parametric and contextual knowledge.
 % This dataset is used to investigate the factors influencing an LLM's choice of answer, and hypothesise that we can use perplexity scores as a predictor of where a particular answer originates.
 
+\begin{description}[style=nextline,labelindent=10pt,itemindent=25pt]
+	\item[1. Creating a representative dataset of questions.]
+		This is necessary as existing Q\&A datasets are not suitable for our objectives.
+	\item[2. Building an experimental framework to understand the source of an LLM's answer when given contradictory information.]
+		This will give us information about which models prefers which type of answers, whether it depends on the question asked, and more.
+	\item[3. Enhancing the framework to understand the reasoning behind the answer]
+		We use the perplexity of a model's response on both answers to understand \textit{why} a certain answer was chosen.
+\end{description}
+
+\subsection{Overview of Methods}
+
 \subsubsection{Creating a representative dataset of questions}
 \label{questions_objective}
 
 We require a dataset of questions that's useful for answering our research question.
 This dataset should allow us to understand the responses of the models to know whether they came from the model's parametric memory or from the RAG context, and should be reasonably representative of the world to prevent biases.
 
-\subsubsection{When does a model choose the provided context knowledge over its inherent knowledge?}
+In particular, the questions should allow us to easily create counterparametric answers to later add as context to our queries.
+We follow the example of \citeauthor{factual_recall} on creating questions that can be easily answered with short responses, and later using these answers to create counterparametric context.
+
+We also enhance this work by adding a much larger set of questions of a variety of topics.
+
+\subsubsection{Building an experimental framework to understand the source of an LLM's answer when given contradictory information}
 \label{intro_models_numbers}
 
 Currently, little is understood about the factors and mechanisms that control whether an LLM will generate text respecting either the context or the memorised information.
@@ -51,7 +68,7 @@ We also research the cases when the answer doesn't correspond to either the para
 
 % This thesis also gathers insights from answering this question on different categories and patterns of questions to find out if this depends on what is being asked.
 
-\subsubsection{Can we use the perplexity score of an answer to predict whether it came from inherent or contextual knowledge?}
+\subsubsection{Enhancing the framework to understand the reason the model chose this answer}
 
 \Citeauthor{factual_recall} showed that there is a correlation between the probability of a large language model choosing a parametric answer over a counterfactual contextual answer and the amount of times this answer appears in the ground truth data of the model.
 This gives us clues on whether the result of a query came from parametric or contextual knowledge if we have access to this ground truth, as is the case in models like Pythia \citep{pythia}.
