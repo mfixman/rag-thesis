@@ -181,8 +181,27 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\label{flan_cats_result}
 \end{figure}
 
-% \newpage{}
+\subsubsection{Calculating the attention of the contextual and question part of each query}
 
+Using the method described in \cref{attention_section}, we can find how much attention each model gives, on average, to the context part of the query and to the rest.
+The results are present in \cref{attention_table}.
+
+\begin{table}[ht]
+	\centering
+	\scriptsize
+	\begin{tabular}{l | r r r r}
+		\toprule
+			Query Part & \smallflanbox{} & \bigflanbox{} & \llamaparbox{} & \bigllamaparbox{} \\
+		\midrule
+			Context & 0.18 & & 0.08 & \\
+			Rest & 0.38 & & 0.29 & \\
+		\bottomrule
+	\end{tabular}
+	\caption{Average normalised attention of the query on the tokens corresponding to the context of the query, and to the tokens corresponding to the rest.}
+	\label{attention_table}
+\end{table}
+
+\clearpage{}
 \subsection{Enhancing the framework to understand the reasoning behind each answer}
 \label{results_perplexity_score}
 
