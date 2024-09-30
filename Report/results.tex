@@ -59,6 +59,27 @@ The total amount of these and composition of the 4760 questions can be found in 
 \subsection{Building an experimental framework to understand the source of an LLM's answer}
 \label{parametric_vs_contextual}
 
+\subsubsection{Building and running the framework}
+\newcommand{\somecode}[1]{\fcolorbox{Gray!80}{Gray!40}{\ttfamily #1}}
+
+The code used for running this framework is present in \cref{appendixD}.
+This code roughly follows the diagram on \cref{action_diagram} to run the following steps.
+\begin{enumerate}
+	\item Generate questions from base questions and objects: \somecode{combine\_questions}.
+	\item Gather the parametric answers for each model: \somecode{QuestionAnswerer.answerChunk}.
+	\item Shuffle them to create counterfactual answers: \somecode{sample\_counterfactual\_flips}.
+	\item Build new queries with these counterfactual answers as context: \somecode{Question.format}.
+	\item Run the models again, and gather the corresponding answer type for each answer from the results: \somecode{QuestionAnswerer.answerCounterfactuals}.
+\end{enumerate}
+
+The models were run on a server with 48 Intel(R) Xeon(R) CPU 3GHz CPUs, 376GB of RAM, and 2 NVIDIA A100 GPUs with 80GB of VRAM each that was kindly provided by City, University of London.
+
+We estimate that it's possible to run this framework on all but the largest model, \texttt{Meta-Llama-3.1-70B}, using a single A100 GPU.
+
+\Cref{appendixC} explains the many options that can be run on \texttt{knowledge\_grounder.py} to re-run this experiment or run similar ones.
+
+\subsubsection{Framework Results}
+
 The results of running the queries created in \cref{creating_dataset} with added counterparametric context on each of the four models the four models can be found in \cref{total_table,total_results}.
 
 \begin{table}[htbp]
