@@ -1,5 +1,12 @@
 \section{Methods}
 
+How does a large language model respond when given information that contradicts its inherent knowledge, and why?
+
+To understand this, we need to build a new framework for testing a model's answers when presented with contradictory information.
+This framework must be tested with models of various architectures and sizes to get insights about our responses.
+
+Following the example set in \cref{introduction_research_objectives}, we split the work into three sub-objectives.
+
 \subsection{Creating a representative dataset of questions}
 \label{creating_dataset}
 
@@ -8,21 +15,21 @@ As argued in \cref{questions_objective}, the research of this thesis requires a 
 \subsubsection{Dataset Description}
 
 The dataset we aim to create for this research is designed to be a comprehensive and versatile tool for evaluating large language models.
-By choosing this criteria when selecting questions, we ensure that the dataset will provide meaningful insights into knowledge grounding of large language models across a wide spectrum of knowledge domains.
+By choosing this criteria when selecting questions, we ensure that the dataset will provide meaningful insights of the knowledge grounding of large language models across a wide spectrum of domains.
 
-In order to understand knowledge grounding in these LLMs, we require a dataset with the following properties:
-\begin{enumerate}
-	\item \textbf{Questions should have short, unambiguous answers.} \\
+Our dataset should have the following properties.
+\begin{description}[style=nextline]
+	\item[1. Questions should have short, unambiguous answers.]
 		Our goal is to compare these results for both equality and perplexity. Longer answers make this objective more complicated since two long, correct answers might be equivalent. Shorter answers reduce the space of possible answers that are equivalent, but not equal.
-	\item \textbf{Questions must cover a large and diverse set of topics in a comprehensive global and historical range.} \\
+	\item[2. Questions must cover a large and diverse set of topics.]
 	    The parametric knowledge of a model comes from a pre-existing dataset of training data, which might be biased towards certain topics or groups of people. For example, it is known that Wikipedia contains a significant geographical bias on biographies \citep{wikipedia_geographic_bias}, and that this affects the probability of giving a correct answer without context \citep{factual_recall}.
 		We require a large and diverse and set of topics to counteract potential biases.
-	\item \textbf{Questions must allow for the creation of counterparametric answers in the same format as correct ones.} \\
+	\item[3. Questions must allow for the creation of counterparametric answers.]
 		Part of the requirements of this thesis is to allow some tests of contextual versus inherent knowledge.
 	    A simple way to do this is to repeat and enhance the approach used by \citeauthor{factual_recall} of adding counterparametric answers to a query context.
 		This allows us to to easily disambiguate whether an answer came from the model's memory or from the context.
 	    This approach is only possible if the set of answers allows us to create a set of alternative answers that are plausibly correct and have the same format as the parametric answer, but are still counterparametric.
-\end{enumerate}
+\end{description}
 
 The existing literature uses various existing question-and-answer datasets.
 We believe that none of these datasets are a good fit for this research for not following some of the three desired properties.
@@ -105,12 +112,12 @@ An example of this approach is shown in \cref{source_data_example}.
 
 This list of questions will enable the research on whether the answers given by large language models depend on the category and the format of the questions.
 
-\subsection{Understanding when a model chooses contextual knowledge versus parametric knowledge}
+\subsection{Building an experimental framework to understand the source of an LLM's answer}
 \label{method22}
 
 \subsubsection{Model Selection}
 
-In order to get a general understanding of large language models with added context, we test the queries generated in \cref{creating_dataset} into four models of different types and sizes, which are listed in \cref{model_list}.
+In order to get a general understanding of large language models with added context, we test the queries generated in \cref{creating_dataset} into four models of different architectures and sizes, which are listed in \cref{model_list}.
 
 \begin{table}[htb]
 	\centering
@@ -153,7 +160,7 @@ The properties of the models are summarised in \cref{model_card}.
 	\footnotesize
 	\begin{tabular}{>{\ttfamily}l l l r r}
 		\toprule
-			\rmfamily \bfseries Model & \bfseries Type & \bfseries Developer & \bfseries Parameters & \bfseries Context \\
+			\rmfamily \bfseries Model & \bfseries Architecture & \bfseries Developer & \bfseries Parameters & \bfseries Context \\
 		\midrule
 			Flan-T5-XL & Seq2Seq & Google Brain & 3 Billion & 512 Tokens \\
 			Flan-T5-XXL & Seq2Seq & Google Brain & 11 Billion & 512 Tokens \\
@@ -282,7 +289,7 @@ The approach to finding out the source of knowledge of each query is specified i
 
 \newpage{}
 
-\subsection{Studying the Role of Perplexity Scores of the Provided Answers}
+\subsection{Enhancing the framework to understand the reasoning behind each answer}
 \label{method_perplexity}
 
 \subsubsection{Perplexity Score}
