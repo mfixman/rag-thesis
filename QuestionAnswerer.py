@@ -176,8 +176,8 @@ class QuestionAnswerer:
         context_left = ((queries.input_ids == self.llm.tokenizer.pad_token_id) | (queries.input_ids == self.llm.tokenizer.eos_token_id))
         context_right = ((queries.input_ids == self.llm.tokenizer.convert_tokens_to_ids(']')) | (queries.input_ids == self.llm.tokenizer.convert_tokens_to_ids('].')))
 
-        context_area = context_left & (context_right.cumsum(dim = 1) == 0)
-        later_area = context_right.cumsum(dim = 1)
+        context_area = ~context_left & (context_right.cumsum(dim = 1) == 0)
+        later_area = context_right.cumsum(dim = 1) > 0
 
         context = scaled.clone()
         context[~context_area] = torch.nan
