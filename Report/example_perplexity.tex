@@ -93,10 +93,10 @@
 
 	\fbox{\parbox[][6em]{\textwidth}{
 		\begin{equation*}
-			P_2 > P_3 \qquad \Longrightarrow \qquad \text{\bfseries Contextual}
+			P_2 > P_3 \qquad \Longrightarrow \qquad \text{\Contextual{}}
 		\end{equation*}
 	}}
 
-	\caption{Example of perplexity calculation for the parametric and counterparametric answers in a query with the counterparametric context. Note that, due to teacher forcing, the calculation finds the probability of the next token $p_i$ \textit{given the previous tokens of the searched answer $p_1, \dots, p_{i - 1}$} rather than given the most likely tokens. For example, once we feed the string ``\texttt{National Gallery of Canada in}'', the probability of the next token being ``\texttt{Ottawa}'' is very high.}
+	\caption{Example of perplexity calculation for the parametric and counterparametric answers in a query with the counterparametric context. Note that, due to teacher forcing, the calculation finds the probability of the next token $p_i$ \textit{given the previous tokens of the searched answer $p_1, \dots, p_{i - 1}$} rather than given the most likely tokens. For example, once we feed the string ``\texttt{National Gallery of Canada in}'', the probability of the next token being ``\texttt{Ottawa}'' is very high. In the same way, despite the perplexity of the word \texttt{collection} following \texttt{the} is very high, the perplexity of the following words is considerably lower.}
 	\label{example_perplexity}
 \end{figure}

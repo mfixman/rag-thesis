@@ -98,11 +98,11 @@ The results of running the queries created in \cref{creating_dataset} with added
 			\ttfamily flan-t5-xxl & 242 & 4304 & 214 \\
 		\bottomrule
 	\end{tabular}
-	\caption{Results when running all entries on a decoder-only model.}
+	\caption{Results when running all various models.}
 	\label{total_table}.
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[ht]
 	\centering
 	\subfigure[Decoder-only models]{
 		\raggedright
@@ -121,29 +121,6 @@ This is investigated further in \cref{discussion}.
 
 A similar pattern emerges in most (but not all) of the categories, which can be seen in \cref{llama_cats_table,llama_cats_result,flan_cats_table,flan_cats_result}.
 
-\begin{table}[htbp]
-	\centering
-	\footnotesize
-	\begin{tabular}{>{\bfseries}l | r r r | r r r}
-		\toprule
-			& \multicolumn{3}{c|}{\ttfamily \bfseries llama-3.1-8B} & \multicolumn{3}{c}{\ttfamily \bfseries llama-3.1-70B} \\
-			& \Parametric{} & \Contextual{} & \Other{} & \Parametric{} & \Contextual{} & \Other{} \\
-		\midrule
-			Person           &  40 &  833 & 96 & 209 & 614 & 146 \\
-			City             & 117 & 1007 & 66 & 166 & 966 &  58 \\
-			Principle        &  44 &  118 & 23 &  44 & 117 &  24 \\
-			Element          & 218 &  385 & 42 & 275 & 347 &  23 \\
-			Book             & 135 &  344 & 60 & 154 & 318 &  67 \\
-			Painting         &  47 &  458 & 23 &  49 & 445 &  34 \\
-			Historical Event &  81 &  154 & 21 & 117 & 118 &  21 \\
-			Building         &  27 &  163 &  8 &  31 & 159 &   8 \\
-			Composition      &  36 &  200 & 14 &  25 & 219 &   6 \\
-		\bottomrule
-	\end{tabular}
-	\caption{Results for running each one of the 10 categories separately on the Decoder-only models.}
-	\label{llama_cats_table}
-\end{table}
-
 \begin{figure}[p]
 	\centering
 	\includegraphics[width=\textwidth]{llama_allcats.png}
@@ -151,12 +128,41 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\label{llama_cats_result}
 \end{figure}
 
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\textwidth]{flan_allcats.png}
+	\caption{Results of running Seq2Seq models on the queried data, grouped by category. This plots the information shown in \cref{flan_cats_table}.}
+	\label{flan_cats_result}
+\end{figure}
+
+\subsubsection{Calculating the attention of the context and question of each query}
+\label{attention_results}
+
+Using the method described in \cref{attention_section}, we can find the attention each model gives, on average, to the tokens in the context part of the query, and how much to the rest.
+% The results are present in \cref{attention_table}.
+
+\begin{table}[h]
+	\centering
+	\scriptsize
+	\begin{tabular}{l | r r r r}
+		\toprule
+			Query Part & \smallflan{} & \bigflan{} & \llamaparbox{} & \bigllamaparbox{} \\
+		\midrule
+			Context & 0.18 & 0.22 & 0.08 & \\
+			Rest & 0.38 & 0.05 & 0.29 & \\
+		\bottomrule
+	\end{tabular}
+	\caption{Average normalised attention of the query on the tokens corresponding to the context of the query, and to the tokens corresponding to the rest.}
+	\label{attention_table}
+\end{table}
+
+
 \begin{table}[ht]
 	\centering
 	\footnotesize
 	\begin{tabular}{>{\bfseries}l | r r r | r r r}
 		\toprule
-			& \multicolumn{3}{|c}{\ttfamily flan-t5-xl} & \multicolumn{3}{|c}{\ttfamily flan-t5-xxl} \\
+			& \multicolumn{3}{|c}{\smallflan{}} & \multicolumn{3}{|c}{\bigflan{}} \\
 			& \Parametric{} & \Contextual{} & \Other{} & \Parametric{} & \Contextual{} & \Other{} \\
 		\midrule
 			Person           &  32 &  900 & 37 &  23 &  890 & 56 \\
@@ -174,32 +180,27 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 	\label{flan_cats_table}
 \end{table}
 
-\begin{figure}[p]
+\begin{table}[htbp]
 	\centering
-	\includegraphics[width=\textwidth]{flan_allcats.png}
-	\caption{Results of running Seq2Seq models on the queried data, grouped by category. This plots the information shown in \cref{flan_cats_table}.}
-	\label{flan_cats_result}
-\end{figure}
-
-\subsubsection{Calculating the attention of the contextual and question part of each query}
-\label{attention_results}
-
-Using the method described in \cref{attention_section}, we can find how much attention each model gives, on average, to the context part of the query and to the rest.
-The results are present in \cref{attention_table}.
-
-\begin{table}[ht]
-	\centering
-	\scriptsize
-	\begin{tabular}{l | r r r r}
+	\footnotesize
+	\begin{tabular}{>{\bfseries}l | r r r | r r r}
 		\toprule
-			Query Part & \smallflan{} & \bigflan{} & \llamaparbox{} & \bigllamaparbox{} \\
+			& \multicolumn{3}{c|}{\smallllama{}} & \multicolumn{3}{c}{\bigllama{}} \\
+			& \Parametric{} & \Contextual{} & \Other{} & \Parametric{} & \Contextual{} & \Other{} \\
 		\midrule
-			Context & 0.18 & 0.22 & 0.08 & \\
-			Rest & 0.38 & 0.05 & 0.29 & \\
+			Person           &  40 &  833 & 96 & 209 & 614 & 146 \\
+			City             & 117 & 1007 & 66 & 166 & 966 &  58 \\
+			Principle        &  44 &  118 & 23 &  44 & 117 &  24 \\
+			Element          & 218 &  385 & 42 & 275 & 347 &  23 \\
+			Book             & 135 &  344 & 60 & 154 & 318 &  67 \\
+			Painting         &  47 &  458 & 23 &  49 & 445 &  34 \\
+			Historical Event &  81 &  154 & 21 & 117 & 118 &  21 \\
+			Building         &  27 &  163 &  8 &  31 & 159 &   8 \\
+			Composition      &  36 &  200 & 14 &  25 & 219 &   6 \\
 		\bottomrule
 	\end{tabular}
-	\caption{Average normalised attention of the query on the tokens corresponding to the context of the query, and to the tokens corresponding to the rest.}
-	\label{attention_table}
+	\caption{Results for running each one of the 10 categories separately on the Decoder-only models.}
+	\label{llama_cats_table}
 \end{table}
 
 \clearpage{}
@@ -214,16 +215,18 @@ These are accumulated in three distributions, depending on answer type, which ar
 	\footnotesize
 	\begin{tabular}{>{\bfseries}l | r r | r r}
 		\toprule
-			& \multicolumn{2}{|c}{\ttfamily llama-3.1-8B} & \multicolumn{2}{|c}{\ttfamily llama-3.1-70B} \\
+			& \multicolumn{2}{|c}{\smallllama} & \multicolumn{2}{|c}{\bigllama} \\
 			& \Parametric{} & \Contextual{} & \Parametric{} & \Contextual{} \\
 		\midrule
-			count &  313 & 4447 &  383 & 4377  \\
-			mean  & 1.67 & 1.20 & 1.56 & 1.22  \\
-			std   & 0.79 & 0.32 & 0.46 & 0.31  \\
-			25\%  & 1.28 & 1.05 & 1.28 & 1.06  \\
-			50\%  & 1.43 & 1.10 & 1.43 & 1.12  \\
-			75\%  & 1.78 & 1.23 & 1.68 & 1.25  \\
-		\bottomrule
+			count & 289 & 4471 & 383 & 4377 \\
+			mean & 1.64 & 1.20 & 1.56 & 1.22 \\
+			std & 0.87 & 0.30 & 0.46 & 0.31 \\
+			10\% & 1.18 & 1.03 & 1.20 & 1.03 \\
+			25\% & 1.28 & 1.05 & 1.28 & 1.06 \\
+			50\% & 1.45 & 1.11 & 1.43 & 1.12 \\
+			75\% & 1.72 & 1.23 & 1.68 & 1.25 \\
+			90\% & 2.22 & 1.43 & 2.04 & 1.49 \\
+\bottomrule
 	\end{tabular}
 	\caption{Distribution of perplexity values for Decoder-only models}
 	\label{perplexity_llama_table}
@@ -234,15 +237,17 @@ These are accumulated in three distributions, depending on answer type, which ar
 	\footnotesize
 	\begin{tabular}{>{\bfseries}l | r r | r r}
 		\toprule
-			& \multicolumn{2}{|c}{\ttfamily flan-T5-XL} & \multicolumn{2}{|c}{\ttfamily flan-T5-XXL} \\
+			& \multicolumn{2}{|c}{\smallflan} & \multicolumn{2}{|c}{\bigflan} \\
 			& \Parametric{} & \Contextual{} & \Parametric{} & \Contextual{} \\
 		\midrule
-			count &  651 & 4109 &   507 & 4253 \\
-			mean  & 6.38 & 1.56 & 11.75 & 1.27 \\
-			std   & 9.07 & 0.56 & 18.47 & 0.75 \\
-			25\%  & 3.21 & 1.19 &  2.41 & 1.02 \\
-			50\%  & 4.71 & 1.39 &  3.89 & 1.09 \\
-			75\%  & 7.14 & 1.71 &  7.70 & 1.24 \\
+			count & 588 & 4172 & 491 & 4269 \\
+			mean & 7.02 & 1.55 & 12.01 & 1.24 \\
+			std & 11.25 & 0.56 & 18.91 & 0.68 \\
+			10\% & 2.60 & 1.08 & 1.47 & 1.00 \\
+			25\% & 3.21 & 1.18 & 2.54 & 1.02 \\
+			50\% & 4.71 & 1.37 & 4.00 & 1.08 \\
+			75\% & 7.40 & 1.69 & 8.37 & 1.22 \\
+			90\% & 10.72 & 2.32 & 44.25 & 1.54 \\
 		\bottomrule
 	\end{tabular}
 	\caption{Distribution of perplexity values for Seq2Seq models}
@@ -266,9 +271,11 @@ These are accumulated in three distributions, depending on answer type, which ar
 \begin{figure}[p]
 	\includegraphics[width=\textwidth]{llama_catboxes.png}
 	\caption{Box plots representing the distribution of the perplexities when running both Llama models, grouped by category.}
+	\label{llama_catboxes}
 \end{figure}
 
 \begin{figure}[p]
 	\includegraphics[width=\textwidth]{flan_catboxes.png}
 	\caption{Box plots representing the distribution of the perplexities when running both Flan-T5 models, grouped by category.}
+	\label{flan_catboxes}
 \end{figure}

@@ -120,8 +120,8 @@ Does the architecture and size of the model affect the distribution of each type
 		\toprule
 			\bfseries Type & \ttfamily\scriptsize Flan-T5-XL & \ttfamily\scriptsize Flan-T5-XXL & \ttfamily\scriptsize \llamaparbox{} & \ttfamily\scriptsize \bigllamaparbox{} \\
 		\midrule
-			\tiny (\Parametric{}) & 248 & 242 & 745 & 1070 \\
-			\tiny (\Contextual{}) & 4284 & 4304 & 3662 & 3303 \\
+			(\Parametric{}) & 248 & 242 & 745 & 1070 \\
+			(\Contextual{}) & 4284 & 4304 & 3662 & 3303 \\
 		\midrule
 			1. & 0 & 0 & 116 & 234 \\
 			2. & 6 & 3 & 50 & 15 \\
@@ -183,6 +183,30 @@ This is an area that should be improved; \cref{other_problems} gives more inform
 
 \subsection{Differences in perplexity scores for larger and smaller models}
 
-\subsubsection{Can we use this to predict from where an answer came from?}
+The distribution of perplexity scores, shown in \cref{results_perplexity_score}, shows a significant difference in the perplexity scores between \Parametric{} and \Contextual{} answers for all four models.
+This is even more marked on Seq2Seq models, where for both models the 90\% percentile of the \Contextual{} answer is lower than the 10\% percentile of the \Parametric{}.
 
-\subsection{Differences in distributions for different categories and questions.}
+In fact, this confirms our conjecture that \textbf{models tend to be surprised when finding an answer that contradicts the context of the query}.
+This conjecture seems to be true regardless of model size or question type (see \cref{flan_catboxes,llama_catboxes}).
+
+The cause for the difference in the perplexity values for different architectures is likely the same as discussed in \cref{model_architecture_parametric} on why the \texttt{Flan-T5} models generally have better performance on these tasks than \texttt{Llama} models.
+\begin{description}
+	\item[Model Architecture] By processing the entire input in one go, the Seq2Seq encoding step processes information in the context in the encoding step first before starting decoding. In Decoder-only models, the shift from going from contextual to parametric knowledge is less abrupt, resulting in a less pronounced change in perplexity.
+	\item[Training Data] \texttt{Flan-T5} models are trained in data where getting information from the query itself is more relevant.
+		In a sense, they are biased to being more surprised when producing a parametric answer.
+\end{description}
+
+\subsubsection{Can we use the perplexity to predict the source of an answer?}
+
+Seeing the current results, it's tempting to attempt to create a model that can predict, with perplexity information alone and without making any extra query, whether the answer in a query with added context came from the \Parametric{} knowledge of the context or from the \Contextual{} information in the query.
+
+This can be useful in practice: if a RAG-enhanced model finds an answer with high perplexity, it can attempt to re-run the RAG indexing to find a more relevant answer and possible prevent a hallucination.
+
+The results in \cref{perplexity_flan_table,perplexity_llama_table} seem consistent with \cref{roc_auc} in that such predictor would work better in Seq2Seq models, particularly on \bigflan{}: by re-running the RAG indexer on answers with perplexity over 1.5, we can prevent hallucinations on 90\% of the answers that came from parametric knowledge while keeping 80\% of the total.
+
+\begin{figure}[hb]
+	\centering
+	\includegraphics[width=.85\textwidth]{roc_auc.png}
+	\caption{ROC curve of the four tested models to find out whether an answer came from the \Paramtric{} knowledge of a model using the perplexity of the answer.}
+	\label{roc_auc}
+\end{figure}

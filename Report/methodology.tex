@@ -380,7 +380,12 @@ For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterpara
 Since the parametric answer is by definition the response of the model to the regular query, $P_0 \leq P_1$.
 In fact, the perplexity of the parametric value is lower than the perplexity of any other answer on query $Q$.
 
-\Cref{example_perplexity} contains an example of the calculation of the perplexity values for a particular query.
+\Cref{example_perplexity} contains an example of the calculation of the perplexity values for a particular query in a case where the contextual answer is considerably less surprising than the parametric answer.
+
+Similar to the work done earlier in this section, we say that the perplexity of an answer is \Parametric{} if the probability of getting the parametric answer is greater than the probability of getting the contextual answer; that is, $P_2 < P_3$.
+Contrary to this, we consider an answer \Contextual{} if $P_2 > P_3$.
+
+For simplicity and to the myriad of possible token and probability combinations, in this experiment we do not analyse the case when an answer is preferred to either of these two.
 
 \subsubsection{Predicting whether an answer came from memory or from context}
 
