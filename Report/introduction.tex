@@ -28,6 +28,7 @@ This thesis attempts to answer this question by asking a different but related q
 The rest of this section gives an overview of the steps we take to answer this question.
 
 \subsection{Research Objectives}
+\label{introduction_research_objectives}
 
 This thesis is structured around three different sub-objectives to deepen our understanding knowledge grounding in large language models.
 
@@ -37,9 +38,9 @@ This thesis is structured around three different sub-objectives to deepen our un
 \begin{description}[style=nextline,labelindent=10pt,itemindent=25pt]
 	\item[1. Creating a representative dataset of questions.]
 		This is necessary as existing Q\&A datasets are not suitable for our objectives.
-	\item[2. Building an experimental framework to understand the source of an LLM's answer when given contradictory information.]
+	\item[2. Building an experimental framework to understand the source of an LLM's answer.]
 		This will give us information about which models prefers which type of answers, whether it depends on the question asked, and more.
-	\item[3. Enhancing the framework to understand the reasoning behind the answer]
+	\item[3. Enhancing the framework to understand the reasoning behind each answer]
 		We use the perplexity of a model's response on both answers to understand \textit{why} a certain answer was chosen.
 \end{description}
 
@@ -56,19 +57,19 @@ We follow the example of \citeauthor{factual_recall} on creating questions that 
 
 We also enhance this work by adding a much larger set of questions of a variety of topics.
 
-\subsubsection{Building an experimental framework to understand the source of an LLM's answer when given contradictory information}
+\subsubsection{Building an experimental framework to understand the source of an LLM's answer}
 \label{intro_models_numbers}
 
 Currently, little is understood about the factors and mechanisms that control whether an LLM will generate text respecting either the context or the memorised information.
 
-Previous research found out that, when the context of a query contradicts the ground knowledge of a model, the final answer depends on the size and type of the model used \citep{factual_recall}.
+Previous research found out that, when the context of a query contradicts the ground knowledge of a model, the final answer depends on the size and architecture of the model used \citep{factual_recall}.
 
 This thesis extends this research by testing the representative set of questions and counterfactuals described in the previous section with both Seq2Seq and Decoder-only models of various sizes.
 We also research the cases when the answer doesn't correspond to either the parametric or contextual knowledge, and why the model chooses a third type of answer when adding counterfactual context.
 
 % This thesis also gathers insights from answering this question on different categories and patterns of questions to find out if this depends on what is being asked.
 
-\subsubsection{Enhancing the framework to understand the reason the model chose this answer}
+\subsubsection{Enhancing the framework to understand the reasoning behind each answer}
 
 \Citeauthor{factual_recall} showed that there is a correlation between the probability of a large language model choosing a parametric answer over a counterfactual contextual answer and the amount of times this answer appears in the ground truth data of the model.
 This gives us clues on whether the result of a query came from parametric or contextual knowledge if we have access to this ground truth, as is the case in models like Pythia \citep{pythia}.

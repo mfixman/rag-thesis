@@ -63,7 +63,7 @@ Various attempts have been made at understanding how good the knowledge groundin
 In ``RAGGED: Towards Informed Design of Retrieval Augmented Systems'' \citep{ragged}, the authors create a framework to evaluate these systems and find that different models suit substantially varied RAG setups.
 In particular, the performance of the models decreases strongly in Decoder-only models such as Llama when the context passages provides more context, while this does not happen on Seq2Seq models such as Flan.
 
-``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, which is one of the main sources for this thesis, finds that when there is disagreement between the model's knowledge and the provided context then the type and size of the large language model will greatly affect the probability of the model choosing to use the context (which is much less prone to hallucinating) as an answer.
+``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, which is one of the main sources for this thesis, finds that when there is disagreement between the model's knowledge and the provided context then the architecture and size of the large language model will greatly affect the probability of the model choosing to use the context (which is much less prone to hallucinating) as an answer.
 
 This paper also introduces a novel way to test this hypothesis by creating a dataset with questions and counterfactual context, an example of which is shown in \cref{query_example}.
 

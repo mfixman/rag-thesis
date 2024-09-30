@@ -50,7 +50,7 @@ The total amount of these and composition of the 4760 questions can be found in 
 
 \newpage{}
 
-\subsection{When does a model choose the provided context knowledge over its inherent knowledge?}
+\subsection{Building an experimental framework to understand the source of an LLM's answer}
 \label{parametric_vs_contextual}
 
 The results of running the queries created in \cref{creating_dataset} with added counterparametric context on each of the four models the four models can be found in \cref{total_table,total_results}.
@@ -154,7 +154,7 @@ A similar pattern emerges in most (but not all) of the categories, which can be 
 
 \newpage{}
 
-\subsection{Can we use the perplexity score of an answer to predict whether it came from inherent or contextual knowledge?}
+\subsection{Enhancing the framework to understand the reasoning behind each answer}
 \label{results_perplexity_score}
 
 We calculate the resulting perplexity of each query as explained in \cref{method_perplexity}.
@@ -210,7 +210,7 @@ These are accumulated in three distributions, depending on answer type, which ar
 		\raggedleft
 		\includegraphics[width=.48\textwidth]{flan_boxplot.png}
 	}
-	\caption{Perplexity distribution according to model type and size. These represent the same distributions as \cref{perplexity_llama_table,perplexity_flan_table}.}
+	\caption{Perplexity distribution according to model architecture and size. These represent the same distributions as \cref{perplexity_llama_table,perplexity_flan_table}.}
 	\label{perplexity_results}
 \end{figure}
 
