@@ -1,22 +1,24 @@
 \begin{abstract}
 
 In recent years large language models have exploded in quality and prevalence, and they have become crucial for work in a wide range of areas.
-However, their tendency to produce hallucinations presents a critical challenge in context where accuracy is crucial.
+However, their tendency to produce hallucinations presents a critical challenge in contexts where accuracy is crucial.
 
 Retrieval-Augmented Generation (RAG), which leverages external information to provide more accurate and contextually appropriate responses, has been proposed as a solution to this issue.
 However, this solution is far from perfect as it's unclear when a large language model will choose the information provided by the RAG model over its learned, parametric knowledge.
 
 This thesis explores the \emph{Knowledge Grounding} of various large language models.
-In particular, it attempts to answer a simple research question: \textbf{when would a model choose an answer using its parametric or contextual knowledge, and why?}
+In particular, it attempts to answer a simple research question: \textbf{How does a large language model respond when given information that contradicts its inherent knowledge, and why?}
 
-To investigate this, we developed a diverse dataset comprising questions from various topics and globally representative data, which we used to construct queries with counterparametric context across four models of different types and sizes.
-We later analyse the perplexity of these answers to understand the level of surprise that a model has when presented with the parametric or contextual answer.
+To investigate this, we develop a diverse dataset comprising questions from various topics and globally representative data.
+We use this dataset to construct queries with counterparametric context across four models of different architectures and sizes, and later analyse the perplexity of these answers to give us a clue to \textit{why} the model chose an answer over the other.
 
 Our findings suggest that, when using RAG-enhanced systems, smaller and simpler models might produce fewer hallucinations.
 In particular, the smaller models \texttt{Meta-Llama-3.1-8B} and \texttt{Flan-T5-XL} tend to have better knowledge grounding and fewer hallucinations than their larger versions.
-Additionally, we propose novel methods for determining whether a given response originates from the RAG context or the model's internal memory using its resulting perplexity, which may indicate a potential hallucination.
+Additionally, when adding RAG context the simpler Seq2Seq models tend to outperform the newer and more complex Decoder-only models.
+
+As an extra analysis we investigate methods for determining whether a given response originates from the RAG context or the model's internal memory using its resulting perplexity, which may indicate a potential hallucination.
 
 This thesis forms the foundational part of a broader project aimed at publishing a comprehensive study on knowledge grounding in retrieval-augmented language models, as outlined in the preprint ``Knowledge Grounding in Retrieval-Augmented LMs: An Empirical Study'' \citep{knowledge_grounding_retrieval_augmented}.
-We build on existing literature, incorporating the use of counterparametric context in queries, to advance our understanding of this phenomenon."
+We build on existing literature, incorporating the use of counterparametric context in queries, to advance our understanding of this phenomenon.
 
 \end{abstract}
