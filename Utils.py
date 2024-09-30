@@ -117,7 +117,7 @@ def chunk_questions(questions: list[Question], max_batch_size: int) -> list[list
 
 # Prints a CSV file with the questions and resulting answers.
 def print_parametric_csv(out: typing.TextIO, answer: dict[str, list[Any]]):
-    fieldnames = ['Num', 'Category', 'Base_Question', 'Thing', 'Question', 'Prefix'] + list(answer.keys())
+    fieldnames = ['Num', 'Category', 'Base_Question', 'Object', 'Question', 'Prefix'] + list(answer.keys())
 
     writer = csv.DictWriter(
         out,
