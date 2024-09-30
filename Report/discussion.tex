@@ -2,7 +2,6 @@
 \label{discussion}
 
 \Cref{results_section} presented results from generating the question dataset and running the framework to understand the role of parametric knowledge in question-answering.
-
 This section attempts to explain these results, and discusses what they mean for our research question.
 
 \subsection{Model architecture and memorised knowledge}
@@ -12,28 +11,30 @@ This section attempts to explain these results, and discusses what they mean for
 \Cref{flan_cats_table,llama_cats_table} show these results split by category of question.
 
 The results are clear: \textbf{Seq2Seq models tend to answer questions from their contextual knowledge rather than from their inherent knowledge more often than Decoder-only models}.
-These results are the same regardless of the category of the question, and are consistent among many types and lengths of answers.
+These results persist across different question categories and are consistent regardless of answer types and lengths
 
-This results shows that, in the framework of question-answering when using RAG to fetch contextual data from an index, Seq2Seq models will have fewer hallucinations that contradict this index than Decoder-only models.
+These results show that, in the framework of question-answering when using RAG to fetch contextual data from an index, Seq2Seq models will have fewer hallucinations that contradict this index than Decoder-only models.
 
-We present several hypotheses which might cause the difference in these results.
+We propose two hypotheses that could explain these differences.
 
 \subsubsection{Advantages of the Encoder-Decoder Architecture}
 
 As described in \cref{llm_architectures}, Seq2Seq models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself.
 
-We can test this hypothesis by finding the average attention of the context section of each query and of the question section for each model, using the method discussed in \cref{attention_section}.
+We can test this hypothesis by finding the mean attention of the tokens corresponding to the context and to the rest of the query, and using the method discussed in \cref{attention_section}.
 
-The results presented in \cref{attention_results} are consistent with this theory: the difference between the attention given to the contextual token of this query for Seq2Seq models is much higher than this value for Decoder-only models.
+The results presented in \cref{attention_results} are consistent with this theory: Seq2Seq models allocate significantly more attention to the contextual tokens of the query compared to Decoder-only models.
 
 \subsubsection{Different training data and fine-tuning}
 
-It's possible that this result doesn't come from the model architecture, but the way the models are trained introduces some biases.
+It's possible that these result doesn't come from the model architecture, but the way the models are trained introduces some biases.
 
 Additionally, the Flan models were trained on masked token generation and later fine-tuned on question-answering about passages \citep{flant5}.
 This requires strong alignment between query and answer, which encourages the model to focus on the input context and makes it more likely to take the answer from the RAG-provided context.
 
-Llama models were trained on mostly open-ended text generation, where fining information from its parametric knowledge is paramount.
+Llama models were trained mainly on open-ended text generation, which relies more on parametric data.
+
+It's possible that the deficiencies of knowledge grounding in Llama models might come simply to not being trained on related tasks.
 
 \subsection{Model size and memorised knowledge}
 \label{model_size_parametric}
@@ -44,24 +45,24 @@ Llama models were trained on mostly open-ended text generation, where fining inf
 
 While the average results are very similar, which is likely due to the properties of Seq2Seq models discussed in \cref{model_architecture_parametric}, the models seem to be significantly different for queries of category \texttt{element}, \texttt{historical\_events}, and a few others.
 
-Unfortunately, these results are due to failures on the models: for some internal reason \smallflan{} tends to give nonsensical answers often on questions with short answers, such as the ones referred to element periodic symbols or years where historical events happen.
-This seems to bias the model differently than the larger model \bigflan{}, which tends to give correct answers more often.
+Unfortunately, these results are due to failures on the models: for reasons not yet fully understood, \smallflan{} often produces nonsensical answers to questions requiring short responses, such as elements' names in the periodic table on historical dates.
+This behaviour is different than \bigflan{}, which tends to provide correct answers in these cases.
 
-Removing the bias of short questions in these categories the result between both Seq2Seq models seem similar.
-From this, we can conjecture that \textbf{the size of a Seq2Seq model does not majorly affect its knowledge grounding when adding a RAG context}.
+When removing the categories with a significant amount of short answers and their nonsensical answers by the smaller model, the results of both Seq2Seq models seem similar.
+Therefore, we can conjecture that \textbf{the size of a Seq2Seq model does not significantly affect its knowledge grounding in a RAG context}.
 
 \subsubsection{Decoder-only Models}
 
 \Cref{framework_results} shows a very different result for Decoder-only models.
 Surprisingly, the smaller model \smallllama{} has \textit{better} knowledge grounding than the larger model \bigllama{}.
 
-We already established in previous sections that decoder-only models rely on parametric knowledge in a greater degree than Seq2Seq models.
+We already established that decoder-only models rely on parametric knowledge to a greater degree than Seq2Seq models.
 Larger models have a vast internalised knowledge base accumulated from expensive training data, which can lead to increased confidence in their parametric knowledge.
 
 It's possible that larger Decoder-only models are able to use their parametric knowledge to ``reason'' in more ways that contradict the contextual knowledge.
 The extra information encoder in its weights can produce more varied evidence against the contextual answer.
 
-With this information, we can say that \textbf{the size of a Decoder-only models \textit{does} affect its knowledge grounding, and in a RAG context it might be preferable to use a smaller model}.
+With this information, we can say that \textbf{the size of Decoder-only models \textit{does} affect its knowledge grounding, and in a RAG context it might be preferable to use a smaller model}.
 
 This is consistent with similar results found for other Decoder-only models, such as Pythia and GPT-2 \citep{factual_recall}.
 
