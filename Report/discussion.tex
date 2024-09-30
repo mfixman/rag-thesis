@@ -22,8 +22,16 @@ We present several hypotheses which might cause the difference in these results.
 
 As described in \cref{llm_architectures}, Seq2Seq models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself.
 
+We can prove this hypothesis by finding the average attention of the model on the cases where the Seq2Seq and Decoder-only models disagree, using the method discussed in \cref{attention_section}.
+
 \subsection{Model size and memorised knowledge}
 \label{model_size_parametric}
+
+\Cref{framework_results} also shows differences in how models of different sizes process information in queries with counterparametric context.
+
+\subsubsection{Seq2Seq Models}
+
+While the average results are very similar, which is likely due to the properties of Seq2Seq models discussed in \cref{model_architecture_parametric}, the models seem to be significantly different for 
 
 \subsection{What are all of these Others?}
 

@@ -292,6 +292,7 @@ The approach to finding out the source of knowledge of each query is specified i
 \clearpage{}
 
 \subsubsection{Understanding the result by finding the mean attention of the context and question areas}
+\label{attention_section}
 
 For comparing different architectures, it's useful to understand how much attention they give to the context compared to the rest of the query.
 
@@ -308,9 +309,9 @@ This approach is formalized in \cref{attention_equation}, where we define the me
 			m_{b,q,k} &= \frac{1}{ \lenmod{layer} \times \lenmod{attn\_head} } \sum^{\substack{\text{layer} \\ \text{attn\_head}}}_{\substack{i = 0 \\ j = 0}} A_{b,i,j,q,k} \\
 			d_{b, q} &= m_{b, q, q} \\
 			s_{b, i} &= \left(d_{b, i} - \min{\left( d_b \right)}\right) / \left(\max{\left( d_b \right)} - \min{\left( d_b \right)} \right)
-		\end{aligned} \\[1ex]
-		\text{attn}_\text{ctx} = \frac{1}{\lenmod{ctx}} \sum_{i \in \text{ctx}} s_b_i \qquad
-		\text{attn}_\text{rest} = \frac{1}{\lenmod{rest}} \sum_{i \in \text{rest}} s_b_i \qquad
+		\end{aligned} \\[1em]
+		\text{attn}_\text{ctx} = \frac{1}{\lenmod{ctx}} \sum_{i \in \text{ctx}} s_{b,i} \qquad
+		\text{attn}_\text{rest} = \frac{1}{\lenmod{rest}} \sum_{i \in \text{rest}} s_{b,i} \qquad
 	\end{gathered}
 	\label{attention_equation}
 \end{equation}
