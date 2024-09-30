@@ -13,6 +13,8 @@ from Utils import Question, sample_counterfactual_flips, chunk_questions
 from collections import defaultdict
 from transformers import BatchEncoding
 
+import ipdb
+
 FloatTensor = torch.Tensor
 LongTensor = torch.Tensor
 BoolTensor = torch.Tensor
@@ -38,7 +40,7 @@ class QuestionAnswerer:
         runs_per_question: Optional[int] = None,
     ):
         self.device = device
-        self.max_length = max_length or 100
+        self.max_length = max_length or 20
         self.max_batch_size = max_batch_size or 120
         self.runs_per_question = runs_per_question or 1
 
@@ -136,6 +138,8 @@ class QuestionAnswerer:
         output['ctx_param_proba'] = self.perplexity(ctx_tokens, parametric)
         output['ctx_cf_proba'] = self.perplexity(ctx_tokens, counterfactual)
 
+        output['context_attn'], output['question_attn'] = self.avgSelfAttentions(ctx_tokens)
+
         return output
 
     # Answer a list of Questions: run the queries, gather counterfactual values, run the queries
@@ -156,6 +160,32 @@ class QuestionAnswerer:
                 output[k] += v
 
         return dict(output)
+
+    def fakeTokens(self) -> BatchEncoding:
+        return self.tokenise(['[Context: Montevideo is located in Egypt] Q: What country is Montevideo located in? A: Montevideo is located in'])
+
+    # Gets the scaled mean self-attentions of the context section of a query and
+    # of the section after the context.
+    @torch.no_grad()
+    def avgSelfAttentions(self, queries: BatchEncoding) -> tuple[list[float], list[float]]:
+        attentions = self.llm.attentions(queries)
+        attention_mean = attentions.mean(dim = (1, 2))
+        diag = attention_mean.diagonal(dim1 = 1, dim2 = 2)
+        scaled = (diag - diag.min(dim = 1, keepdims = True)[0]) / (diag.max(dim = 1, keepdims = True)[0] - diag.min(dim = 1, keepdims = True)[0])
+
+        context_left = ((queries.input_ids == self.llm.tokenizer.pad_token_id) | (queries.input_ids == self.llm.tokenizer.eos_token_id))
+        context_right = ((queries.input_ids == self.llm.tokenizer.convert_tokens_to_ids(']')) | (queries.input_ids == self.llm.tokenizer.convert_tokens_to_ids('].')))
+
+        context_area = context_left & (context_right.cumsum(dim = 1) == 0)
+        later_area = context_right.cumsum(dim = 1)
+
+        context = scaled.clone()
+        context[~context_area] = torch.nan
+
+        later = scaled.clone()
+        later[~later_area] = torch.nan
+
+        return context.nanmean(dim = 1).cpu().tolist(), later.nanmean(dim = 1).cpu().tolist()
 
     # Tokenise a list of phrases.
     # [n] -> (n, w)

@@ -114,6 +114,11 @@ class DecoderOnlyModel(Model):
 
         return self.model(input_ids, attention_mask = attention_mask).logits[:, w0 - 1 : w0 + w1 - 1]
 
+    @torch.no_grad()
+    def attentions(self, queries: BatchEncoding) -> FloatTensor:
+        outputs = self.model(**queries, output_attentions = True).attentions
+        return torch.stack(outputs, dim = 1)
+
 # Seq2Seq model, such as Flan-T5.
 class Seq2SeqModel(Model):
     def __init__(self, name: str, device: str = 'cpu'):
@@ -161,6 +166,15 @@ class Seq2SeqModel(Model):
             attention_mask = attention_mask,
             decoder_input_ids = decoder_input_ids,
         ).logits[:, : answer.input_ids.shape[1]]
+
+    @torch.no_grad()
+    def attentions(self, queries: BatchEncoding) -> FloatTensor:
+        outputs = self.model(
+            **queries,
+            output_attentions = True,
+            decoder_input_ids = torch.full_like(queries.input_ids, self.tokenizer.pad_token_id).to(self.device),
+        ).decoder_attentions
+        return torch.stack(outputs, dim = 1)
 
 # Large decoder-only model.
 # Similar to DecoderOnlyModel, but eagerly deletes the model when the class is deleted.
