@@ -181,7 +181,7 @@ This is an area that should be improved; \cref{other_problems} gives more inform
 	\label{other_examples}
 \end{table}
 
-\subsection{Differences in perplexity scores for larger and smaller models}
+\subsection{Differences in distribution of perplexity scores}
 
 The distribution of perplexity scores, shown in \cref{results_perplexity_score}, shows a significant difference in the perplexity scores between \Parametric{} and \Contextual{} answers for all four models.
 This is even more marked on Seq2Seq models, where for both models the 90\% percentile of the \Contextual{} answer is lower than the 10\% percentile of the \Parametric{}.
@@ -207,6 +207,6 @@ The results in \cref{perplexity_flan_table,perplexity_llama_table} seem consiste
 \begin{figure}[hb]
 	\centering
 	\includegraphics[width=.85\textwidth]{roc_auc.png}
-	\caption{ROC curve of the four tested models to find out whether an answer came from the \Paramtric{} knowledge of a model using the perplexity of the answer.}
+	\caption{ROC curve of the four tested models to find out whether an answer came from the \Parametric{} knowledge of a model using the perplexity of the answer.}
 	\label{roc_auc}
 \end{figure}

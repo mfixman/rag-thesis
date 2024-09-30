@@ -1,5 +1,34 @@
 \section{Evaluations, Reflections, and Conclusions}
 
+\subsection{Overview and Personal Reflections}
+
+Working on this thesis has been a positive and enriching experience.
+
+Starting from an published preprint \citep{knowledge_grounding_retrieval_augmented} helped me understand the current state of the research on retrieval-augmented generation and analysis of large language models. 
+I am grateful to Dr. Whitehouse, the main author of the preprint, who has been of great help in giving me ideas and direction when working on this research.
+
+The topic of the thesis changed early on from understanding knowledge grounding on the conflation of retriever and generator on retrieval-augmented models to understanding it for general large language models with added contextual information.
+This was, in part, caused by the cutting-edge nature of this research area: over half of the papers cited were published after the year 2020, and two of them were published earlier in the year 2024.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[height=90pt]{years_reference.png}
+	\caption{Year of publication of papers cited in this thesis. These topics are novel!}
+\end{figure}
+
+One of the main strengths of my work in this thesis was having built a solid experimentation infrastructure early on, which allowed me to iterate quickly on experiments and ideas.
+The program to build, run, and analyse the counterparametric-enhanced queries (which is present in \cref{appendixD} and in this project's repository) is one of the strong points of this project, and I'm sure it will be a valuable tool for future research projects.
+
+Despite settling on the final thesis idea early, this thesis suffered from lacking a clear and well-defined research question, which emerged late in the process.
+I consider this delay to have been one of the main sources of inefficiencies, since it lead to executing long experiments that contributed little to the final thesis.
+One of my main takeaways from this research is the necessity to align on a well-defined research question early.
+
+This thesis taught me how to adapt to the rapidly-changing research landscape of sequence analysis and artificial intelligence.
+A lot of the methods used in this work are taken directly from previous academic papers, and this allowed me to test my hypothesis quickly while keeping a deep understanding of the context I am working on.
+
+Most of all, I'm happy to have learned a lot about the areas of large language models and  to have been able to collaborate a bit in this very new area of research.
+I plan to continue this work in the future, and I'm looking forward to contributing to the research on this area!
+
 \subsection{Future Work}
 
 \subsubsection{Better Categorisation of the Answers}
@@ -17,13 +46,12 @@ This solution might not be enough, and some answers classified as \Other{} shoul
 		\toprule
 			\bfseries \rmfamily Query & \bfseries \rmfamily Parametric Answer & \bfseries \rmfamily Query Answer & \bfseries Comparison & \bfseries Expected \\
 		\midrule
-			\parbox{100pt}{[Context: The primary leader associated with The Construction of Hadrian's Wall was Napoleon Bonaparte] \\ Q: Who was the primary leader associated with The Construction of Hadrian's Wall? \\ A: The primary leader associated with The Construction of Hadrian's Wall was} &
+			\parbox[c][100pt][t]{120pt}{[Context: The primary leader associated with The Construction of Hadrian's Wall was Napoleon Bonaparte] \\ Q: Who was the primary leader associated with The Construction of Hadrian's Wall? \\ A: The primary leader associated with The Construction of Hadrian's Wall was} &
 			Emperor Hadrian &
-			\parbox[c][][c]{75pt}{\centering Hadrian, \\ the Roman Emperor} &
+			\parbox{75pt}{\centering Hadrian, \\ the Roman Emperor} &
 			\bfseries \textcolor{MidnightBlue}{Other} &
-			\bfseries \textcolor{ForestGreen}{Parametric} \vspace{4pt} \\
-		\midrule
-			\parbox{100pt}{[Context: Che Guevara was born in Kensington, London, England] \\ Q: In what city was Che Guevara born? \\ A: Che Guevara was born in} &
+			\bfseries \textcolor{ForestGreen}{Parametric} \\
+			\parbox[c][85pt][b]{120pt}{[Context: Che Guevara was born in Kensington, London, England] \\ Q: In what city was Che Guevara born? \\ A: Che Guevara was born in \\} &
 			Rosario, Argentina &
 			London &
 			\bfseries \textcolor{MidnightBlue}{Other} &
