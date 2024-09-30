@@ -165,7 +165,7 @@ The properties of the models are summarised in \cref{model_card}.
 			\rmfamily \bfseries Model & \bfseries Architecture & \bfseries Developer & \bfseries Parameters & \bfseries Context \\
 		\midrule
 			Flan-T5-XL & Seq2Seq & Google Brain & 3 Billion & 512 Tokens \\
-			Flan-T5-XXL & Seq2Seq & Google Brain & 11 Billion & 512 Tokens \\
+			Flan-T5-XXL & Seq2Seq & Google Brain & 11 Billion & 512 Tokens \\[2pt]
 			Meta-Llama-3.1-8B-Instruct & Decoder-Only & Meta AI & 8 Billion & 128k Tokens \\
 			Meta-Llama-3.1-70B-Instruct & Decoder-Only & Meta AI & 70 Billion & 128k Tokens \\
 		\bottomrule
@@ -288,6 +288,37 @@ The approach to finding out the source of knowledge of each query is specified i
 	\caption{Using the same question format allows us to repurpose previous parametric answers as counterparametric ones.}
 	\label{counterparametric_table}
 \end{table}
+
+\clearpage{}
+
+\subsubsection{Understanding the result by finding the mean attention of the context and question areas}
+
+For comparing different architectures, it's useful to understand how much attention they give to the context compared to the rest of the query.
+
+Since all our model architectures employ attention mechanisms \citep{flant5,llama3}, we can estimate the relative importance of tokens in the context and the query by calculating the average self-attention each token receives within its respective section.
+Specifically, we compute the mean self-attention weights, which serve as a proxy for the emphasis the model places on different parts of the input.
+
+This approach is formalized in \cref{attention_equation}, where we define the mean self-attention for tokens in the context and query sections.
+
+\begin{equation}
+	\newcommand{\lenmod}[1]{\left| \text{#1} \right|}
+	\begin{gathered}
+		A : \mathbb{R} ^ { \text{batch} \times \lenmod{layer}  \times \lenmod{attn\_head} \times Q \times K } \\[1ex]
+		\begin{aligned}
+			m_{b,q,k} &= \frac{1}{ \lenmod{layer} \times \lenmod{attn\_head} } \sum^{\substack{\text{layer} \\ \text{attn\_head}}}_{\substack{i = 0 \\ j = 0}} A_{b,i,j,q,k} \\
+			d_{b, q} &= m_{b, q, q} \\
+			s_{b, i} &= \left(d_{b, i} - \min{\left( d_b \right)}\right) / \left(\max{\left( d_b \right)} - \min{\left( d_b \right)} \right)
+		\end{aligned} \\[1ex]
+		\text{attn}_\text{ctx} = \frac{1}{\lenmod{ctx}} \sum_{i \in \text{ctx}} s_b_i \qquad
+		\text{attn}_\text{rest} = \frac{1}{\lenmod{rest}} \sum_{i \in \text{rest}} s_b_i \qquad
+	\end{gathered}
+	\label{attention_equation}
+\end{equation}
+
+In this equation, $A$ is the 5-tensor representing the attention weights.
+$m_{b,q,k}$ represents the mean attention all layers and heads, while $d_b$ represents the diagonal of these attentions which correspond to the self-attentions.
+
+We normalise those values for $s_i$ and average then among the context tokens and the rest of the query, respectively.
 
 \newpage{}
 

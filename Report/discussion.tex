@@ -1,8 +1,26 @@
 \section{Discussion}
 \label{discussion}
 
+\Cref{results_section} presented several results from generating the question dataset and running the framework to understand the role of parametric knowledge in question answering with a context.
+
+This section attempts to explain these results, and discusses what they mean for our research question.
+
 \subsection{Model architecture and memorised knowledge}
 \label{model_architecture_parametric}
+
+\Cref{framework_results} presents the results of running our framework on the provided questions on two different model architectures: Seq2Seq models and Decoder-only models.
+\Cref{flan_cats_table,llama_cats_table} show these results split by category of question.
+
+The results are clear: \textbf{Seq2Seq models tend to answer questions from their contextual knowledge rather than from their inherent knowledge more often than Decoder-only models}.
+These results are the same regardless of the category of the question, and are consistent among many types and lengths of answers.
+
+This results shows that, in the framework of question-answering when using RAG to fetch contextual data from an index, Seq2Seq models will have fewer hallucinations that contradict this index than Decoder-only models.
+
+We present several hypotheses which might cause the difference in these results.
+
+\subsubsection{Encoder-Decoder Architecture}
+
+As described in \cref{llm_architectures}, Seq2Seq models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself.
 
 \subsection{Model size and memorised knowledge}
 \label{model_size_parametric}
