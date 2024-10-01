@@ -19,13 +19,13 @@ def parse_args():
         description = 'Combines questions and data and optionally provides parametric data'
     )
 
-    parser.add_argument('--debug', action = 'store_true', help = 'Go to IPDB console on exception.')
+    parser.add_argument('--debug', action = 'store_true', help = 'Go to IPDB console on exception rather than exiting.')
     parser.add_argument('--lim-questions', type = int, help = 'Question limit')
     parser.add_argument('--device', choices = ['cpu', 'cuda'], default = 'cuda', help = 'Inference device')
     parser.add_argument('--models', type = str.lower, default = [], choices = Model_dict.keys(), nargs = '+', metavar = 'model', help = 'Which model or models to use for getting parametric data')
-    parser.add_argument('--offline', action = 'store_true', help = 'Tell HF to run everything offline.')
-    parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly')
-    parser.add_argument('--max-batch-size', type = int, default = 120, help = 'Maximimum size of batches. All batches contain exactly the same question.')
+    parser.add_argument('--offline', action = 'store_true', help = 'Run offline: use model cache rather than downloading new models.')
+    parser.add_argument('--rand', action = 'store_true', help = 'Seed randomly rather thn using the same seed for every model.')
+    parser.add_argument('--max-batch-size', type = int, default = 120, help = 'Maximum size of batches. All batches contain exactly the same question.')
 
     parser.add_argument('--per-model', action = 'store_true', help = 'Write one CSV per model in stdout.')
     parser.add_argument('--output-dir', help = 'Return one CSV per model, and save them to this directory.')
@@ -33,15 +33,15 @@ def parse_args():
     parser.add_argument('--runs-per-question', type = int, default = 1, help = 'How many runs (with random counterfactuals) to do for each question.')
 
     parser.add_argument('base_questions_file', type = open, help = 'File with questions')
-    parser.add_argument('things_file', type = open, help = 'File with things to combine')
+    parser.add_argument('objects_file', type = open, help = 'File with objects to combine')
 
     args = parser.parse_args()
 
     args.base_questions = [x.strip() for x in args.base_questions_file if any(not y.isspace() for y in x)]
-    args.things = [{k: v for k, v in p.items()} for p in csv.DictReader(args.things_file)]
+    args.objects = [{k: v for k, v in p.items()} for p in csv.DictReader(args.objects_file)]
 
     del args.base_questions_file
-    del args.things_file
+    del args.objects_file
 
     if args.per_model and args.output_dir:
         raise ValueError('Only one of --per-model and --output-dir can be specified.')
@@ -63,7 +63,7 @@ def main(args):
         wandb.init(project = 'knowledge-grounder', config = args)
 
     logging.info('Getting questions')
-    questions = combine_questions(args.base_questions, args.things, args.lim_questions)
+    questions = combine_questions(args.base_questions, args.objects, args.lim_questions)
 
     if args.output_dir:
         try:

@@ -20,40 +20,54 @@ $ huggingface-cli download --repo-type model 'facebook/rag-sequence-nq'
 
 ## Usage
 ```
-$ python question_combinator.py --help
-usage: question_combinator.py [-h] [--no-except] [--lim-questions LIM_QUESTIONS] [--device {cpu,cuda}]
-                              [--models model [model ...]] [--offline] [--rand] [--per-model]
-                              [--output-dir OUTPUT_DIR]
-                              base_questions_file things_file
+$ python knowledge_grounder.py --help
+usage: knowledge_grounder.py [-h] [--debug] [--lim-questions LIM_QUESTIONS] [--device {cpu,cuda}]
+                             [--models model [model ...]] [--offline] [--rand]
+                             [--max-batch-size MAX_BATCH_SIZE] [--per-model] [--output-dir OUTPUT_DIR]
+                             [--runs-per-question RUNS_PER_QUESTION]
+                             base_questions_file objects_file
 
 Combines questions and data and optionally provides parametric data
 
 positional arguments:
   base_questions_file   File with questions
-  things_file           File with things to combine
+  objects_file          File with objects to combine
 
 options:
   -h, --help            show this help message and exit
-  --no-except           Do not go to IPDB console on exception.
+  --debug               Go to IPDB console on exception rather than exiting.
   --lim-questions LIM_QUESTIONS
                         Question limit
   --device {cpu,cuda}   Inference device
   --models model [model ...]
                         Which model or models to use for getting parametric data
-  --offline             Tell HF to run everything offline.
-  --rand                Seed randomly
+  --offline             Run offline: use model cache rather than downloading new models.
+  --rand                Seed randomly rather thn using the same seed for every model.
+  --max-batch-size MAX_BATCH_SIZE
+                        Maximum size of batches. All batches contain exactly the same question.
   --per-model           Write one CSV per model in stdout.
   --output-dir OUTPUT_DIR
                         Return one CSV per model, and save them to this directory.
-```
+  --runs-per-question RUNS_PER_QUESTION
+                        How many runs (with random counterfactuals) to do for each question.```
 
 ## Example usage
 ```
-$ python question_combinator.py \
-    --no-except \ # Do not debug (option to be flipped in the future)
+$ python knowledge_grounder.py \
     --device cuda \ # Use CUDA (it's possible to use CPU for small models)
     --models llama flan-t5-xl flan-t5-xxl \ # List of models to try
     --output-dir outputs/ \ # Write outputs to this directory
+    --rand \ # Randomly seed after every model. This will cause answers to vary from other runs.
+    -- \
+    data/base_questions.txt # File with {}-format base questions.
+    data/objects.csv # File with objects.
+
+$ python knowledge_grounder.py \
+    --device cuda \ # Use CUDA (it's possible to use CPU for small models)
+    --models llama-70b \ # This is a large model; let's run it separately.
+    --max-batch-size 70 \ # Smaller batch size to ensure the program won't run out of VRAM.
+    --output-dir outputs/ \ # Write outputs to this directory
+    --offline \ # Run offline; this will fail if the model is not previously downloaded.
     -- \
     data/base_questions.txt # File with {}-format base questions.
     data/objects.csv # File with objects.
