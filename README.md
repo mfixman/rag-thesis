@@ -49,7 +49,8 @@ options:
   --output-dir OUTPUT_DIR
                         Return one CSV per model, and save them to this directory.
   --runs-per-question RUNS_PER_QUESTION
-                        How many runs (with random counterfactuals) to do for each question.```
+                        How many runs (with random counterfactuals) to do for each question.
+```
 
 ## Example usage
 ```
