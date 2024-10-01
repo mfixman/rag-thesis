@@ -1,2 +1,58 @@
 \section{Grounder Usage and Documentation}
 \label{appendixC}
+
+\lstset{
+	basicstyle = \ttfamily\scriptsize,
+	captionpos = b,
+	frame = single,
+	breaklines = true,
+	keywords = {},
+}
+
+This appendix provides a brief overview of how to use the program to run the analyses in this thesis.
+
+The entire approach is done in Python, and can be run from the single file \texttt{knowledge\_grounder.py}.
+The code of the program is provided in \cref{appendixD}, and also separately in the main repository for this thesis, the dedicated code repository in \url{https://github.com/mfixman/knowledge-grounder}, and attached to the submission area.
+
+The code should be run concurrently with the source data present in \cref{appendixA} and in the two repositories.
+
+\subsection{Code description and recommendations}
+
+The code downloads and uses large language models from the Huggingface dataset.
+Many of the models are large, so it might be useful to download them using the Huggingface CLI first as detailed in \cref{huggingface_cli}.
+
+\begin{lstlisting}[caption={How to pre-download large models from Huggingface. This is convenient, but not a necessity.},label={huggingface_cli}]
+$ huggingface-cli download --repo-type model 'meta-llama/Meta-Llama-3.1-70B'
+\end{lstlisting}
+
+\subsection{Code usage}
+
+The code usage is explained well when running the program with the \texttt{--help} argument.
+
+\begin{lstlisting}
+$ python question_combinator.py --help
+usage: question_combinator.py [-h] [--no-except] [--lim-questions LIM_QUESTIONS] [--device {cpu,cuda}]
+                              [--models model [model ...]] [--offline] [--rand] [--per-model]
+                              [--output-dir OUTPUT_DIR]
+                              base_questions_file things_file
+
+Combines questions and data and optionally provides parametric data
+
+  base_questions_file   File with questions
+  things_file           File with things to combine
+
+  -h, --help            show this help message and exit
+  --no-except           Do not go to IPDB console on exception.
+  --lim-questions LIM_QUESTIONS
+                        Question limit. Set to a low number for debugging.
+  --device {cpu,cuda}   Inference device
+  --models model [model ...]
+                        Which model or models to use for getting parametric data
+  --offline             Tell HF to run everything offline.
+  --rand                Seed randomly.
+  --per-model           Write one CSV per model in stdout.
+  --output-dir OUTPUT_DIR
+                        Return one CSV per model, and save them to OUTPUT_DIR.
+\end{lstlisting}
+
+\subsection{Example usage}
