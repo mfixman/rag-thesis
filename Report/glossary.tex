@@ -2,12 +2,29 @@
 \label{glossary}
 \addcontentsline{toc}{section}{Glossary}
 
+This section presents a small glossary with explanations of some of the terms used in this thesis.
+
 \begin{description}[style=nextline]
+	\item[Category]
+		One of the many topics for each one of the question, which are listed in \cref{cateogry_amounts}.
+
 	\item[Base Questions]
+		A question that refers to a category, but does not refer to any particular object.
 	\item[Objects]
-	\item[Queries]
-	\item[\Parametric{} Answers]
-	\item[Counterparamteric answers]
-	\item[Queries with counterfactual/counterparametric context]
-	\item[\Contextual{} Answer]
+		An object of a certain category that can be added to a base question.
+		The final queries are the cross product of all base questions and objects for each category; see \cref{source_data_example} for an explanation.
+
+	\item[Parametric Answers]
+		The answers given by the model for a particular query when not adding any context. These answers come solely from the parametric, learned knowledge of the model.
+	\item[Counterfactual Answer]
+		A randomly-sampled parametric answer from another question, which is guaranteed to be different from this counterfactual answer.
+		\Cref{counterparametric_table} contains an example of these.
+
+	\item[\Parametric{}, \Contextual{}, and \Other{} answers]
+		The answers given by the model for a particular query when adding counterfactual context, named like that depending on whether they were taken from the model's parametric memory, from the context of the query, or from somewhere else.
+		\Cref{methodology_type_of_answer} gives an explanation of how these are generated and categorised.
+
+	\item[Perplexity of an answer]
+		The perplexity is a metric in information theory that measures how ``surprised'' a model is at finding a particular answer.
+		This is explained in \cref{method_perplexity}, where these answers are also categorised as \Parametric{} or \Contextual{} depending on which one is the most surprising.
 \end{description}

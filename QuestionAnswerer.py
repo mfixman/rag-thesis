@@ -75,17 +75,21 @@ class QuestionAnswerer:
     def answerChunk(self, questions: list[Question]) -> dict[str, Any]:
         output: defaultdict[str, list[Any]] = defaultdict(lambda: [])
 
+        # Get the tokens of the question and generate the parametric answer.
         base_tokens = self.tokenise([q.format(prompt = self.llm.prompt) for q in questions])
         parametric = self.generate(base_tokens)
 
         parametric_output = self.decode(parametric)
         base_proba_output = self.perplexity(base_tokens, parametric)
+
+        # We possibly want several runs here, each with a different randomly sampled set of counterfactuals.
         for run in range(self.runs_per_question):
             run_output: dict[str, list[Any]] = dict(
                 parametric = parametric_output,
                 base_proba = base_proba_output,
             )
 
+            # Sample the counterfactuals and add them to the output.
             run_output['question'] = questions
             flips = sample_counterfactual_flips(questions, run_output['parametric'])
             counterfactual = parametric[flips]
@@ -93,8 +97,10 @@ class QuestionAnswerer:
             run_output['counterfactual'] = self.decode(counterfactual)
             run_output['base_cf_proba'] = self.perplexity(base_tokens, counterfactual)
 
+            # Answer the counterfactuals, and union this dictionary to the output dictionary.
             run_output |= self.answerCounterfactuals(questions, run_output['counterfactual'], parametric, counterfactual)
 
+            # We want to compare each contextual answer to their parametric and counterfactual.
             run_output['comparison'] = [
                 'Parametric' if self.streq(a, p) else
                 'Contextual' if self.streq(a, c) else
@@ -102,6 +108,7 @@ class QuestionAnswerer:
                 for p, c, a in zip(run_output['parametric'], run_output['counterfactual'], run_output['contextual'])
             ]
 
+            # We also want to figure out if P_2 < P_3.
             run_output['preference'] = [
                 'Parametric' if pp > cp else
                 'Contextual'

@@ -31,7 +31,8 @@ Model_dict = {
 }
 
 # Virtual class containing a model.
-# Derived classes should reimplement __init__ and logits.
+# Derived classes should reimplement __init__ and logits, and attention.
+# They should also save their tokeniser and HF model.
 class Model(nn.Module):
     name: str
     model_name: str
@@ -65,17 +66,20 @@ class Model(nn.Module):
     def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
         raise NotImplementedError('logits called from generic Model class')
 
-# Decoder-only model, such as llama.
+    @torch.no_grad()
+    def attentions(self, query: BatchEncoding) -> FloatTensor:
+        raise NotImplementedError('attentions called from generic Model class')
+
+# Decoder-only model, such as llama, use AutoModelForCausalLM.
 class DecoderOnlyModel(Model):
     def __init__(self, name: str, device: str = 'cuda'):
         super().__init__(name, device)
 
-        # self.prompt = 'Answer the following question in a few words and with no formatting.'
-        # self.cf_prompt = 'Answer the following question using the previous context in a few words and with no formatting.'
         self.prompt = ''
         self.cf_prompt = ''
 
         kwargs = {}
+        # Some models require special configuration.
         if 'llama' in name:
             kwargs = dict(
                 pad_token = '<|reserved_special_token_0|>',
@@ -104,6 +108,7 @@ class DecoderOnlyModel(Model):
         )
         self.model.eval()
 
+    # Decoder-only generation with teacher forcing: calculate the next token given the previous forced tokens.
     @torch.no_grad()
     def logits(self, query: BatchEncoding, answer: BatchEncoding) -> FloatTensor:
         w0 = query.input_ids.shape[1]

@@ -57,14 +57,18 @@ def main(args):
     )
     logging.getLogger().addFilter(LogTimeFilter())
 
+    # We want to set this environment variable to ensure that Huggingface
+    # does not download models.
     if args.offline:
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
     else:
         wandb.init(project = 'knowledge-grounder', config = args)
 
+    # Combining the base questions and objects into the final questions.
     logging.info('Getting questions')
     questions = combine_questions(args.base_questions, args.objects, args.lim_questions)
 
+    # Create the output dir, if necessary.
     if args.output_dir:
         try:
             os.mkdir(args.output_dir)
@@ -74,9 +78,13 @@ def main(args):
     logging.info(f'About to answer {len(questions) * len(args.models) * args.runs_per_question * 2} questions in total.')
     answers = {}
     for model in args.models:
+        # Let's use the same seed for all models.
+        # This ensues that results are reproducible.
         if not args.rand:
             random.seed(0)
 
+        # Create a QuestionAnswerer object to answer these queries.
+        # These objects are large, so ensure it's deleted before loading the next one.
         qa = QuestionAnswerer(
             model,
             device = args.device,
@@ -88,11 +96,10 @@ def main(args):
         del qa
 
         if args.output_dir:
-            empty = lambda s: sum([x == '' for x in model_answers[s]])
             count = lambda s: sum([x == s for x in model_answers['comparison']])
-            logging.info(f"{model}:\t{empty('parametric')} empty parametrics, {empty('counterfactual')} empty counterfactuals, {empty('contextual')} empty contextuals")
             logging.info(f"\t{count('Parametric')} parametrics, {count('Contextual')} contextual, {count('Other')} others")
 
+            # Write the information to a corresponding file for each model.
             model_filename = os.path.join(args.output_dir, model + '.csv')
             with open(model_filename, 'w') as out:
                 print_parametric_csv(out, model_answers)
@@ -108,6 +115,8 @@ def main(args):
 
 if __name__ == '__main__':
     args = parse_args()
+
+    # If run with --debug, launch an IPDB console on exception.
     if not args.debug:
         main(args)
     else:

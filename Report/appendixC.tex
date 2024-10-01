@@ -15,13 +15,14 @@ The entire approach is done in Python, and can be run from the single file \text
 The code of the program is provided in \cref{appendixD}, and also separately in the main repository for this thesis, the dedicated code repository in \url{https://github.com/mfixman/knowledge-grounder}, and attached to the submission area.
 
 The code should be run concurrently with the source data present in \cref{appendixA} and in the two repositories.
+The result, if run with the \texttt{--output-dir} option, is one CSV file per model with information about its knowledge grounding.
 
 \subsection{Code description and recommendations}
 
 The code downloads and uses large language models from the Huggingface dataset.
 Many of the models are large, so it might be useful to download them using the Huggingface CLI first as detailed in \cref{huggingface_cli}.
 
-\begin{lstlisting}[caption={How to pre-download large models from Huggingface. This is convenient, but not a necessity.},label={huggingface_cli}]
+\begin{lstlisting}[label={huggingface_cli}]
 $ huggingface-cli download --repo-type model 'meta-llama/Meta-Llama-3.1-70B'
 \end{lstlisting}
 
@@ -30,29 +31,51 @@ $ huggingface-cli download --repo-type model 'meta-llama/Meta-Llama-3.1-70B'
 The code usage is explained well when running the program with the \texttt{--help} argument.
 
 \begin{lstlisting}
-$ python question_combinator.py --help
-usage: question_combinator.py [-h] [--no-except] [--lim-questions LIM_QUESTIONS] [--device {cpu,cuda}]
-                              [--models model [model ...]] [--offline] [--rand] [--per-model]
-                              [--output-dir OUTPUT_DIR]
-                              base_questions_file things_file
-
-Combines questions and data and optionally provides parametric data
+$ python knowledge_grounder.py --help
+usage: knowledge_grounder.py [-h] [--debug] [--lim-questions LIM_QUESTIONS] [--device {cpu,cuda}] [--models model [model ...]] [--offline] [--rand]
+                             [--max-batch-size MAX_BATCH_SIZE] [--per-model] [--output-dir OUTPUT_DIR] [--runs-per-question RUNS_PER_QUESTION]
+		base_questions_file objects_file
 
   base_questions_file   File with questions
-  things_file           File with things to combine
+  objects_file          File with objects to combine
 
   -h, --help            show this help message and exit
-  --no-except           Do not go to IPDB console on exception.
-  --lim-questions LIM_QUESTIONS
-                        Question limit. Set to a low number for debugging.
+  --debug               Go to IPDB console on exception rather than exiting.
+  --lim-questions LIM_QUESTIONS Question limit
   --device {cpu,cuda}   Inference device
-  --models model [model ...]
-                        Which model or models to use for getting parametric data
-  --offline             Tell HF to run everything offline.
-  --rand                Seed randomly.
+  --models model [model ...] Which model or models to use for getting parametric data
+  --offline             Run offline: use model cache rather than downloading new models.
+  --rand                Seed randomly rather thn using the same seed for every model.
+  --max-batch-size MAX_BATCH_SIZE
+                        Maximum size of batches.
   --per-model           Write one CSV per model in stdout.
   --output-dir OUTPUT_DIR
-                        Return one CSV per model, and save them to OUTPUT_DIR.
+                        Return one CSV per model, and save them to this directory.
+  --runs-per-question RUNS_PER_QUESTION
+                        How many runs (with random counterfactuals) to do for each question.
 \end{lstlisting}
 
 \subsection{Example usage}
+
+\begin{lstlisting}[caption={Example usage: run three models with random data.}]
+$ python knowledge_grounder.py \
+    --device cuda \ # Use CUDA (it's possible to use CPU for small models)
+    --models llama flan-t5-xl flan-t5-xxl \ # List of models to try
+    --output-dir outputs/ \ # Write outputs to this directory
+    --rand \ # Randomly seed after every model. This will cause answers to vary from other runs.
+    -- \
+    data/base_questions.txt # File with {}-format base questions.
+    data/objects.csv # File with objects.
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Example usage: run one of the models with 0 seed, to ensure repeteability}]
+$ python knowledge_grounder.py \
+    --device cuda \ # Use CUDA (it's possible to use CPU for small models)
+    --models llama-70b \ # This is a large model; let's run it separately.
+    --max-batch-size 70 \ # Smaller batch size to ensure the program won't run out of VRAM.
+    --output-dir outputs/ \ # Write outputs to this directory
+    --offline \ # Run offline; this will fail if the model is not previously downloaded.
+    -- \
+    data/base_questions.txt # File with {}-format base questions.
+    data/objects.csv # File with objects.
+\end{lstlisting}
