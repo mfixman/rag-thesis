@@ -28,7 +28,17 @@ Hallucinations are common, even for short Q\&A tasks
 
 \subsection{Architectures of Large Language Models}
 \label{llm_architectures}
-\TODO{Talk about T5, Flan-T5, and Llama here.}
+
+In this subsection we present two different large language model architectures that are used widely in this thesis.
+
+\subsubsection{T5 and Flan-T5}
+
+The T5 model \citep{t5}, developed by Google Brain in 2020, is an encoder-decoder Seq2Seq model that treats every processing problem as a text-to-text task.
+This way it uses transfer learning to learn many different kinds of tasks from a single source of training data.
+
+Besides using a transformers architecture \citep{attention_is_all_you_need}, one of the novel 
+
+developed by Google Research, proposes a unified framework that treats every text processing problem as a text-to-text task, such as translation, summarization, and even classification tasks being reformulated to fit this framework. This architecture is based on the transformer model introduced by Vaswani et al. (2017), utilizing an encoder-decoder setup. A distinctive feature of T5 is its approach to pre-training, where it is trained on a multi-task mixture, learning various tasks simultaneously from a colossal corpus collected from publicly available text. The corpus used, known as "C4" (Colossal Clean Crawled Corpus), is filtered to remove noisy and offensive content, thus improving the quality of the training data. This model diverges from traditional transformers by implementing relative position embeddings and scaling the attention logits by the inverse square root of the depth of the model, modifications that enhance training stability and performance.
 
 \subsection{Retrieval-Augmented Generation}
 
