@@ -30,13 +30,38 @@ Hallucinations are not uncommon, even for queries that ask questions that can be
 \label{llm_architectures}
 
 In this subsection we present two different large language model architectures that are used widely for this research.
+This thesis uses and compares four models using the Flan-T5 and Llama architectures.
 
-\subsubsection{T5 and Flan-T5}
+\subsubsection{Seq2Seq Models: T5 and Flan-T5}
 
 The T5 model \citep{t5}, developed by Google Brain in 2020, is an encoder-decoder Seq2Seq model that treats every processing problem as a text-to-text task.
 This way it uses transfer learning to learn many different kinds of tasks from a single source of training data.
 
-Besides using a transformers architecture \citep{attention_is_all_you_need}, one of the novel \TODO{complete}.
+The model is trained using only masked language modelling and treating every problem as a supervised text-to-text task where both the input and output are in text form.
+The data is later fine-tuned to make it able to solve other tasks.
+
+\texttt{Flan-T5} uses the same architecture as T5, but fine-tuned on tasks to follow explicit instructions \citep{flant5}.
+This scales well on larger tasks and larger model sizes, and it's particularly effective on problems requiring a chain-of-thought.
+
+These models have strong performance while adding little or not existing context, and are capable capable to understand explicit instructions which can generalise to new task types, improving the downstream task performance \citep{flan_performance}.
+
+\subsubsection{Decoder-only Models: GPT and Llama}
+
+GPT models use a transformer-based decoder-only architecture trained to solve the problem of causal language modelling, or predicting the next token in a sequence \cite{gpt,gpt2,gpt3}.
+These models generate text by predicting tokens one-by-one rather than encoding internal information of a query, such as Seq2Seq models.
+
+GPT models are good at solving a variety of tasks they they not trained in with little or no context.
+Its autoregressive nature specialised it at generating human-like text, so it's widely used for chatbots and content creation.
+
+Llama models improve several limitations of GPT by training smaller models on more data \citep{llama}, which generally achieves better performance \citep{hoffmanetal}, and various improvements to the transformer architecture.
+
+These models outperform GPT models on most benchmarks, despite being considerably smaller, by prioritising training efficiency and parameter optimisation.
+Further improvements to later versions of this model include fine-tuning in a post-training round using reinforcement learning from human feedback and training with longer contexts \citep{llama2}, and adding multilingual data to the training data \citep{llama3}.
+
+Llama 3 includes a set of \texttt{Instruct} models, which like \texttt{Flan-T5} are fine-tuned to following instructions.
+
+One of the inherent limitations of Decoder-only architectures is the challenge of maintaining coherence over long contexts.
+Additionally, they struggle with using accurate data from the query when it contradicts its parametric knowledge.
 
 \subsection{Retrieval-Augmented Generation}
 
