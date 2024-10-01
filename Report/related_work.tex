@@ -1,13 +1,13 @@
 \section{Context}
 
-This research is the latest on a long line of academic articles on the topics of retrieval-augmented generation, counterparametric and contextual data, and how to enhance knowledge on large language models.
+This research is the latest on a long line of academic articles on retrieval-augmented generation, comparing and contrasting parametric knowledge with contextual information, and how to enhance knowledge on large language models.
 
 This section summarizes key articles that informed this research.
 
 \subsection{Foundational Papers on Large Language Models}
 
-Large language models have exploded in popularity since the development of the transformer architecture \citep{attention_is_all_you_need}.
-This architecture relies entirely on self-attention mechanisms rather than recurrent or convolutional layers, which allow the model to weigh the importance of different words in a sequence relative to each other, irrespective of their position.
+Large language models have exploded in popularity since the development of transformer architecture \citep{attention_is_all_you_need}.
+This architecture relies entirely on self-attention mechanisms rather than recurrent layers, which allow the model to weigh the importance of different words in a sequence relative to each other, irrespective of their position.
 This mechanism enables the model to capture complex dependencies and relationships across long sequences more effectively than traditional models.
 
 \begin{figure}[htb]
@@ -20,34 +20,32 @@ GPT models \citep{gpt} improve upon this architecture by running a supervised ta
 Later models, starting from GPT-2, use zero-shot transfer learning to improve their performance \citep{gpt2}.
 Zero-shot learning \citep{zeroshotlearning} trains a model to perform a task without having been explicitly trained on examples of that task; instead, it leverages knowledge gained from pre-training to infer and generalise to new tasks with the context on the prompt.
 
-By adding only a few examples of the task at hand, a model can use few-shot learning to improve generalisation to new tasks with a limited amount of labelled data.
-GPT-3 uses this to understand the structure and nature of a task with a few examples \citep{gpt3}
+By adding only a few examples of the task at hand, a model can improve generalisation to new tasks with a limited amount of labelled data.
+GPT-3 uses this to understand the structure and nature of a task with a few examples \citep{gpt3}.
 
-Despite these improvements, the models themselves are still uncalibrated and not very good at question answering \citep{how_can_we_know}.
-Hallucinations are common, even for short Q\&A tasks
+Despite these improvements in sequential models, the models still present many faults in question-and-answer tasks \citep{how_can_we_know}.
+Hallucinations are not uncommon, even for queries that ask questions that can be answered with short answers.
 
 \subsection{Architectures of Large Language Models}
 \label{llm_architectures}
 
-In this subsection we present two different large language model architectures that are used widely in this thesis.
+In this subsection we present two different large language model architectures that are used widely for this research.
 
 \subsubsection{T5 and Flan-T5}
 
 The T5 model \citep{t5}, developed by Google Brain in 2020, is an encoder-decoder Seq2Seq model that treats every processing problem as a text-to-text task.
 This way it uses transfer learning to learn many different kinds of tasks from a single source of training data.
 
-Besides using a transformers architecture \citep{attention_is_all_you_need}, one of the novel 
-
-developed by Google Research, proposes a unified framework that treats every text processing problem as a text-to-text task, such as translation, summarization, and even classification tasks being reformulated to fit this framework. This architecture is based on the transformer model introduced by Vaswani et al. (2017), utilizing an encoder-decoder setup. A distinctive feature of T5 is its approach to pre-training, where it is trained on a multi-task mixture, learning various tasks simultaneously from a colossal corpus collected from publicly available text. The corpus used, known as "C4" (Colossal Clean Crawled Corpus), is filtered to remove noisy and offensive content, thus improving the quality of the training data. This model diverges from traditional transformers by implementing relative position embeddings and scaling the attention logits by the inverse square root of the depth of the model, modifications that enhance training stability and performance.
+Besides using a transformers architecture \citep{attention_is_all_you_need}, one of the novel \TODO{complete}.
 
 \subsection{Retrieval-Augmented Generation}
 
 Large pre-trained language models store factual knowledge in their parameters.
-Their ability to access this knowledge is limited, which affects their performance on knowledge-intensive tasks.
+Their ability to access factual information from their source data without the risk of hallucinating incorrect information is limited, which affects their performance on knowledge-intensive tasks such as question-and-answer problems.
 
-Retrieval-Augmented Generation (RAG) attempts to solve this problem by adding extra non-parametric context gathered from an index with a retriever that's trained independently \citep{rag}.
-This retrieved context is fed back to the original query by adding context, which generates a combined representation which contains both the query and the original context.
-An overview of this method is presented in \cref{rag_overview}.
+Retrieval-Augmented Generation (RAG) attempts to solve this problem by adding extra non-parametric data in a context gathered from an index with a separately-trained retriever \citep{rag}.
+This retrieved context is fed back to the original query as a combined representation containing this extra data.
+A diagram with an overview of this method is presented in \cref{rag_overview}.
 
 \begin{figure}[htp]
 	\centering
@@ -57,32 +55,25 @@ An overview of this method is presented in \cref{rag_overview}.
 \end{figure}
 
 RAG can be effective in preventing hallucinations by incorporating relevant external information into the generation process, ensuring that responses are more grounded in factual data from a knowledge base.
-However, this is not perfect and an even after adding a correct context the model could answer data from its internal memory.
-
-
-% \begin{equation}
-% 	\newcommand{\texts}[1]{\text{\tiny #1}}
-% 	p_{\texts{RAG-Sequence}} \left( y \mid x \right) \approx \sum_{\mathclap{x \in \texts{top-k} \left( p \left( \cdot \mid x \right) \right)}} p_\eta \left( z \mid x \right) p_\theta \left( y \mid x, z \right) = \sum_{\mathclap{z \in \texts{top-k} \left( p \left( \cdot, \mid x \right) \right)}} p_\eta \left( z \mid x \right) \prod^N_i p_\theta \left( y_i \mid x, z, y_{1 : i - 1} \right)GA
-% \end{equation}
+However, this method is not perfect even after adding contextual data to the query the model could generate a response using its learned parametric memory while ignoring the data retriever by the RAG model.
 
 \subsection{Knowledge Grounding on Queries with Added Context}
 
-Knowledge grounding is the process of ensuring that information generated by a language model is consistent with a reliable external source of knowledge.
-In the context of RAG-enhanced queries, this can include ensuring that answers are consistent with the knowledge in the index rather than in the model's inherent knowledge.
+Knowledge grounding is the process by which a large language model incorporates external knowledge into its output generation.
+In the context of queries with context provided by RAG, a well-grounded model would ensue that answers are consistent with the knowledge in the index rather than in the model's inherent knowledge if they are contradictory.
 
 Various attempts have been made at understanding how good the knowledge grounding of a RAG system is, and on what is the optimal configuration of RAG.
 
 In ``RAGGED: Towards Informed Design of Retrieval Augmented Systems'' \citep{ragged}, the authors create a framework to evaluate these systems and find that different models suit substantially varied RAG setups.
-In particular, the performance of the models decreases strongly in Decoder-only models such as Llama when the context passages provides more context, while this does not happen on Seq2Seq models such as Flan.
+In particular, the performance of the models decreases strongly in Decoder-only models such as Llama when the context passages provides more context, while Seq2Seq models such as Flan-T5 have better performance.
 
-``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, which is one of the main sources for this thesis, finds that when there is disagreement between the model's knowledge and the provided context then the architecture and size of the large language model will greatly affect the probability of the model choosing to use the context (which is much less prone to hallucinating) as an answer.
+``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, which is one of the main sources for this thesis, finds that when there is disagreement between the model's knowledge and the provided context then the architecture and size of the large language model will affect the probability of the model choosing to use the context (which is much less prone to hallucinating) as an answer rather than its parametric knowledge.
 
 This paper also introduces a novel way to test this hypothesis by creating a dataset with questions and counterfactual context, an example of which is shown in \cref{query_example}.
+By adding counterparametric information to the context, this method allows us to understand whether an answer came is parametric (that is, came from the memory of the model) or contextual (that is, came from the provided context).
 
 \begin{lstlisting}[caption={Example of queries used in \citep{factual_recall}. These queries form the basis and inspiration for the dataset creation done in this thesis}, label={query_example},basicstyle=\ttfamily\small,keywordstyle=\rmfamily\bfseries,keywords={country,in,context,city},captionpos=b,frame=single,breaklines=true,xrightmargin=.15\textwidth,xleftmargin=.15\textwidth,float=h]
 The capital of {country} is {in context city}
 Q: What is the capital of {country}?
 A:
 \end{lstlisting}
-
-By adding counterparametric information to the context, this method allows us to understand whether an answer came is parametric (that is, came from the memory of the model) or contextual (that is, came from the provided context).
