@@ -49,7 +49,7 @@ Unfortunately, these results are due to failures on the models: for reasons not 
 This behaviour is different than \bigflan{}, which tends to provide correct answers in these cases.
 
 When removing the categories with a significant amount of short answers and their nonsensical answers by the smaller model, the results of both Seq2Seq models seem similar.
-Therefore, we can conjecture that \textbf{the size of a Seq2Seq model does not significantly affect its knowledge grounding in a RAG context}.
+Therefore, we can conjecture that \textbf{the size of a Seq2Seq model does not significantly affect its knowledge grounding}.
 
 \subsubsection{Decoder-only Models}
 
@@ -59,10 +59,10 @@ Surprisingly, the smaller model \smallllama{} has \textit{better} knowledge grou
 We already established that decoder-only models rely on parametric knowledge to a greater degree than Seq2Seq models.
 Larger models have a vast internalised knowledge base accumulated from expensive training data, which can lead to increased confidence in their parametric knowledge.
 
-It's possible that larger Decoder-only models are able to use their parametric knowledge to ``reason'' in more ways that contradict the contextual knowledge.
+It's possible that larger Decoder-only models are able to use their parametric knowledge to interpret the answer to the question in more ways that contradict the contextual knowledge.
 The extra information encoder in its weights can produce more varied evidence against the contextual answer.
 
-With this information, we can say that \textbf{the size of Decoder-only models \textit{does} affect its knowledge grounding, and in a RAG context it might be preferable to use a smaller model}.
+With this information, we can say that \textbf{the size of Decoder-only models \textit{does} affect its knowledge grounding, and when enhancing queries with RAG it might be preferable to use a smaller model}.
 
 This is consistent with similar results found for other Decoder-only models, such as Pythia and GPT-2 \citep{factual_recall}.
 
