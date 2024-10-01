@@ -4,7 +4,7 @@
 How does a large language model respond when given information that contradicts its inherent knowledge, and why?
 
 To understand this, we need to build a new framework for testing a model's answers when presented with contradictory information.
-This framework must be tested with models of various architectures and sizes to get insights about our responses.
+We test this framework with models of various architectures and sizes to get insights about our responses.
 
 Following the example set in \cref{introduction_research_objectives}, we split the work into three sub-objectives.
 
@@ -16,7 +16,7 @@ As argued in \cref{questions_objective}, the research of this thesis requires a 
 \subsubsection{Dataset Description}
 
 The dataset we aim to create for this research is designed to be a comprehensive and versatile tool for evaluating large language models.
-By choosing this criteria when selecting questions, we ensure that the dataset will provide meaningful insights of the knowledge grounding of large language models across a wide spectrum of domains.
+By selecting a wide variety of questions questions we ensure that the dataset will provide meaningful insights of the grounding of large language models across a wide spectrum of domains.
 
 Our dataset should have the following properties.
 \begin{description}[style=nextline]
@@ -56,6 +56,8 @@ Since it might be useful for future research, it will also be presented as its o
 To address these items, we follow the approach done by \citeauthor{factual_recall} in creating base questions that refer to a specific object, so all the answers for the same base question have a similar format and creating counterparametric answers is easy.
 
 Since this thesis requires a set of questions that covers a large set of topics, eras, and places, we enhance this method by creating a set of categories, each of which has a large set of base questions and another set of objects that can be matched.
+
+For each category, we generate a set of questions by matching every one of its base questions with every one of its objects.
 An example of this approach is shown in \cref{source_data_example}.
 
 \begin{table}[htb]
@@ -107,7 +109,7 @@ An example of this approach is shown in \cref{source_data_example}.
 			\end{minipage} \\
 		\bottomrule
 	\end{tabular}
-	\caption{Some examples of the base-question and object generation that are fed to the models for finding parametric answers.}
+	\caption{Some examples of the base-question and object generation that are fed to the models for finding parametric answers. For each category, we match every base question to every object to create a longer set of questions. In this example, the \textit{Person} category contains 2 base questions and 2 objects, resulting in 4 questions; the \textit{City} category contains 1 base question and 4 objects, also resulting in 4 questions.}
 	\label{source_data_example}
 \end{table}
 
@@ -138,22 +140,20 @@ In order to get a general understanding of large language models with added cont
 Both Sequence-to-Sequence models are based on T5 models \citep{t5}, which employ an encoder-decoder architecture: while an encoder processed the input sequence into a context vector, and an decoder generates an input sequence from this vector.
 The \texttt{Flan-T5} models are fine-tuned to follow instructions, and have improved zero-shot performance compared to the original T5 models \citep{flant5}.
 
-\texttt{Flan-T5-XL} contains approximately 3 billion parameters, and is considerably bigger than the base Flan-T5 model, which should improve the accuracy of its parametric answers.
+\texttt{Flan-T5-XL} contains approximately 3 billion parameters.
+This is considerably bigger than the base Flan-T5 model \cite{flant5}, which provides better accuracy of its parametric answers.
 
-\texttt{Flan-T5-XXL} contains 11 billion parameters, so it should have higher accuracy on the parametric answers as the \texttt{XL} model.
+\texttt{Flan-T5-XXL} contains 11 billion parameters, has higher accuracy on the parametric answers as the \texttt{XL} model \cite{flant5}.
 However, how the higher amount of parameters will affect the experiments that we are running is still unknown.
 
-Unlike Seq2Seq models, Decoder-only models focus on the generation of text based on the previous tokens.
-In a sense, given a sequence of tokens they solve the problem of predicting the following token, repeating sequentially until some final token is found.
-
-These architectures leverages autoregressive attention \citep{attention_is_all_you_need}, where each token attends to its preceding tokens, maintaining the temporal order of the sequence.
+These models leverage autoregressive attention \citep{attention_is_all_you_need}, where each token attends to its preceding tokens, maintaining the temporal order of the sequence.
 This approach allows them to generate coherent and contextually relevant text by sampling from this learned distribution, while also capturing long-range dependencies and complex patterns in language.
 
-The Llama models \citep{llama3} use this architecture and fine-tune it to tasks of instruction-following, and are specially adept at complex prompts.
+Unlike Seq2Seq models, Decoder-only models generate answers one token at a time from the input query: given a sequence of tokens they solve the problem of predicting the following token, repeating sequentially until some final token is found \cite{gpt}.
 
-The Decoder-only model \texttt{Meta-Llama-3.1-8B-Instruct} has 8 billion parameters, while \texttt{Meta-Llama-3.1-70B-Instruct} has 70 billion.
-Meta provides an even larger model, \texttt{Meta-Llama-3.1-405B-Instruct}, that is too large to easily experiment with.
-However, we expect the difference between this model and the \texttt{70B} model to be roughly the same as the difference between the \texttt{70B} and \texttt{8B} models.
+This thesis uses the \texttt{-Instruct} versions of the latest Llama models \citep{llama3}, which use this architecture and fine-tune it to tasks of instruction-following.
+These models are specially adept at complex prompts.
+Of the models used in this thesis, \texttt{Meta-Llama-3.1-8B-Instruct} has 8 billion parameters, while \texttt{Meta-Llama-3.1-70B-Instruct} has 70 billion.
 
 The properties of the models are summarised in \cref{model_card}.
 
@@ -162,26 +162,80 @@ The properties of the models are summarised in \cref{model_card}.
 	\footnotesize
 	\begin{tabular}{>{\ttfamily}l l l r r}
 		\toprule
-			\rmfamily \bfseries Model & \bfseries Architecture & \bfseries Developer & \bfseries Parameters & \bfseries Context \\
+			\rmfamily \bfseries Model & \bfseries Architecture & \bfseries Developer & \bfseries Parameters \\
 		\midrule
-			Flan-T5-XL & Seq2Seq & Google Brain & 3 Billion & 512 Tokens \\
-			Flan-T5-XXL & Seq2Seq & Google Brain & 11 Billion & 512 Tokens \\[2pt]
-			Meta-Llama-3.1-8B-Instruct & Decoder-Only & Meta AI & 8 Billion & 128k Tokens \\
-			Meta-Llama-3.1-70B-Instruct & Decoder-Only & Meta AI & 70 Billion & 128k Tokens \\
+			Flan-T5-XL & Seq2Seq & Google Brain & 3 Billion \\
+			Flan-T5-XXL & Seq2Seq & Google Brain & 11 Billion \\[2pt]
+			Meta-Llama-3.1-8B-Instruct & Decoder-Only & Meta AI & 8 Billion \\
+			Meta-Llama-3.1-70B-Instruct & Decoder-Only & Meta AI & 70 Billion \\
 		\bottomrule
 	\end{tabular}
 	\caption{Model cards of the large language models used in this research.}
 	\label{model_card}
 \end{table}
 
-\subsubsection{What type of answer does each model select for each question?}
+\subsubsection{Understanding the source of the answer in each model}
 \label{methodology_type_of_answer}
 
 The first step to understanding the knowledge grounding of large language models is to create queries that contain counterparametric data as part of the context.
 By comparing the result to the existing answers it becomes trivial to understand whether an answer came from the model's memory, the queries' context, or neither of these.
 
 Following the approach of \citeauthor{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer which is given by the original query.
-An example of this shuffling is in \cref{counterparametric_table}.
+An example of this random sampling can be found in \cref{counterparametric_table}.
+
+\begin{table}[p]
+	\newcommand{\vwidth}[1]{\parbox{38ex}{\ttfamily #1}}
+	\newcommand{\rep}[1]{{\setlength{\fboxsep}{0pt}\fcolorbox{Gray}{Gray!80}{\textit{#1}}}}
+
+	\centering
+	\scriptsize
+
+	\begin{tabularx}{\textwidth}{>{\ttfamily}l>{\ttfamily}c@{\hspace{1pt}}>{\ttfamily}c@{\hspace{0pt}}>{\ttfamily}c@{\hspace{10pt}}>{\ttfamily}X}
+		\toprule
+			\rmfamily \bfseries Base Question & \rmfamily \bfseries Object & \rmfamily \bfseries \parbox{40pt}{\centering Parametric Answer} & \rmfamily \bfseries \parbox{75pt}{\centering Counterparametric Answer} & \rmfamily \bfseries \parbox{120pt}{\centering Question with Counterparametric Context} \\
+		\midrule
+			\multirow{4}{65pt}[-45pt]{Q: What is the date of birth of \protect\rep{\{person\}}? \\ A: The date of birth of \protect\rep{\{person\}} is} &
+			\textcolor{Red}{Che~Guevara} &
+			\textcolor{Red}{June~14,~1928} &
+			\textcolor{Apricot}{965~AD} &
+			\vwidth{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} \vspace{2pt} \\
+			%
+			&
+			\textcolor{Apricot}{Ibn~al-Haytham} &
+			\textcolor{Apricot}{965~AD} &
+			\textcolor{Red}{June~14,~1928} &
+			\vwidth{Context: [the date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Apricot}{Ibn~al-Haytham}? \\ A: The date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is} \vspace{2pt} \\
+
+			&
+			\textcolor{Blue}{Boyan~Slat} &
+			\textcolor{Blue}{27~January~1994} &
+			\textcolor{Brown}{February~23,~1868} &
+			\vwidth{Context: [the date of birth of \textcolor{Blue}{Boyan~Slat} is \textcolor{Brown}{February~23,~1868}]. \\ Q: What is the date of birth of \textcolor{Blue}{Boyan~Slat}? \\ A: The date of birth of \textcolor{Blue}{Boyan~Slat} is} \vspace{2pt} \\
+
+			&
+			\textcolor{Brown}{W.E.B~Du~Bois} &
+			\textcolor{Brown}{February~23,~1868} &
+			\textcolor{Red}{June~14,~1928} &
+			\vwidth{Context: [the date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Brown}{W.E.B~Du~Bois}? \\ A: The date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is} \vspace{2pt} \\
+			%
+		\midrule
+			\multirow{2}{65pt}[-10pt]{Q: What country is \protect\rep{\{city\}} in? \\ A: \protect\rep{\{city\}} is in}
+			&
+			\textcolor{BurntOrange}{Cairo} &
+			\textcolor{BurntOrange}{Egypt} &
+			\textcolor{ForestGreen}{India} &
+			\vwidth{\vspace{2pt} Context: [\textcolor{BurntOrange}{Cairo} is in \textcolor{ForestGreen}{India}]. \\ Q: What country is \textcolor{BurntOrange}{Cairo} in? \\ A: \textcolor{BurntOrange}{Cairo} is in} \vspace{2pt} \\
+			%
+			&
+			\textcolor{ForestGreen}{Mumbai} &
+			\textcolor{ForestGreen}{India} &
+			\textcolor{BurntOrange}{Egypt} &
+			\vwidth{Context: [\textcolor{ForestGreen}{Mumbai} is in \textcolor{BurntOrange}{Egypt}]. \\ Q: What country is \textcolor{ForestGreen}{Mumbai} in? \\ A: \textcolor{ForestGreen}{Mumbai} is in} \vspace{2pt} \\
+		\bottomrule
+	\end{tabularx}
+	\caption{Using the same question format allows us to repurpose previous parametric answers as counterparametric ones. In this example, we randomly sample answers from the same base question but referring to a different object to find counterparametric answers, which we later add to the context of the query.}
+	\label{counterparametric_table}
+\end{table}
 
 Later, we add this \emph{counterparametric answer} to the context, to form a new query and query the same model again; this is exemplified in \cref{category_example}.
 
@@ -191,7 +245,7 @@ While beam search with a short beam width tends to produce more accurate results
 We compare the parametric answer to the previous values to come to one of three cases:
 \begin{description}
 	\item[\Parametric{}] answers are equal to the answer given by the model when queried without context.
-		This answer would come from the parametric memory of the model, and could potentially include hallucinations not fixed by RAG.
+		This answer would come from the parametric memory of the model, and could potentially include hallucinations not present in the context.
 	\item[\Contextual{}] answers are equal to the context given in the query.
 	\item[\Other] answers are neither of these, and this answer comes from a mis-interpretation of the input by the model or from some other source.
 \end{description}
@@ -206,7 +260,14 @@ The approach to finding out the source of knowledge of each query is specified i
 \begin{figure}[tb]
 	\centering
 	\fbox{\includegraphics[width=\textwidth]{Method.png}}
-	\caption{Example diagram of steps used to calculate the two sets of answers, \textit{parametric} and \textit{contextual}, and to compare them to answer the question in this objective. Many of the terms in this diagram are explained in the \protect\hyperref[glossary]{Glossary}.}
+	\caption{Example diagram of steps taken to calculate the sets of \Parametric{}, \Contextual{}, and \Other{} answers. The terms in this diagram are explained in the \protect\hyperref[glossary]{Glossary}.
+	The following steps are shown: \\
+		\phantom{.}\hspace{5pt} 1. Generate questions by combining every base question with every object of the same category. \\
+		\phantom{.}\hspace{5pt} 2. Query each model, and get a set of parametric answers. \\
+		\phantom{.}\hspace{5pt} 3. Shuffle these parametric answers along the same base question to get counterparametric answers. \\
+		\phantom{.}\hspace{5pt} 4. Query the model again, using the counterparametric answers as context. \\
+		\phantom{.}\hspace{5pt} 5. Group the answers according to their source.
+	}
 	\label{action_diagram}
 \end{figure}
 
@@ -231,62 +292,8 @@ The approach to finding out the source of knowledge of each query is specified i
 			\bfseries \textcolor{MidnightBlue}{Other} \\[12pt]
 		\bottomrule
 	\end{tabularx}
-	\caption{Example for results with \Parametric{}, \Contextual{}, and \Other{} values. Note that, in the third query, the model is interpreting the question as asking about Rome in the US State of Georgia, rather than the country of Georgia.}
+	\caption{Example for results for three questions. We enhance each question with a context containing data that is different to the answer given by the model for this question. We later categorise the source of the answer as \Parametric{} if it came from the model's inherent memory, \Contextual{} if it came from the context, or \Other{} if it's neither of these. Note that, in the third query, the model is interpreting the question as asking about Rome in the US State of Georgia, rather than the country of Georgia.}
 	\label{category_example}
-\end{table}
-
-\begin{table}[htbp]
-	\newcommand{\vwidth}[1]{\parbox{38ex}{\ttfamily #1}}
-	\newcommand{\rep}[1]{{\setlength{\fboxsep}{0pt}\fcolorbox{Gray}{Gray!80}{\textit{#1}}}}
-
-	\centering
-	\scriptsize
-
-	\begin{tabularx}{\textwidth}{>{\ttfamily}l>{\ttfamily}c@{\hspace{1pt}}>{\ttfamily}c@{\hspace{0pt}}>{\ttfamily}c@{\hspace{10pt}}>{\ttfamily}X}
-		\toprule
-			\rmfamily \bfseries Base Question & \rmfamily \bfseries Object & \rmfamily \bfseries \parbox{40pt}{\centering Parametric Answer} & \rmfamily \bfseries \parbox{75pt}{\centering Counterparametric Answer} & \rmfamily \bfseries \parbox{120pt}{\centering Question with Counterparametric Context} \\
-		\midrule
-			\multirow{4}{65pt}[-45pt]{Q: What is the date of birth of \protect\rep{\{person\}}? \\ A: The date of birth of \protect\rep{\{person\}} is} &
-			\textcolor{Red}{Che~Guevara} &
-			\textcolor{Red}{June~14,~1928} &
-			\textcolor{Apricot}{965~AD} &
-			\vwidth{Context: [the date of birth of \textcolor{Red}{Che~Guevara} is \textcolor{Apricot}{965~AD}]. \\ Q: What is the date of birth of \textcolor{Red}{Che~Guevara}? \\ A: The date of birth of \textcolor{Red}{Che~Guevara} is} \vspace{2pt} \\
-			%
-			&
-			\textcolor{Apricot}{Ibn~al-Haytham} &
-			\textcolor{Apricot}{965~AD} &
-			\textcolor{Red}{June~14,~1928} &
-			\vwidth{Context: [the date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Apricot}{Ibn~al-Haytham}? \\ A: The date of birth of \textcolor{Apricot}{Ibn~al-Haytham} is} \vspace{2pt} \\
-			%
-			% &
-			% \textcolor{Blue}{Boyan~Slat} &
-			% \textcolor{Blue}{27~January~1994} &
-			% \textcolor{Brown}{February~23,~1868} &
-			% \vwidth{Context: [the date of birth of \textcolor{Blue}{Boyan~Slat} is \textcolor{Brown}{February~23,~1868}]. \\ Q: What is the date of birth of \textcolor{Blue}{Boyan~Slat}? \\ A: The date of birth of \textcolor{Blue}{Boyan~Slat} is} \vspace{2pt} \\
-			%
-			&
-			\textcolor{Brown}{W.E.B~Du~Bois} &
-			\textcolor{Brown}{February~23,~1868} &
-			\textcolor{Red}{June~14,~1928} &
-			\vwidth{Context: [the date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is \textcolor{Red}{June~14,~1928}]. \\ Q: What is the date of birth of \textcolor{Brown}{W.E.B~Du~Bois}? \\ A: The date of birth of \textcolor{Brown}{W.E.B~Du~Bois} is} \vspace{2pt} \\
-			%
-		\midrule
-			\multirow{2}{65pt}[-10pt]{Q: What country is \protect\rep{\{city\}} in? \\ A: \protect\rep{\{city\}} is in}
-			&
-			\textcolor{BurntOrange}{Cairo} &
-			\textcolor{BurntOrange}{Egypt} &
-			\textcolor{ForestGreen}{India} &
-			\vwidth{\vspace{2pt} Context: [\textcolor{BurntOrange}{Cairo} is in \textcolor{ForestGreen}{India}]. \\ Q: What country is \textcolor{BurntOrange}{Cairo} in? \\ A: \textcolor{BurntOrange}{Cairo} is in} \vspace{2pt} \\
-			%
-			&
-			\textcolor{ForestGreen}{Mumbai} &
-			\textcolor{ForestGreen}{India} &
-			\textcolor{BurntOrange}{Egypt} &
-			\vwidth{Context: [\textcolor{ForestGreen}{Mumbai} is in \textcolor{BurntOrange}{Egypt}]. \\ Q: What country is \textcolor{ForestGreen}{Mumbai} in? \\ A: \textcolor{ForestGreen}{Mumbai} is in} \vspace{2pt} \\
-		\bottomrule
-	\end{tabularx}
-	\caption{Using the same question format allows us to repurpose previous parametric answers as counterparametric ones.}
-	\label{counterparametric_table}
 \end{table}
 
 \clearpage{}
@@ -373,7 +380,7 @@ For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterpara
 			$P_3 = \PPL \left( q_1, \dots, q_{m} \mid Q' \right)$ \\
 		\hline
 	\end{tabular}
-	\caption{Four different perplexity values: one for each set of tokens, and one for each query context.}
+	\caption{We calculate four different perplexity values: one for each set of tokens, and one for each query context. We care about $P_2$ and $P_3$, which are the perplexities at getting the parametric and counterfactual answers in a query with counterfactual context.}
 	\label{perplexity_table}
 \end{table}
 
@@ -389,7 +396,7 @@ For simplicity and to the myriad of possible token and probability combinations,
 
 \subsubsection{Predicting whether an answer came from memory or from context}
 
-One question remains: if the response of the query with counterparametric context $Q'$ is a certain answer $x_1, \dots, x_n$, how can we predict whether this answer is came from the model's memory $p$ or from the given context $q$ without requiring an extra query?
+One question remains: if the response of the query with counterparametric context $Q'$ is a certain answer $x_1, \dots, x_n$, can we predict whether this answer is came from the model's memory $p$ or from the given context $q$ without requiring an extra query?
 
 We propose investigating the value of the perplexity $\PPL \left( x_1, \dots, x_n \mid Q' \right)$ and comparing it to the distribution of perplexities on the answers with added parametric context $P_2$ and $P_3$.
 For simplicity reasons, we are obviating the case when the preferred answer is neither of these; instead, we focus on whether the parametric or counterparametric answer are more likely.\footnotemark{}
