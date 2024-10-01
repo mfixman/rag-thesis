@@ -6,17 +6,22 @@
 In recent years, Large Language Models (LLMs) have become ubiquitous in solving general problems across a wide range of tasks, from text generation to question answering and logic problems.
 However, recent research suggests that using these models alone might not be the most effective way to solve problems that are not directly related to text generation \citep{treeofthoughts}.
 
-One approach to improving the performance on knowledge problems for LLMs is Retrieval-Augmented Generation (RAG) \citep{rag}. RAG involves retrieving relevant context related to a query and incorporating it into the model's input, enhancing the model's ability to generate accurate and contextually appropriate responses.
+One potential approach to improving the performance on knowledge problems for LLMs is Retrieval-Augmented Generation (RAG) \citep{rag}. RAG involves retrieving relevant context related to a query and incorporating it into the model's input, enhancing the model's ability to generate accurate and contextually appropriate responses.
 
 As RAG-enhanced systems become more widespread, studies on the performance of different retrieval systems and their interaction with LLMs have become crucial.
 Many explore the performance of these downstream tasks depending on both the retriever and the generator \citep{can_rag_models_reason,gpt3}, examining whether the knowledge is \textit{grounded} in the context.
-Retrieval-Augmented models, such as \textsc{Atlas} \citep{atlas_foundational} and \textsc{Retro} \citep{retro}, use this approach to fine-tune a model on both a large body of knowledge and an existing index for context retrieval.
+Retrieval-Augmented models, such as \textsc{Atlas} \citep{atlas_foundational} and \textsc{Retro} \citep{retro}, use this approach to fine-tune a model on both a large body of knowledge and on a retriever for a given index.
 
-This project aims to understand the performance of various large language models with added context by measuring their \textit{knowledge grounding} on a dataset consisting of a large variety of questions across a wide range of topics.
+The \textit{knowledge grounding} of a model refers to how well the model's outputs are anchored in verifiable and accurate sources.
+In the context of queries enhanced with RAG, we prefer knowledge sourced from context which came from the index, since they are much less likely to be ``hallucinations'' or mistakes from the model.
+
+This project aims to understand the performance of various large language models when queries with added context by measuring their knowledge grounding on a dataset consisting of a large variety of questions across a wide range of topics.
 We follow the approach by \citeauthor{factual_recall} of running queries with counterparametric context to understand whether a particular answer originates from the model's inherent knowledge (i.e., its training data) or from the provided context (i.e., the context retrieved by RAG).
 
-This thesis builds on this knowledge and improve our understanding of how different LLMs interact with the given context in the problem of question answering.
-Specifically, we investigate whether these interactions vary depending on the type of question being answered, contributing to a more nuanced understanding of LLM performance in diverse knowledge domains.
+This thesis builds on this knowledge to improve our understanding of how different LLMs interact with the given context in the problem of question answering.
+Specifically, we research whether these interactions vary depending on the type of question being answered for models of different architectures and sizes, contributing to a more nuanced understanding of LLM performance in diverse knowledge domains.
+
+\newpage{}
 
 \subsection{Research Question}
 
@@ -35,13 +40,14 @@ This thesis is structured around three different sub-objectives to deepen our un
 % We propose the creation of a novel dataset of questions designed for testing LLMs' ability to distinguish between parametric and contextual knowledge.
 % This dataset is used to investigate the factors influencing an LLM's choice of answer, and hypothesise that we can use perplexity scores as a predictor of where a particular answer originates.
 
-\begin{description}[style=nextline,labelindent=10pt,itemindent=25pt]
-	\item[1. Creating a representative dataset of questions.]
+\begin{description}[style=nextline,labelindent=7pt,itemindent=25pt]
+	\item[1.\hspace{4pt}Creating a representative dataset of questions.]
 		This is necessary as existing Q\&A datasets are not suitable for our objectives.
-	\item[2. Building an experimental framework to understand the source of an LLM's answer.]
-		This will give us information about which models prefers which type of answers, whether it depends on the question asked, and more.
-	\item[3. Enhancing the framework to understand the reasoning behind each answer]
-		We use the perplexity of a model's response on both answers to understand \textit{why} a certain answer was chosen.
+	\item[2.\hspace{4pt}Building an experimental framework to understand the source of an LLM's answer.]
+		This will give us information about which models chooses to answer questions using its learned parametric knowledge or the given context, and whether it depends on the question asked.
+	\item[3.\hspace{4pt}Enhancing the framework to understand the reasoning behind each answer]
+		We use the perplexity of a model's response on both answers to understand \textit{why} a certain answer was chosen, and we attempt to predict the source of the answer with this number alone.
+		This can help RAG-enhanced systems prevent hallucinations by repeating the index search in answers which might contradict the given context.
 \end{description}
 
 \subsection{Overview of Methods}
@@ -50,19 +56,19 @@ This thesis is structured around three different sub-objectives to deepen our un
 \label{questions_objective}
 
 We require a dataset of questions that's useful for answering our research question.
-This dataset should allow us to understand the responses of the models to know whether they came from the model's parametric memory or from the RAG context, and should be reasonably representative of the world to prevent biases.
+This dataset should allow us to understand whether each response came from the model's parametric memory or from the RAG-provided context, and should be reasonably representative of the world to prevent biases.
 
 In particular, the questions should allow us to easily create counterparametric answers to later add as context to our queries.
 We follow the example of \citeauthor{factual_recall} on creating questions that can be easily answered with short responses, and later using these answers to create counterparametric context.
 
-We also enhance this work by adding a much larger set of questions of a variety of topics.
+We enhance the work by \citeauthor{factual_recall} by adding a much larger and broader set of questions from a large variety of topics.
 
 \subsubsection{Building an experimental framework to understand the source of an LLM's answer}
 \label{intro_models_numbers}
 
-Currently, little is understood about the factors and mechanisms that control whether an LLM will generate text respecting either the context or the memorised information.
+Little is currently understood about the factors that control the source of knowledge of an answer in a large language model, and whether the generated text comes from the query's context or from memorised parametric information.
 
-Previous research found out that, when the context of a query contradicts the ground knowledge of a model, the final answer depends on the size and architecture of the model used \citep{factual_recall}.
+Previous research found out that, when the context of a query contradicts the ground knowledge of a model, the final answer is affected by the size and architecture of the model used \citep{factual_recall}.
 
 This thesis extends this research by testing the representative set of questions and counterfactuals described in the previous section with both Seq2Seq and Decoder-only models of various sizes.
 We also research the cases when the answer doesn't correspond to either the parametric or contextual knowledge, and why the model chooses a third type of answer when adding counterfactual context.
@@ -72,9 +78,9 @@ We also research the cases when the answer doesn't correspond to either the para
 \subsubsection{Enhancing the framework to understand the reasoning behind each answer}
 
 \Citeauthor{factual_recall} showed that there is a correlation between the probability of a large language model choosing a parametric answer over a counterfactual contextual answer and the amount of times this answer appears in the ground truth data of the model.
-This gives us clues on whether the result of a query came from parametric or contextual knowledge if we have access to this ground truth, as is the case in models like Pythia \citep{pythia}.
+This gives us clues on whether the result of a query came from parametric or contextual knowledge for morels with access to its ground truth, as is the case in models like Pythia \citep{pythia}.
 
 Unfortunately, most so-called open-source large language models do not give us access to the source data being used to train it and therefore do not allow this kind of analysis.
 
 The \textbf{perplexity} score of answer gives a measure of how ``certain'' a large language model is of its answer \citep{how_can_we_know}.
-We hypothesise that we can use this metric to serve as a reliable indicator of whether a particular answer was memorised by the LLM or was derived from the provided context.
+We hypothesise that we can use this metric to serve as a reliable indicator of whether a particular answer came from a large language model's memory or whether it was derived from the provided context.
