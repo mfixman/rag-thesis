@@ -1,9 +1,12 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0" version="24.7.16">
   <diagram name="Page-1" id="uutijIK_MWkFv9CNafFd">
-    <mxGraphModel dx="1035" dy="733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="500" math="0" shadow="0">
+    <mxGraphModel dx="994" dy="704" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="500" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="PFjbj7EMCYHYED_QHg6N-38" value="&lt;p style=&quot;line-height: 100%;&quot;&gt;&lt;b&gt;Contextual&lt;br&gt;&lt;/b&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#660000;strokeWidth=2;fillColor=none;verticalAlign=top;" parent="1" vertex="1">
+          <mxGeometry x="607" y="556.75" width="100" height="175.25" as="geometry" />
+        </mxCell>
         <mxCell id="MheTRjnrIJHMprSzCFHI-7" value="&lt;br&gt;&lt;div&gt;&lt;b&gt;Contextual Answers&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;shadow=1;fillColor=none;verticalAlign=top;" parent="1" vertex="1">
           <mxGeometry x="507" y="500" width="300" height="232" as="geometry" />
         </mxCell>
@@ -49,10 +52,10 @@
         <mxCell id="PFjbj7EMCYHYED_QHg6N-19" value="&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot; face=&quot;Lucida Console&quot; color=&quot;#26a269&quot;&gt;Montevideo&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot; face=&quot;EW9kL-yD4NLWCVOWMNkE&quot;&gt;Buenos Aires&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Courier New;fontSize=10;strokeColor=default;fillColor=none;fontStyle=1;fontColor=#1a5fb4;" parent="PFjbj7EMCYHYED_QHg6N-27" vertex="1">
           <mxGeometry y="85" width="120" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="MheTRjnrIJHMprSzCFHI-10" value="&lt;div align=&quot;right&quot;&gt;Query Model&lt;br&gt;&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;shadow=1;" parent="PFjbj7EMCYHYED_QHg6N-51" source="MheTRjnrIJHMprSzCFHI-3" target="MheTRjnrIJHMprSzCFHI-4" edge="1">
+        <mxCell id="MheTRjnrIJHMprSzCFHI-10" value="&lt;div align=&quot;right&quot;&gt;Query Models&lt;br&gt;&lt;/div&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;shadow=1;" parent="PFjbj7EMCYHYED_QHg6N-51" source="MheTRjnrIJHMprSzCFHI-3" target="MheTRjnrIJHMprSzCFHI-4" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="PFjbj7EMCYHYED_QHg6N-46" value="Shuffle Answers" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;" parent="PFjbj7EMCYHYED_QHg6N-51" source="PFjbj7EMCYHYED_QHg6N-12" target="MheTRjnrIJHMprSzCFHI-5" edge="1">
+        <mxCell id="PFjbj7EMCYHYED_QHg6N-46" value="Sample different answers&lt;br&gt;from each question" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;" parent="PFjbj7EMCYHYED_QHg6N-51" source="PFjbj7EMCYHYED_QHg6N-12" target="MheTRjnrIJHMprSzCFHI-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PFjbj7EMCYHYED_QHg6N-52" value="" style="group" parent="1" vertex="1" connectable="0">
@@ -61,7 +64,7 @@
         <mxCell id="MheTRjnrIJHMprSzCFHI-1" value="&lt;div&gt;&lt;b&gt;Base Questions&lt;br&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 10px;&quot;&gt;&lt;font style=&quot;font-size: 10px;&quot; face=&quot;Lucida Console&quot;&gt;What is the capital of &lt;span style=&quot;background-color: rgb(230, 230, 230);&quot;&gt;{country}&lt;/span&gt;?&lt;br&gt;What is the date of birth of &lt;span style=&quot;background-color: rgb(230, 230, 230);&quot;&gt;{person}&lt;/span&gt;?&lt;/font&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;shadow=1;" parent="PFjbj7EMCYHYED_QHg6N-52" vertex="1">
           <mxGeometry width="120" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="MheTRjnrIJHMprSzCFHI-2" value="&lt;div&gt;&lt;b&gt;Objects&lt;br&gt;&lt;br&gt;&lt;/b&gt;&lt;font face=&quot;Lucida Console&quot; style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;background-color: rgb(192, 191, 188);&quot;&gt;Argentina&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;1sBdIfYaEE6bvWHAVR_a&quot; style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;background-color: rgb(192, 191, 188);&quot;&gt;Uruguay&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font face=&quot;1sBdIfYaEE6bvWHAVR_a&quot; style=&quot;font-size: 10px;&quot;&gt;&lt;span style=&quot;background-color: rgb(192, 191, 188);&quot;&gt;Empress Maria Theresa&lt;br&gt;Albert Einsein&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;shadow=1;" parent="PFjbj7EMCYHYED_QHg6N-52" vertex="1">
+        <mxCell id="MheTRjnrIJHMprSzCFHI-2" value="&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;b&gt;Objects&lt;br&gt;&lt;br&gt;&lt;/b&gt;&lt;font face=&quot;Lucida Console&quot; style=&quot;background-color: rgb(230, 230, 230); font-size: 10px;&quot;&gt;Argentina&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font face=&quot;1sBdIfYaEE6bvWHAVR_a&quot; style=&quot;background-color: rgb(230, 230, 230); font-size: 11px;&quot;&gt;Uruguay&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;font-size: 11px;&quot;&gt;&lt;font face=&quot;1sBdIfYaEE6bvWHAVR_a&quot; style=&quot;background-color: rgb(230, 230, 230); font-size: 11px;&quot;&gt;Empress Maria Theresa&lt;br&gt;Albert Einsein&lt;br&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=2;shadow=1;" parent="PFjbj7EMCYHYED_QHg6N-52" vertex="1">
           <mxGeometry y="160" width="120" height="120" as="geometry" />
         </mxCell>
         <mxCell id="PFjbj7EMCYHYED_QHg6N-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=3;" parent="1" source="PFjbj7EMCYHYED_QHg6N-19" target="MheTRjnrIJHMprSzCFHI-6" edge="1">
@@ -91,7 +94,7 @@
           <mxGeometry x="532" y="116.75" width="250" height="300" as="geometry" />
         </mxCell>
         <mxCell id="PFjbj7EMCYHYED_QHg6N-35" value="The capital of &lt;b&gt;&lt;font color=&quot;#1a5fb4&quot;&gt;Argentina&lt;/font&gt;&lt;/b&gt; is &lt;b&gt;&lt;font color=&quot;#1a5fb4&quot;&gt;Buenos Aires&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;" parent="1" vertex="1">
-          <mxGeometry x="507" y="596.75" width="100" height="63.25" as="geometry" />
+          <mxGeometry x="507" y="596.75" width="100" height="60.25" as="geometry" />
         </mxCell>
         <mxCell id="PFjbj7EMCYHYED_QHg6N-33" value="&lt;p style=&quot;line-height: 100%;&quot;&gt;&lt;b&gt;Parametric&lt;/b&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#006600;strokeWidth=2;verticalAlign=top;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="507" y="556.75" width="100" height="100" as="geometry" />
@@ -100,13 +103,10 @@
           <mxGeometry x="607" y="596.75" width="100" height="60" as="geometry" />
         </mxCell>
         <mxCell id="PFjbj7EMCYHYED_QHg6N-40" value="The date of birth of &lt;font color=&quot;#e5a50a&quot;&gt;&lt;b&gt;Empress Maria Theresa&lt;/b&gt;&lt;/font&gt; is &lt;b&gt;&lt;font color=&quot;#a51d2d&quot;&gt;14 March 1979&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="607" y="656.75" width="100" height="70" as="geometry" />
+          <mxGeometry x="607" y="656.75" width="100" height="74.25" as="geometry" />
         </mxCell>
         <mxCell id="PFjbj7EMCYHYED_QHg6N-41" value="The date of birth of &lt;font color=&quot;#a51d2d&quot;&gt;&lt;b&gt;Albert Einstein&lt;/b&gt;&lt;/font&gt; is &lt;b&gt;&lt;font color=&quot;#e5a50a&quot;&gt;13 May&lt;/font&gt; &lt;font color=&quot;#a51d2d&quot;&gt;1979&lt;br&gt;&lt;/font&gt;&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="707" y="596.75" width="100" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="PFjbj7EMCYHYED_QHg6N-38" value="&lt;p style=&quot;line-height: 100%;&quot;&gt;&lt;b&gt;Contextual&lt;br&gt;&lt;/b&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#660000;strokeWidth=2;fillColor=none;verticalAlign=top;" parent="1" vertex="1">
-          <mxGeometry x="607" y="556.75" width="100" height="175" as="geometry" />
         </mxCell>
         <mxCell id="PFjbj7EMCYHYED_QHg6N-42" value="&lt;p style=&quot;line-height: 90%;&quot;&gt;&lt;b&gt;Other&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontColor=#000066;fillColor=none;strokeWidth=2;verticalAlign=top;horizontal=1;" parent="1" vertex="1">
           <mxGeometry x="707" y="556.75" width="100" height="100" as="geometry" />
