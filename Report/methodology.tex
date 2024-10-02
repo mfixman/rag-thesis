@@ -1,12 +1,12 @@
 \section{Methods}
 \label{methods_section}
 
-How does a large language model respond when given information that contradicts its inherent knowledge, and why?
+How does a large language model respond when given context that contradicts its parametric, learned knowledge? Why does it choose this answer?
 
-To understand this, we need to build a new framework for testing a model's answers when presented with contradictory information.
+To understand this, we build a new framework for testing a large language model's answers when presented with contradictory information.
 We test this framework with models of various architectures and sizes to get insights about our responses.
 
-Following the example set in \cref{introduction_research_objectives}, we split the work into three sub-objectives.
+Following the example set in \cref{introduction_research_objectives}, we split this work into three sub-objectives.
 
 \subsection{Creating a representative dataset of questions}
 \label{creating_dataset}
@@ -16,46 +16,48 @@ As argued in \cref{questions_objective}, the research of this thesis requires a 
 \subsubsection{Dataset Description}
 
 The dataset we aim to create for this research is designed to be a comprehensive and versatile tool for evaluating large language models.
-By selecting a wide variety of questions questions we ensure that the dataset will provide meaningful insights of the grounding of large language models across a wide spectrum of domains.
+By selecting a wide variety of questions questions we ensure that the dataset will provide meaningful insights of the grounding of LLMs across a wide spectrum of domains.
 
 Our dataset should have the following properties.
-\begin{description}[style=nextline]
+\begin{description}[style=nextline,topsep=-5pt]
 	\item[1. Questions should have short, unambiguous answers.]
-		Our goal is to compare these results for both equality and perplexity. Longer answers make this objective more complicated since two long, correct answers might be equivalent. Shorter answers reduce the space of possible answers that are equivalent, but not equal.
+		Our goal is to compare these answers both for equality, on the LLM's perplexity at generating this result. Longer answers make this objective harder to interpret since two long answers might have a higher chance of being both correct. Ensuring our answers are short reduces the space of different but equivalent answers.
 	\item[2. Questions must cover a large and diverse set of topics.]
-	    The parametric knowledge of a model comes from a pre-existing dataset of training data, which might be biased towards certain topics or groups of people. For example, it is known that Wikipedia contains a significant geographical bias on biographies \citep{wikipedia_geographic_bias}, and that this affects the probability of giving a correct answer without context \citep{factual_recall}.
+		Parametric answers are sourced from the training data of a large language model, which might be biased towards certain topics or groups of people. For example, it is known that Wikipedia contains a significant geographical bias on biographies \citep{wikipedia_geographic_bias}, and that this affects the probability of choosing to answer from parametric or contextual knowledge\citep{factual_recall}.
 		We require a large and diverse and set of topics to counteract potential biases.
 	\item[3. Questions must allow for the creation of counterparametric answers.]
-		Part of the requirements of this thesis is to allow some tests of contextual versus inherent knowledge.
+		In order to test a model's knowledge grounding, this thesis requires understanding whether an answer came from contextual versus inherent knowledge.
 	    A simple way to do this is to repeat and enhance the approach used by \citeauthor{factual_recall} of adding counterparametric answers to a query context.
-		This allows us to to easily disambiguate whether an answer came from the model's memory or from the context.
+		This allows us to to easily disambiguate whether an answer came from the model's inherent parametric memory or from the given context.
 	    This approach is only possible if the set of answers allows us to create a set of alternative answers that are plausibly correct and have the same format as the parametric answer, but are still counterparametric.
 \end{description}
 
 The existing literature uses various existing question-and-answer datasets.
-We believe that none of these datasets are a good fit for this research for not following some of the three desired properties.
+We believe that none of these datasets are a good fit for this research due to not following some of the three desired properties.
 However, understanding them can be useful when designing the final dataset.
 
 \begin{description}
 	\item[Natural Questions Dataset] Created by Google Research \citep{natural_questions}, and commonly used in research related to understanding the answers of LLMs in question-and-answer problems \citep{ragged,when_not_to_trust_llms,can_rag_models_reason}.
-		While the dataset provides an excellent range of questions and existing literature to compare these results to, the lack of categorisation is an obstacle in our objective to generate counterparametric answers.
+		While the dataset provides an excellent range of questions and existing literature to compare these results to, the lack of question categorisation is an obstacle in our objective to generate counterparametric answers.
 	\item[Human-Augmented Dataset] Sometimes used in research related to quality control of large language models \citep{learning_the_difference}.
-		However, the high cost associated with this dataset would limit the size of our questions.
+		However, the high cost associated in generating this dataset would limit the size of our questions.
 	\item[Countries' Capitals Question Dataset] Used in ``Characterizing Mechanisms for Factual Recall in Language Models'' \citep{factual_recall}, this dataset contains a single question about the capital city of certain countries which can be easily transformed to a counterparametric question.
-		This format is ideal for the research done in this thesis, but having a single question pattern will not allow a deep dive into the source of each answer in a general question.
+		This format is ideal for the research done in this thesis, but having a single type of question will not allow a deep dive into the source of each answer in a general question.
 \end{description}
 
 \subsubsection{Dataset Creation}
 
-Instead of using an existing dataset, this research takes inspiration from the paper by \citeauthor{factual_recall} to create a similar but larger dataset of questions and answers from a wide range of topics, where questions can be grouped by question pattern to ensure that their formats are similar.
-This way, we can emulate the approach of that paper of using the answer from a certain question as the counterfactual question of another.
+Instead of using an existing dataset, this research takes inspiration from countries' capital queries used in the paper by \citeauthor{factual_recall}, and creates a similar but larger and more varied dataset of questions and answers from a wide range of topics, assuring questions can be grouped by question pattern so that the formats of their answer are similar.
+This way, we can emulate the approach used in that paper of reusing the answer from a certain question as the counterfactual context of another.
 
-This dataset will be used to test the remaining questions of this thesis.
+This dataset will be used for the experiments of this thesis.
 Since it might be useful for future research, it will also be presented as its own result.
 
-To address these items, we follow the approach done by \citeauthor{factual_recall} in creating base questions that refer to a specific object, so all the answers for the same base question have a similar format and creating counterparametric answers is easy.
+Since this thesis requires a set of questions that covers a large set of topics, we first generate by hand a list of various categories of questions.
+Each one of these categories refers to the subject of the question, rather than the answer.
 
-Since this thesis requires a set of questions that covers a large set of topics, eras, and places, we enhance this method by creating a set of categories, each of which has a large set of base questions and another set of objects that can be matched.
+For each category we create a set of base questions and another set of objects.
+We ensure that for all the objects, and specially in the case of people, the resulting list of objects represents a wide variety of objects from across the world
 
 For each category, we generate a set of questions by matching every one of its base questions with every one of its objects.
 An example of this approach is shown in \cref{source_data_example}.
@@ -121,7 +123,8 @@ This list of questions will enable the research on whether the answers given by 
 \subsubsection{Model Selection}
 \label{model_selection}
 
-In order to get a general understanding of large language models with added context, we test the queries generated in \cref{creating_dataset} into four models of different architectures and sizes, which are listed in \cref{model_list}.
+In order to understand the knowledge grounding of a wide variety of large language models, the queries generated in \cref{creating_dataset} are tested with four models of different architectures and sizes.
+These models are listed in \cref{model_list}.
 
 \begin{table}[htb]
 	\centering
@@ -137,19 +140,20 @@ In order to get a general understanding of large language models with added cont
 	\label{model_list}
 \end{table}
 
+All of the models used in this research leverage autoregressive attention using the transformer architecture \citep{attention_is_all_you_need}, where each token attends to its preceding tokens, maintaining the temporal order of the sequence.
+This approach allows them to generate coherent and contextually relevant text by sampling from this learned distribution, while also capturing long-range dependencies and complex patterns in language.
+
 Both Sequence-to-Sequence models are based on T5 models \citep{t5}, which employ an encoder-decoder architecture: while an encoder processed the input sequence into a context vector, and an decoder generates an input sequence from this vector.
 The \texttt{Flan-T5} models are fine-tuned to follow instructions, and have improved zero-shot performance compared to the original T5 models \citep{flant5}.
 
 \texttt{Flan-T5-XL} contains approximately 3 billion parameters.
-This is considerably bigger than the base Flan-T5 model \cite{flant5}, which provides better accuracy of its parametric answers.
+This is considerably bigger than the base Flan-T5 model \citep{flant5}, which will provide better accuracy of its parametric answers.
 
-\texttt{Flan-T5-XXL} contains 11 billion parameters, has higher accuracy on the parametric answers as the \texttt{XL} model \cite{flant5}.
-However, how the higher amount of parameters will affect the experiments that we are running is still unknown.
+\texttt{Flan-T5-XXL} contains 11 billion parameters, has higher accuracy on the parametric answers as the \texttt{XL} model \citep{flant5}.
+However, how the higher amount of parameters will affect its knowledge grounding when running our experiment is still unknown.
 
-These models leverage autoregressive attention \citep{attention_is_all_you_need}, where each token attends to its preceding tokens, maintaining the temporal order of the sequence.
-This approach allows them to generate coherent and contextually relevant text by sampling from this learned distribution, while also capturing long-range dependencies and complex patterns in language.
-
-Unlike Seq2Seq models, Decoder-only models generate answers one token at a time from the input query: given a sequence of tokens they solve the problem of predicting the following token, repeating sequentially until some final token is found \cite{gpt}.
+Decoder-only models generate answers one token at a time from the input query.
+Given a sequence of tokens, they generate text one token at a time by attempting to solve the problem of predicting the following token \citep{gpt}.
 
 This thesis uses the \texttt{-Instruct} versions of the latest Llama models \citep{llama3}, which use this architecture and fine-tune it to tasks of instruction-following.
 These models are specially adept at complex prompts.
@@ -160,14 +164,14 @@ The properties of the models are summarised in \cref{model_card}.
 \begin{table}[htbp]
 	\centering
 	\footnotesize
-	\begin{tabular}{>{\ttfamily}l l l r r}
+	\begin{tabular}{>{\ttfamily}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}r@{\hspace{3pt}}r}
 		\toprule
-			\rmfamily \bfseries Model & \bfseries Architecture & \bfseries Developer & \bfseries Parameters \\
+			\rmfamily \bfseries Model & \bfseries Architecture & \bfseries Trained On & \bfseries Parameters \\
 		\midrule
-			Flan-T5-XL & Seq2Seq & Google Brain & 3 Billion \\
-			Flan-T5-XXL & Seq2Seq & Google Brain & 11 Billion \\[2pt]
-			Meta-Llama-3.1-8B-Instruct & Decoder-Only & Meta AI & 8 Billion \\
-			Meta-Llama-3.1-70B-Instruct & Decoder-Only & Meta AI & 70 Billion \\
+			Flan-T5-XL & Seq2Seq & Public NLP Datasets & 3 Billion \\
+			Flan-T5-XXL & Seq2Seq & Public NLP Datasets & 11 Billion \\[2pt]
+			Meta-Llama-3.1-8B-Instruct & Decoder-Only & Web text, code, instruction datasets & 8 Billion \\
+			Meta-Llama-3.1-70B-Instruct & Decoder-Only & Web text, code, instruction datasets & 70 Billion \\
 		\bottomrule
 	\end{tabular}
 	\caption{Model cards of the large language models used in this research.}
@@ -177,10 +181,10 @@ The properties of the models are summarised in \cref{model_card}.
 \subsubsection{Understanding the source of the answer in each model}
 \label{methodology_type_of_answer}
 
-The first step to understanding the knowledge grounding of large language models is to create queries that contain counterparametric data as part of the context.
+The first step to understanding the knowledge grounding of large language models is to create queries that contain data that contradicts its parametric knowledge as part of the context.
 By comparing the result to the existing answers it becomes trivial to understand whether an answer came from the model's memory, the queries' context, or neither of these.
 
-Following the approach of \citeauthor{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer which is given by the original query.
+Following the approach done by \citeauthor{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer which is given by the original query.
 An example of this random sampling can be found in \cref{counterparametric_table}.
 
 \begin{table}[p]
@@ -237,25 +241,26 @@ An example of this random sampling can be found in \cref{counterparametric_table
 	\label{counterparametric_table}
 \end{table}
 
-Later, we add this \emph{counterparametric answer} to the context, to form a new query and query the same model again; this is exemplified in \cref{category_example}.
+% \newpage{}
+Later, we add this \emph{counterparametric answer} to the context, to form a new query and query the same model again with the added counterparametric context.
+This is exemplified in \cref{category_example}.
 
-To ensure that the results are simple to interpret and minimise the effect of randomness, once we select the queries we follow the example of \citeauthor{ragged} and use Greedy Decoding to find the answer.
-While beam search with a short beam width tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments that result in shorter answers \citep{t5}.
+To ensure that the results are simple to interpret and minimise the effect of randomness, once we select the queries we follow the example of \citeauthor{ragged} and use Greedy Decoding to generate the answer.
+While beam search with tends to produce more accurate results for long answers \citep{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that tend to produce better results \citep{text_degeneration}, this is likely to not have an effect on experiments shorter answers \citep{t5}.
 
-We compare the parametric answer to the previous values to come to one of three cases:
+We compare the generated answer with the context to the previously generated parametric answer, and we categorise the answer:
 \begin{description}
 	\item[\Parametric{}] answers are equal to the answer given by the model when queried without context.
-		This answer would come from the parametric memory of the model, and could potentially include hallucinations not present in the context.
+		This answer would come from the parametric memory of the model, and could potentially indicate an hallucination not present in the context.
 	\item[\Contextual{}] answers are equal to the context given in the query.
+		In a RAG context, this would be the answer retrieved from the index.
 	\item[\Other] answers are neither of these, and this answer comes from a mis-interpretation of the input by the model or from some other source.
 \end{description}
 
-To minimise the amount of problems caused by large language models generating extra information, we define two strings to be equal by removing all text after a period or an \texttt{<EOS>} token, removing punctuation and stop words, and finding whether one is a subsequence of another.
+To minimise the amount of problems caused by large language models generating extra information, we define two strings to be equal by truncate the text until the first period or \texttt{<EOS>} token, removing punctuation and stop words, and finding whether one of the answers is a subsequence of another.
 
-This approach to compare strings is not enough, and understanding whether two answers are identical is an ongoing problem.
-This is explained in the Future~Work section in \cref{other_problems}.
-
-The approach to finding out the source of knowledge of each query is specified in \cref{action_diagram}.
+We later found out that this approach to compare strings could be improved, and understanding whether two generated answers are identical is an ongoing problem.
+This is later explained in the Future~Work section in \cref{other_problems}.
 
 \begin{figure}[tb]
 	\centering
@@ -271,7 +276,7 @@ The approach to finding out the source of knowledge of each query is specified i
 	\label{action_diagram}
 \end{figure}
 
-\begin{table}[htbp]
+\begin{table}[h]
 	\centering
 	\scriptsize
 
@@ -301,9 +306,9 @@ The approach to finding out the source of knowledge of each query is specified i
 \subsubsection{Understanding the result by finding the mean attention of the context and question areas}
 \label{attention_section}
 
-For comparing different architectures, it's useful to understand how much attention they give to the context compared to the rest of the query.
+When comparing different architectures, it's useful to understand how much attention they give to the context compared to the rest of the query.
 
-Since all our model architectures employ attention mechanisms \citep{flant5,llama3}, we can estimate the relative importance of tokens in the context and the query by calculating the average self-attention each token receives within its respective section.
+Given that all our model architectures employ attention mechanisms \citep{flant5,llama3}, we can estimate the relative importance of the tokens in each section of the query by calculating the average self-attention each token receives within its respective section.
 Specifically, we compute the mean self-attention weights, which serve as a proxy for the emphasis the model places on different parts of the input.
 
 This approach is formalized in \cref{attention_equation}, where we define the mean self-attention for tokens in the context and query sections.
@@ -326,7 +331,8 @@ This approach is formalized in \cref{attention_equation}, where we define the me
 In this equation, $A$ is the 5-tensor representing the attention weights.
 $m_{b,q,k}$ represents the mean attention all layers and heads, while $d_b$ represents the diagonal of these attentions which correspond to the self-attentions.
 
-We normalise those values for $s_i$ and average then among the context tokens and the rest of the query, respectively.
+We normalise the values for the tokens in each query to $s_i$ in order to being able to compare them between different query, and average then among the context tokens and the rest of the query.
+This results in two results that can be compared between different queries.
 
 \newpage{}
 
@@ -342,7 +348,7 @@ In a sense, it's the ``surprise'' of a model that a certain answer is correct.
 
 We can define the probability of a model choosing a token $x_n$ with context $x_1, \dots, x_{n - 1}$ from a query $Q$ by calculating the softmax value of all the logits for the possible words for this token.
 
-The probabilities of the tokens if an answer can be accumulated to calculate the negative log-likelihood $\NLL$, which is used to calculate the perplexity $\PPL$ using the formulas from \cref{eq:nll,eq:ppl}.
+The probabilities of of the answer generated from a query can be accumulated to calculate the negative log-likelihood $\NLL$, which is used to calculate the perplexity $\PPL$ using the formulas from \cref{eq:nll,eq:ppl}.
 
 \begin{align}
 	\NLL \left( x_1, \dots, x_n \mid Q \right) &= - \frac{1}{n} \sum^n_{i = 1} \log_2 P \left( x_i \mid Q, x_1, \dots, x_{i - 1} \right) \label{eq:nll} \\[1ex]
@@ -351,11 +357,11 @@ The probabilities of the tokens if an answer can be accumulated to calculate the
 
 \subsubsection{Perplexity of the parametric answer with counterparametric context and vice-versa}
 
-Note that the token $x_n$ does not necessarily have to be the result of applying the query $x_1, \dots, x_{n - 1}$ to a model.
+Note that, in these experiments, the token $x_n$ does not necessarily have to be the most likely result generated by the model when applying the query $x_1, \dots, x_{n - 1}$.
 
-Therefore, it becomes necessary to use teacher-forcing \citep{teacher_forcing} to feed some answer to the model regardless of what's the answer to this particular query. This allows us to calculate the perplexity scores of the parametric answers for both the regular query and the one with counterparametric context, and the perplexity scores of the contextual answers for these two queries.
+Therefore it becomes necessary to use teacher-forcing \citep{teacher_forcing} to feed some answer to the model regardless of what's the most likely answer for each successive token. This allows us to calculate the perplexity scores of the parametric answers for both the contextless query and the one with counterparametric context, and the perplexity scores of the contextual answers for these two queries.
 
-For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterparametric answer $q_1, \dots, q_m$, a query without context $Q$, and a query with this counterparametric context $Q'$ we can calculate four different perplexity scores as shown in \cref{perplexity_table}.
+For a given parametric answer $p_1, \dots, p_n$ and different counterparametric answer $q_1, \dots, q_m$, a query without context $Q$, and a query with this counterparametric context $Q'$ we can calculate four different perplexity scores $P_0, P_1, P_2, P_3$ as shown in \cref{perplexity_table}.
 
 \begin{table}[hbt]
 	\footnotesize
@@ -382,8 +388,7 @@ For a given parametric answer $p_1, \dots, p_n$ and randomly sampled counterpara
 	\label{perplexity_table}
 \end{table}
 
-Since the parametric answer is by definition the response of the model to the regular query, $P_0 \leq P_1$.
-In fact, the perplexity of the parametric value is lower than the perplexity of any other answer on query $Q$.
+Since the parametric answer is by definition the response of the model to the regular query, $P_0 \leq P_1$ and the perplexity of the parametric value is lower than the perplexity of any other answer on query $Q$.
 
 \Cref{example_perplexity} contains an example of the calculation of the perplexity values for a particular query in a case where the contextual answer is considerably less surprising than the parametric answer.
 
@@ -396,7 +401,7 @@ For simplicity and to the myriad of possible token and probability combinations,
 
 One question remains: if the response of the query with counterparametric context $Q'$ is a certain answer $x_1, \dots, x_n$, can we predict whether this answer is came from the model's memory $p$ or from the given context $q$ without requiring an extra query?
 
-We propose investigating the value of the perplexity $\PPL \left( x_1, \dots, x_n \mid Q' \right)$ and comparing it to the distribution of perplexities on the answers with added parametric context $P_2$ and $P_3$.
-For simplicity reasons, we are obviating the case when the preferred answer is neither of these; instead, we focus on whether the parametric or counterparametric answer are more likely.\footnotemark{}
+We propose investigating the value of the perplexity $\PPL \left( x_1, \dots, x_n \mid Q' \right)$ and comparing it to the distribution of perplexities on queries with added counterparametric context $P_2$ and $P_3$.
+The probability of this value being on one distribution or another might give us a good idea of the source the model used for generating the answer.
 
 \input{example_perplexity}
