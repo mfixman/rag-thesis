@@ -15,8 +15,7 @@ As RAG-enhanced systems become more widespread, studies on the performance of di
 Many explore the performance on downstream tasks depending on both the retriever and the generator \citep{can_rag_models_reason,gpt3}, examining whether the knowledge is \textit{grounded} in the context.
 Retrieval-Augmented models, such as \textsc{Atlas} \citep{atlas_foundational} and \textsc{Retro} \citep{retro}, use this approach to fine-tune a model on both a large body of knowledge and on a retriever for a given index.
 
-\textit{Knowledge grounding} in a large language model with RAG-generated data can improve its performance.
-In general, a well-grounded model outputs data that is anchored in verifiable and accurate sources.
+Well-grounded models with RAG-generated data that is anchored in verifiable and accurate sources can improve the performance of large language models.
 In the context of queries enhanced with RAG, we prefer knowledge sourced from context which came from the index, since they are much less likely to be ``hallucinations'' or mistakes from the model.
 
 This project aims to understand the performance of various large language models when queries with added context by measuring their knowledge grounding on a dataset consisting of a large variety of questions across a wide range of topics.
@@ -30,9 +29,7 @@ Specifically, we research whether these interactions vary depending on the type 
 \subsection{Research Question}
 \label{research_question}
 
-%How do we know what large language models really know?
-This thesis attempts to answer %this question by asking a different but related 
-the following question:
+This thesis attempts to answer the following question:
 
 \textbf{How does a large language model respond to questions when given context information that contradicts  or agrees with its inherent parametric knowledge?}
 
