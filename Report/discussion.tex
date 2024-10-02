@@ -182,6 +182,7 @@ This is an area that should be improved; \cref{other_problems} gives more inform
 \end{table}
 
 \subsection{Differences in distribution of perplexity scores}
+\label{discussion_perplexity_scores}
 
 The distribution of perplexity scores, shown in \cref{results_perplexity_score}, shows a significant difference in the perplexity scores between \Parametric{} and \Contextual{} answers for all four models.
 This is even more marked on Seq2Seq models, where for both models the 90\% percentile of the \Contextual{} answer is lower than the 10\% percentile of the \Parametric{}.
@@ -197,6 +198,7 @@ The cause for the difference in the perplexity values for different architecture
 \end{description}
 
 \subsubsection{Can we use the perplexity to predict the source of an answer?}
+\label{perplexity_estimator}
 
 Seeing the current results, it's tempting to attempt to create an estimator which, given information about the perplexity of an answer alone and without making any additional query, can estimate whether that answer in a query with added context came from the \Parametric{} knowledge of the context or from the \Contextual{} information in the query.
 
