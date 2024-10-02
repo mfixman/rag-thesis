@@ -43,21 +43,19 @@ This thesis is structured around three different sub-objectives to deepen our un
 % We propose the creation of a novel dataset of questions designed for testing LLMs' ability to distinguish between parametric and contextual knowledge.
 % This dataset is used to investigate the factors influencing an LLM's choice of answer, and hypothesise that we can use perplexity scores as a predictor of where a particular answer originates.
 
-\begin{description}[style=nextline,labelindent=7pt,itemindent=25pt]
+\begin{description}[style=nextline,itemindent=25pt]
 	\item[1.\hspace{4pt}Creating a representative dataset of questions.]
 		This is necessary as existing Q\&A datasets are not suitable for our objectives.
-	\item[2.\hspace{4pt}Building an experimental framework to understand the source of an LLM's answer.]
-		This will give us information about which models chooses to answer questions using its learned parametric knowledge or the given context, and whether it depends on the question asked. \\
-		The criterion for this part is calculating data about the source of the answers when running the queries generated in the previous point, and understanding the reasons why each model might provide different results.
+	\item[2.\hspace{4pt}Building an experimental framework to understand the source of the answer to a query given by a large language model.]
+		This will give us information about which models chooses to answer questions using its learned parametric knowledge or the given context, and whether it depends on the question asked.
 	\item[3.\hspace{4pt}Enhancing the framework to understand the reasoning behind each answer]
 		We use the perplexity of a model's response on both answers to understand \textit{why} a certain answer was chosen, and we attempt to predict the source of the answer with this number alone.
-		This could help RAG-enhanced systems prevent hallucinations by repeating the index search in answers which might contradict the given context. \\
-		The criterion for this part is getting data on the reasoning behind the decision each model uses to choose the source of each answer, and figuring out whether it's possible to establish a criterion to predict the source of a query's answer.
+		This could help RAG-enhanced systems prevent hallucinations by repeating the index search in answers which might contradict the given context.
 \end{description}
 
 This project will contribute to the body of knowledge on the study of large language models, knowledge grounding, and how to improve retrieval-augmented generation models.
 
-It will benefit researchers in this areas, along with developers attempting to create new large language models that are less sensitive to hallucinations.
+It will benefit researchers in this areas, along with developers attempting to create new large language models that are less sensitive to hallucinations along with the users of those new models.
 
 \subsection{Overview of Methods}
 
@@ -72,6 +70,8 @@ We follow the example of \citeauthor{factual_recall} on creating questions that 
 
 We enhance the work by \citeauthor{factual_recall} by adding a much larger and broader set of questions from a large variety of topics.
 
+The criterion for solving this objective is to generate such a dataset that can be used in the experiments for this thesis.
+
 \subsubsection{Building an experimental framework to understand the source of an LLM's answer}
 \label{intro_models_numbers}
 
@@ -81,6 +81,8 @@ Previous research found out that, when the context of a query contradicts the gr
 
 This thesis extends this research by testing the representative set of questions and counterfactuals described in the previous section with both Seq2Seq and Decoder-only models of various sizes.
 We also research the cases when the answer doesn't correspond to either the parametric or contextual knowledge, and why the model chooses a third type of answer when adding counterfactual context.
+
+The criterion for solving this objective is calculating data about the source of the answering from querying the models with the queries generated on \cref{questions_objective}, including the amount of answers sourced by the query's context and from the parametric knowledge of the model, and analysing and understanding these numbers.
 
 % This thesis also gathers insights from answering this question on different categories and patterns of questions to find out if this depends on what is being asked.
 
@@ -93,3 +95,7 @@ Unfortunately, most open-source large language models provide only the model wei
 
 The \textbf{perplexity} score of answer gives a measure of how ``certain'' a large language model is of its answer \citep{how_can_we_know}.
 We hypothesise that we can use this metric to serve as a reliable indicator of whether a particular answer came from a large language model's memory or whether it was derived from the provided context.
+
+The criterion for solving this objective is calculating the perplexity data that's behind the source of the decision for a model to get data from the query's context or from parametric data, along with reflections on the reason why each model has these numbers.
+
+Additionally, we should establish whether it's possible to create an estimator that can predict the source of an answer from the perplexity alone.
