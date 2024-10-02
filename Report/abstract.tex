@@ -15,11 +15,11 @@ We also analyse the \emph{perplexity} of these answers to give us an indication 
 
 Our findings suggest that smaller models and models that encode the entire input sequence into an internal representation before outputting an answer might produce more answers sourced from the RAG-provided context, therefore avoiding hallucinations.
 In particular, the smaller models \texttt{Meta-Llama-3.1-8B} and \texttt{Flan-T5-XL} tend to have better knowledge grounding and fewer hallucinations than their larger versions, while encoder-decoder Seq2Seq models tend to outperform Decoder-only models.
-%As an additional analysis we investigate methods for determining whether a given response originates from the RAG context or the model's internal memory from the query's resulting perplexity.
-%This might be used to develop methods to prevent hallucinations in large language models that use RAG indexing.
+As an additional analysis we investigate methods for determining whether a given response originates from the RAG context or the model's internal memory from the query's resulting perplexity.
+This might be used to develop methods to prevent hallucinations in large language models that use RAG indexing.
 
 
-%This thesis forms the foundational part of a broader project aimed at publishing a comprehensive study on knowledge grounding in retrieval-augmented language models, as outlined in the preprint ``Knowledge Grounding in Retrieval-Augmented LMs: An Empirical Study'' \citep{knowledge_grounding_retrieval_augmented}.
-%We build on existing literature, incorporating the use of counterparametric context in queries, to advance our understanding of this phenomenon.
+This thesis forms the foundational part of a broader project aimed at publishing a comprehensive study on knowledge grounding in retrieval-augmented language models, as outlined in the preprint ``Knowledge Grounding in Retrieval-Augmented LMs: An Empirical Study'' \citep{knowledge_grounding_retrieval_augmented}.
+We build on existing literature, incorporating the use of counterparametric context in queries, to advance our understanding of this phenomenon.
 
 \end{abstract}
