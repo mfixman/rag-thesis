@@ -35,7 +35,7 @@ This thesis attempts to answer the following question:
 
 The rest of this section gives an overview of the steps we take to answer this question.
 
-\subsection{Research Objectives}
+\subsection{Research Objectives and Beneficiaries}
 \label{introduction_research_objectives}
 
 This thesis is structured around three different sub-objectives to deepen our understanding knowledge grounding in large language models.
@@ -47,11 +47,17 @@ This thesis is structured around three different sub-objectives to deepen our un
 	\item[1.\hspace{4pt}Creating a representative dataset of questions.]
 		This is necessary as existing Q\&A datasets are not suitable for our objectives.
 	\item[2.\hspace{4pt}Building an experimental framework to understand the source of an LLM's answer.]
-		This will give us information about which models chooses to answer questions using its learned parametric knowledge or the given context, and whether it depends on the question asked.
+		This will give us information about which models chooses to answer questions using its learned parametric knowledge or the given context, and whether it depends on the question asked. \\
+		The criterion for this part is calculating data about the source of the answers when running the queries generated in the previous point, and understanding the reasons why each model might provide different results.
 	\item[3.\hspace{4pt}Enhancing the framework to understand the reasoning behind each answer]
 		We use the perplexity of a model's response on both answers to understand \textit{why} a certain answer was chosen, and we attempt to predict the source of the answer with this number alone.
-		This can help RAG-enhanced systems prevent hallucinations by repeating the index search in answers which might contradict the given context.
+		This could help RAG-enhanced systems prevent hallucinations by repeating the index search in answers which might contradict the given context. \\
+		The criterion for this part is getting data on the reasoning behind the decision each model uses to choose the source of each answer, and figuring out whether it's possible to establish a criterion to predict the source of a query's answer.
 \end{description}
+
+This project will contribute to the body of knowledge on the study of large language models, knowledge grounding, and how to improve retrieval-augmented generation models.
+
+It will benefit researchers in this areas, along with developers attempting to create new large language models that are less sensitive to hallucinations.
 
 \subsection{Overview of Methods}
 
