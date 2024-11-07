@@ -1,1 +1,5 @@
-This is an abstract.
+Large language models, which exploded in quality and prevalence, have the propensity to produce hallucinations which presents a critical challenge where precision and correctness are crucial. Retrieval-Augmented Generation (RAG) has been proposed as as solution to this problem, but still presents problems as it's unclear when a large language model chooses to generate answers using the context provided by RAG over the knowledge on its parametric memory.
+We explore the \emph{knowledge grounding} of large language models to understand the source chosen by the model when presented with a prompt that contains a context with information that contradicts its parametric knowledge.
+
+Our findings show that smaller models and Seq2Seq are biased towards choosing knowledge from the context over larger and Decoder-only models.
+Retrieved information about the \emph{perplexity} of an answer is used to create a predictor of the source of an answer.

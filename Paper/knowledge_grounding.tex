@@ -2,6 +2,12 @@
 \usepackage{iclr2025_conference,times}
 \usepackage{fdsymbol}
 \usepackage{microtype}
+\usepackage{natbib}
+
+\usepackage[hypertexnames=false,hidelinks]{hyperref}
+\usepackage[noabbrev,nameinlink,capitalize]{cleveref}
+
+\bibliographystyle{iclr2025_conference}
 
 \title{Knowledge Grounding in Language Models: \\ An Empirical Study}
 
@@ -32,5 +38,9 @@
 \input{discussion}
 
 \input{conclusions}
+
+This is an example of an ICLR2025 reference \citep{survey_hallucinations}.
+
+\bibliography{knowledge_grounding.bib}
 
 \end{document}
