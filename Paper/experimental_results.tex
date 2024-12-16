@@ -1,1 +1,36 @@
-\section{Experimental Results}
+\section{Results}
+
+\textbf{Answer Source Distribution:}
+Across thousands of queries, we find encoder-decoder models (Flan-T5 variants) overwhelmingly produce \Contextual{} answers when faced with contradictory context. They seldom revert to \Parametric{} answers, suggesting strong grounding in the provided text. Smaller models, like Flan-T5-XL and Llama-8B, also exhibit better reliance on contextual cues than their larger counterparts.
+
+By contrast, larger decoder-only models (Llama-70B) often ignore contradictory context and cling to \Parametric{} knowledge. This confirms previous findings \citep{factual_recall} and suggests that simply scaling up parameters does not ensure better grounding.
+
+\textbf{Categories and Variations:}
+We tested multiple categories and found architecture to be a stronger determinant than the specific domain. Whether the question concerned cities or historical events, the Seq2Seq models tended to incorporate context, while large decoder-only models resisted it.
+
+\textbf{\Other{} Answers:}
+A minority of responses did not match either the \Parametric{} or \Contextual{} answer. Inspecting these cases reveals that many are paraphrases or near-matches. Some are truly incorrect hallucinations or answers that mix elements from both sources. Improved methods for answer equivalence (e.g., semantic similarity) could reduce these \Other{} cases. Nevertheless, their presence highlights that beyond simple binary choices, models can produce creative but incorrect blends.
+
+\textbf{Perplexity Insights:}
+We find that perplexity serves as a useful signal. When a model provides a \Parametric{} answer despite contradictory context, perplexity is often elevated. Conversely, when it follows the context, perplexity is lower. This suggests a practical application: high perplexity might trigger a re-query or second retrieval step, helping mitigate hallucinations on-the-fly.
+
+\textbf{Attention to Context:}
+While not shown in detail here, analyzing self-attention patterns reveals Seq2Seq models pay more attention to context tokens. This aligns with their higher rate of producing \Contextual{} answers and may result from the encoder-decoder architecture that fully processes input before generating an output.
+
+\textbf{Figures:}
+Figure placeholders can illustrate key results. For example, a figure comparing the percentage of \Parametric{}, \Contextual{}, and \Other{} answers across the four models can appear here:
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.45\textwidth]{param_context_other.png}
+\caption{Distribution of answer types across models.}
+\label{fig:answer_distribution}
+\end{figure}
+
+Another figure may show perplexity distributions for parametric vs.\ contextual answers:
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.45\textwidth]{perplexity_distribution.png}
+\caption{Perplexity distributions by answer source.}
+\label{fig:perplexity_distribution}
+\end{figure}
+

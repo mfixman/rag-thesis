@@ -1,1 +1,10 @@
 \section{Discussion}
+
+Our findings underscore the importance of both architecture and model size in knowledge grounding. Encoder-decoder architectures, as in Flan-T5, consistently adopt the \Contextual{} answers provided, leading to fewer hallucinations. Smaller models also show better grounding behavior, likely because they rely less on expansive parametric knowledge and are more influenced by explicit context.
+
+For practitioners, these insights suggest that selecting the largest model is not always best. If factual accuracy and adaptability to new evidence are paramount, a Seq2Seq model or a smaller decoder-only model may perform better. Moreover, perplexity can be integrated into retrieval pipelines. When perplexity indicates a misalignment, the system could prompt the retriever for more context or re-check sources, thereby reducing erroneous outputs.
+
+Future work could refine the categorization of answers, using semantic similarity to detect when \Other{} responses are essentially \Parametric{} or \Contextual{} variants. Investigating more subtle contradictions or more complex reasoning tasks would further test LLMs’ ability to integrate external evidence. Additionally, training or fine-tuning models specifically for robust RAG setups might yield even stronger grounding performance.
+
+Overall, this study provides a clearer picture of when and why LLMs defer to provided context, offering practical strategies to enhance reliability in knowledge-intensive settings.
+\section{Discussion}

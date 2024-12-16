@@ -1,11 +1,17 @@
-\documentclass[11pt]{article}
-\usepackage{ACL2023}
+\documentclass[draft,a4paper,11pt]{article}
+\usepackage[final]{ACL2023}
 \usepackage{fdsymbol}
 \usepackage{microtype}
 \usepackage{natbib}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{booktabs}
 
 \usepackage{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
+
+\graphicspath{{.}{./pictures}{./figures}}
 
 \bibliographystyle{acl_natbib}
 
@@ -13,17 +19,19 @@
 
 \newcommand{\spade}{$\phantom{}^\spadesuit$}
 \author{%
-	Martin Fixman\spade{}, Tillman Weyde\spade{}, Chenxi Whitehouse\spade{}, Pranava Madhyastha\spade{} \\
+	Martin~Fixman\spade{}, Tillman~Weyde\spade{}, Chenxi~Whitehouse\spade{}, Pranava~Madhyastha\spade{} \\
 	$\phantom{}^\spadesuit{}$ City St.\ George's, University of London%
 }
+
+\newcommand{\Parametric}{\textbf{\textcolor{ForestGreen}{Parametric}}}
+\newcommand{\Contextual}{\textbf{\textcolor{Maroon}{Contextual}}}
+\newcommand{\Other}{\textbf{\textcolor{MidnightBlue}{Other}}}
 
 \begin{document}
 
 \maketitle{}
 
-\begin{abstract}
-	\input{abstract}
-\end{abstract}
+\input{abstract}
 
 \input{introduction}
 

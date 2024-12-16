@@ -1,1 +1,16 @@
 \section{Related Work}
+
+\textbf{Factuality and Hallucinations:}
+The success of transformers \citep{attention_is_all_you_need} has led to massive LLMs like GPT-3 \citep{gpt3} and Llama \citep{llama}, but factual reliability remains a concern. Studies highlight hallucinations in various domains \citep{how_can_we_know,can_rag_models_reason,gpt2}, prompting research into evaluating and reducing factual errors.
+
+\textbf{Retrieval-Augmented Generation:}
+RAG \citep{rag,atlas_foundational,retro} integrates external knowledge at inference time. While it often improves factual accuracy, it does not guarantee that LLMs will follow the retrieved evidence. Work by \citet{ragged} and \citet{factual_recall} shows that models may still rely on their parameters despite contradictory context. Our study builds on these insights, extending them across different architectures and model sizes.
+
+\textbf{Parametric vs.\ Contextual Knowledge:}
+Prior research considers how training data, architecture, and finetuning influence the balance between internal (parametric) and external (contextual) knowledge \citep{factual_recall,knowledge_grounding_retrieval_augmented}. Seq2Seq models like T5 \citep{t5,flant5} often excel at using given input directly, while decoder-only architectures struggle more with overriding their internal memory.
+
+\textbf{Perplexity as a Signal:}
+Perplexity measures how “surprised” a model is by a given sequence \citep{how_can_we_know}. While commonly used to assess language modeling quality, recent work suggests perplexity can indicate trustworthiness or factual grounding \citep{learning_the_difference}. We build on this, showing that perplexity correlates with the source of the model’s chosen answer.
+
+By contextualizing our contribution in these lines of work, we show that model architecture, size, and perplexity-based diagnostics are key dimensions in understanding and improving knowledge grounding in LLMs.
+
