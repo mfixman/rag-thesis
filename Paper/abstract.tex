@@ -1,6 +1,9 @@
-\begin{abstract}
-Large language models (LLMs) have recently advanced in quality and capability, becoming integral tools for a wide range of NLP tasks. However, hallucinations remain a significant challenge when factual accuracy is crucial. Retrieval-augmented generation (RAG) mitigates some issues by providing external context, yet when that context contradicts a model's parametric memory, it is unclear whether the model will rely on the retrieved evidence or on its internal knowledge.
+Large language models have become integral tools for a wide range of NLP tasks.
+While hallucinations remain a significant challenge when factual accuracy is crucial, RAG mitigates some issues by providing external context.
+However, it is unclear whether the model will rely on the retrieved evidence or on its internal knowledge.
 
-This paper conducts an empirical study of \emph{knowledge grounding} in LLMs. We develop a diverse dataset of short-answer questions and present them to four models—two encoder-decoder (Flan-T5-XL, Flan-T5-XXL) and two decoder-only (Meta-Llama-3.1-8B-Instruct, Meta-Llama-3.1-70B-Instruct)—with added counterparametric context that contradicts their known answers. We find that encoder-decoder models and smaller models lean more on the given context, while larger decoder-only models often ignore contradictions and rely on parametric knowledge. We also demonstrate that perplexity correlates with whether an answer is sourced from parametric memory or contextual evidence, suggesting a practical tool for detecting when re-retrieval or other interventions may be needed. Our findings have implications for building more reliable and grounded LLM-based systems and guide future research in mitigating hallucinations.
-\end{abstract}
+This paper conducts an empirical study of \emph{knowledge grounding} in LLMs.
+We develop a diverse dataset of short-answer questions and present them to two encoder-decoder models (\smallflan{}, \bigflan{}) and two decoder-only models (\smallllama{}, \bigllama{}) along with with added counterparametric answers in their context.
+We find that encoder-decoder models and smaller models lean more on the given context, while larger decoder-only models often ignore contradictions and rely on parametric knowledge. We also demonstrate that perplexity correlates with whether an answer is sourced from parametric memory or contextual evidence, suggesting a practical tool for detecting when re-retrieval or other interventions may be needed.
 
+% Our findings have implications for building more reliable and grounded LLM-based systems and guide future research in mitigating hallucinations.

@@ -1,14 +1,27 @@
 \section{Introduction}
 
-Large language models (LLMs) have become central to many NLP applications, such as question answering \citep{gpt3,how_can_we_know}, reasoning tasks \citep{treeofthoughts}, and code generation. Despite their impressive capabilities, hallucinations—confidently stated but factually incorrect outputs—continue to pose serious problems \citep{how_can_we_know}. For tasks where precision is paramount, such as factual QA or medical and legal domains, reducing hallucinations is critical.
+Large language models have become central to many NLP applications, such as question answering \citep{gpt3,how_can_we_know}, reasoning tasks \citep{treeofthoughts}, and code generation.
+Despite their impressive capabilities, hallucinations—confidently stated but factually incorrect outputs—continue to pose serious problems \citep{how_can_we_know}.
+For tasks where precision is paramount, such as factual QA or medical and legal domains, reducing hallucinations is critical.
 
-Retrieval-augmented generation (RAG) \citep{rag} aims to mitigate hallucinations by supplying relevant context from an external index. In principle, providing accurate and verifiable text at inference time should guide the model toward correct answers. However, even with RAG, LLMs may override provided evidence, especially when it contradicts their entrenched parametric knowledge \citep{factual_recall,ragged}.
+Retrieval-augmented generation (RAG) \citep{rag} aims to mitigate hallucinations by supplying relevant context from an external index.
+In principle, providing accurate and verifiable text at inference time should guide the model toward correct answers.
+However, even with RAG, LLMs may override provided evidence, especially when it contradicts their entrenched parametric knowledge \citep{factual_recall,ragged}.
 
-This phenomenon relates to \emph{knowledge grounding}: how well a model integrates external context into its response. Recent studies show that factors such as model architecture, size, and training method influence this interplay \citep{factual_recall,flant5,llama}. Yet, it remains unclear under what conditions LLMs override their intrinsic knowledge in favor of given context.
+This phenomenon relates to \emph{knowledge grounding}: how well a model integrates external context into its response.
+Recent studies show that factors such as model architecture, size, and training method influence this interplay \citep{factual_recall,flant5,llama}.
+Yet, it remains unclear under what conditions LLMs override their intrinsic knowledge in favor of given context.
 
-In this paper, we study knowledge grounding empirically. We create a diverse dataset of short-answer questions from broad topics (people, cities, principles, elements) and test LLM responses both without and with counterparametric context—statements that contradict the model's known answer. We examine four models: two encoder-decoder (Flan-T5-XL, Flan-T5-XXL) \citep{t5,flant5} and two decoder-only (Meta-Llama-3.1-8B-Instruct, Meta-Llama-3.1-70B-Instruct) \citep{llama3}. By systematically injecting contradictory context, we observe whether the model chooses the \Contextual{} answer from the prompt or a \Parametric{} answer from its memory. In cases where it chooses neither, we categorize the output as \Other{}.
+% We create a diverse dataset of short-answer questions from broad topics (people, cities, principles, elements) and test LLM responses both without and with counterparametric context—statements that contradict the model's known answer.
+% We examine four models: two encoder-decoder (Flan-T5-XL, Flan-T5-XXL) \citep{t5,flant5} and two decoder-only (Meta-Llama-3.1-8B-Instruct, Meta-Llama-3.1-70B-Instruct) \citep{llama3}.
+This paper presents an empirical study of knowledge grounding by answering questions from a broad range of topics and testing the answer of an LLM when presented with counterparametric context that contradicts the model's known answer.
+By systematically injecting this contradictory context, we observe whether the model chooses the \Contextual{} answer from the prompt, a \Parametric{} answer from its grounded memory, or some \Other{} answer that's different to both.
 
-Our findings show that encoder-decoder models and smaller models rely more on context, significantly reducing hallucinations in contradictory scenarios. Larger decoder-only models tend to ignore contradictory evidence and revert to their parametric knowledge. We further analyze perplexity as a signal: when a model selects a \Parametric{} answer against contradictory context, perplexity is typically higher, suggesting a strategy to detect and mitigate hallucinations by re-retrieving or refining the provided documents.
+% Our findings show that encoder-decoder models and smaller models rely more on context, significantly reducing hallucinations in contradictory scenarios.
+% Larger decoder-only models tend to ignore contradictory evidence and revert to their parametric knowledge.
+We further analyze the perplexity of the answer as a signal of which answer was chosen: when a model prefers a \Parametric{} answer against contradictory context, its perplexity is considerably higher.
+This can be used as a strategy to detect and mitigate hallucinations by re-retrieving or refining the provided documents.
 
-This study contributes to a deeper understanding of knowledge grounding in LLMs, offering insights for designing more reliable RAG systems. By choosing architectures that better incorporate given context or by employing perplexity-based heuristics, developers can reduce undesired hallucinations. Ultimately, improving knowledge grounding is vital for building more trustworthy language models for knowledge-intensive tasks.
-
+This study contributes to a deeper understanding of knowledge grounding in LLMs, offering insights for designing more reliable RAG systems.
+By choosing architectures that better incorporate given context or by employing perplexity-based heuristics, developers can reduce undesired hallucinations.
+Ultimately, improving knowledge grounding is vital for building more trustworthy language models for knowledge-intensive tasks.
