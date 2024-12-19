@@ -1,0 +1,26 @@
+\begin{table*}[t]
+	\centering
+	\small
+
+	\newcommand{\qtbox}[1]{\parbox{150pt}{#1}}
+	\newcommand{\qcbox}[1]{\setlength{\fboxsep}{0pt}\fbox{\colorbox{gray}{#1}}}
+
+	\newcommand{\qwbox}[2]{\setlength{\fboxsep}{0pt}\fbox{\colorbox{#1}{\strut \rule{0pt}{8pt}#2}}}
+	\newcommand{\qwtext}[2]{\textbf{\color{#1}{#2}}}
+
+	\newcommand{\qwabox}[1]{\qwbox{BurntOrange}{#1}}
+	\newcommand{\qwatext}[1]{\qwtext{BurntOrange}{#1}}
+	\newcommand{\qwbbox}[1]{\qwbox{ForestGreen}{#1}}
+	\newcommand{\qwbtext}[1]{\qwtext{ForestGreen}{#1}}
+
+	\begin{tabular}{l l l}
+		\toprule
+			\bfseries Initial Query & \bfseries Parametric Answer & \bfseries Query with Context \\
+		\midrule
+			\qtbox{Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} & \qwatext{Egypt} & \qtbox{[\qwabox{Cairo} is in \qwbtext{the United States}] \\ Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} \\[25pt]
+			\qtbox{Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} & \qwbtext{the United States} & \qtbox{[\qwbbox{New York} is in the \qwatext{Egypt}] \\ Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} \\[10pt]
+		\bottomrule
+	\end{tabular}
+	\caption{Example of counterparametric context being added to a query on cities. Counterparametric answers only get added to questions of the same category.}
+	\label{counterparametric_example}
+\end{table*}

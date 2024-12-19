@@ -1,5 +1,6 @@
 \documentclass[a4paper,11pt]{article}
 \usepackage[final]{ACL2023}
+\usepackage{parskip}
 \usepackage{fdsymbol}
 \usepackage{microtype}
 \usepackage{natbib}
@@ -9,6 +10,7 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{appendix}
+\usepackage{tabularx}
 
 \usepackage{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
@@ -36,6 +38,8 @@
 
 \newcommand{\llamaparbox}{\parbox{65pt}{\centering\ttfamily Meta-Llama-3.1 \\ -8B-Instruct}}
 \newcommand{\bigllamaparbox}{\parbox{65pt}{\centering\ttfamily Meta-Llama-3.1 \\ -70B-Instruct}}
+
+\newcommand{\todo}[1]{\textcolor{red}{\sffamily \textbf{TODO}: #1}}
 
 \begin{document}
 

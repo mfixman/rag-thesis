@@ -7,56 +7,57 @@ We first gather parametric answers from each model for a set of questions, then 
 We create a large, diverse dataset of short-answer questions spanning several domains: historical figures, cities, scientific principles, elements, books, paintings, events, buildings, and musical compositions.
 These questions have known, short, and unambiguous answers, and are present in \cref{appendixA}.
 
-\subsection{Knowledge Grounding Experimentation}
-We follow the approach in \citet{factual_recall} to inject counterparametric context by taking an answer from one object and using it as contradictory context for another.
-For example, if the model originally answered ``Cairo is in Egypt'' we provide context stating ``Cairo is in India'' and re-ask the question.
+\todo{Expand this section.}
 
-We categorise the answer in three different groups.
+\subsection{Knowledge Grounding Experimentation}
+\input{counterparametric_example}
+
+We follow the approach in \citet{factual_recall} to inject counterparametric context by taking an answer from one object of the same category and using it as contradictory context for another, as shown in \cref{counterparametric_example}.
+
+We categorise the answer in three different groups. \todo{Ensure list in same page.}
 \begin{enumerate}
 	\item \Parametric{}: The answer is identical to the parametric answer, and comes from the parametric memory of the model.
 	\item \Contextual{}: The answer is identical to the counterfactual answer, and comes from the model's context.
 	\item \Other{}: The answer is something else, and can come from a combination of both answers or from something completely different.
 \end{enumerate}
 
-We evaluate four LLMs of different architectures and sizes.
+We evaluate four LLMs of different architectures and sizes, shown in \cref{models}.
 
-\begin{table}[t]
+\begin{table}[b]
 	\centering
-	\footnotesize
+	\small
 	\renewcommand{\arraystretch}{1.2}
-	\begin{tabular}{l l r}
+	\begin{tabularx}{\columnwidth}{X l r}
 		\toprule
-			Model             & Architecture    & Param Count \\
+			Model             & Architecture    & Params \\
 		\midrule
-			\smallflan{}      & Encoder-Decoder & 3B          \\
-			\bigflan{}        & Encoder-Decoder & 11B         \\[8pt]
-			\llamaparbox{}    & Decoder-Only    & 8B          \\[8pt]
-			\bigllamaparbox{} & Decoder-Only    & 70B         \\[8pt]
+			\smallflan{}      & Encoder-Decoder & 3B          \\[5pt]
+			\bigflan{}        & Encoder-Decoder & 11B         \\[5pt]
+			\llamaparbox{}    & Decoder-Only    & 8B          \\[10pt]
+			\bigllamaparbox{} & Decoder-Only    & 70B         \\[10pt]
 		\bottomrule
-	\end{tabular}
+	\end{tabularx}
 	\caption{Models evaluated in this study.}
 	\label{models}
 \end{table}
 
 Flan-T5 \citep{flant5} is an instruction-tuned T5 model \citep{t5} with strong zero-shot capabilities.
 Llama \citep{llama3} is a decoder-only architecture fine-tuned for instructions.
+We compare two sizes for each one of these models to provide insights of knowledge grounding between different model types and sizes.
+The full list of models can be found in \cref{models}.
 
-We compare different sizes of each one of these models as seen in \cref{models}, which provides insights of the knowledge grounding difference between between models of different types and sizes.
-
-\textbf{Procedure:}
-1. We query each model without context to obtain its \Parametric{} answer.
-2. We sample a counterparametric answer from another query-object pair and inject it as context.
-3. We re-query the model with this contradictory context and categorize the new answer as \Parametric{}, \Contextual{}, or \Other{}.
-
-We use greedy decoding for consistency.
-Though more sophisticated decoding methods exist, short-answer tasks are less sensitive to decoding strategy \citep{t5}.
+For consistency and reproducibility, we use greedy decoding in all methods.
+Additionally, spaces and special characters are stripped when comparing answers.
 
 \subsection{Predicting parametric answers from perplexity data}
-To understand the model’s internal confidence, we use teacher-forcing to compute perplexities for both \Parametric{} and \Contextual{} answers under the original and contradictory queries.
+We can use the \emph{perplexity} of an answer to discover if it came from the model's parametric memory or from the query's context.
+That is, whether it's a \Parametric{} or \Contextual{} answer.
+
+To understand the internal confidence of a model, we use teacher-forcing to calculate the perplexity of both the \Parametric{} and the \Contextual{} answer with the counterfactual context added to the model.
 Higher perplexity suggests the model finds the sequence less probable, offering a clue to whether an answer stems from parametric memory or from the provided context.
 
-\textbf{Computational Resources:}
+Studies of these values can be used to understand whether the perplexity of the real answer is closer to one of these two.
+
+\subsection{Computational Resources}
 All experiments were run on a server equipped with dual NVIDIA A100 GPUs (80GB VRAM each) and 48 CPU cores.
 The A100’s large memory footprint allowed us to load and run the largest (70B) model efficiently.
-This high-performance hardware ensured that both inference and perplexity computation could be completed in a reasonable time frame.
-

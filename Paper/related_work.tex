@@ -2,8 +2,9 @@
 
 The success of the transformers models \citep{attention_is_all_you_need} has enabled the development of large-scale language models like GPT-3 \citep{gpt3} and Llama \citep{llama}.
 Despite their advancements, factual reliability remains a significant issue.
-\citeauthor{how_can_we_know} highlighted the prevalence of hallucinations across tasks, particularly in factual contexts, while other studies, such as \citep{can_rag_models_reason} and \citep{gpt2}, emphasize the challenge of ensuring accuracy in generated text.
+\citeauthor{how_can_we_know} highlighted the prevalence of hallucinations across tasks, particularly in factual contexts, while other studies, such as \citep{can_rag_models_reason,gpt2}, emphasize the challenge of ensuring accuracy in generated text.
 These concerns have prompted a wave of research focused on evaluating and mitigating hallucinations.
+Building on this, \citeauthor{understanding_the_interplay} systematically explores how parametric and contextual knowledge interact, identifying scenarios where contextual knowledge can degrade performance, even when complementary.
 
 Retrieval-Augmented Generation (RAG) \citep{rag,atlas_foundational,retro} attempts to improve factual accuracy by integrating external knowledge during inference.
 However, as \citeauthor{ragged} and \citeauthor{factual_recall} demonstrate, RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge.
@@ -19,3 +20,4 @@ More recently, \citeauthor{learning_the_difference} proposed using perplexity as
 Building on this idea, we explore how perplexity correlates with the source of a model's answers, offering a diagnostic tool for distinguishing between parametric and contextual responses.
 
 Through this lens, our work contributes to the understanding of how model architecture, size, and perplexity-based metrics shape knowledge grounding in large language models.
+
