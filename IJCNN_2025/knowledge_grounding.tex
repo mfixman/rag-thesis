@@ -1,16 +1,16 @@
 \documentclass[conference]{IEEEtran}
-\usepackage{parskip}
+% \usepackage{parskip}
 \usepackage{fdsymbol}
 \usepackage{microtype}
-% \usepackage{natbib}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[draft]{graphicx}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{balance}
 
-\usepackage{hyperref}
+\usepackage[hypertexnames=false,hidelinks]{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
 
 \graphicspath{{.}{./pictures}{./figures}}
@@ -20,10 +20,12 @@
 \title{Knowledge Grounding in Large Language Models: \\ An Empirical Study}
 
 \newcommand{\spade}{$\phantom{}^\spadesuit$}
-\author{%
-	Martin~Fixman\spade{}, Tillman~Weyde\spade{}, Chenxi~Whitehouse\spade{}, Pranava~Madhyastha\spade{} \\
-	$\phantom{}^\spadesuit{}$ City St.\ George's, University of London%
-}
+% \author{%
+% 	Martin~Fixman\spade{}, Tillman~Weyde\spade{}, Chenxi~Whitehouse\spade{}, Pranava~Madhyastha\spade{} \\
+% 	$\phantom{}^\spadesuit{}$ City St.\ George's, University of London%
+% }
+
+\author{\IEEEauthorblockN{Anonymous Authors}}
 
 \newcommand{\Parametric}{\textbf{\textcolor{ForestGreen}{Parametric}}}
 \newcommand{\Contextual}{\textbf{\textcolor{Maroon}{Contextual}}}
