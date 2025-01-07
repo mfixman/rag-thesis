@@ -13,6 +13,11 @@ declare -A AUTHORS=(
     ["learning_the_difference"]="Divyansh Kaushik et al."
     ["llama"]="Hugo Touvron et al."
     ["flant5"]="Hyung Won Chung et al."
+    ["understanding_the_interplay"]="Sitao Cheng et al."
+    ["can_rag_models_reason"]="Parishad Behnam Ghader et al."
+    ["retro"]="Sebastian Borgeaud et al."
+    ["t5"]="Colin Raffel et al."
+    ["how_many_data_points"]="Teven Le Scao et al."
 )
 
 # Loop through all .tex files and apply replacements.
