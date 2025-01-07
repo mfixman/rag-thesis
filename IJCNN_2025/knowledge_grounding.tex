@@ -1,0 +1,68 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{parskip}
+\usepackage{fdsymbol}
+\usepackage{microtype}
+% \usepackage{natbib}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[draft]{graphicx}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+
+\usepackage{hyperref}
+\usepackage[noabbrev,nameinlink,capitalize]{cleveref}
+
+\graphicspath{{.}{./pictures}{./figures}}
+
+\bibliographystyle{IEEEtran}
+
+\title{Knowledge Grounding in Large Language Models: \\ An Empirical Study}
+
+\newcommand{\spade}{$\phantom{}^\spadesuit$}
+\author{%
+	Martin~Fixman\spade{}, Tillman~Weyde\spade{}, Chenxi~Whitehouse\spade{}, Pranava~Madhyastha\spade{} \\
+	$\phantom{}^\spadesuit{}$ City St.\ George's, University of London%
+}
+
+\newcommand{\Parametric}{\textbf{\textcolor{ForestGreen}{Parametric}}}
+\newcommand{\Contextual}{\textbf{\textcolor{Maroon}{Contextual}}}
+\newcommand{\Other}{\textbf{\textcolor{MidnightBlue}{Other}}}
+
+\newcommand{\smallflan}{\texttt{flan-t5-xl}}
+\newcommand{\bigflan}{\texttt{flan-t5-xxl}}
+\newcommand{\smallllama}{\texttt{Meta-Llama-3.1-8B-Instruct}}
+\newcommand{\bigllama}{\texttt{Meta-Llama-3.1-70B-Instruct}}
+
+\newcommand{\llamaparbox}{\parbox{65pt}{\centering\ttfamily Meta-Llama-3.1 \\ -8B-Instruct}}
+\newcommand{\bigllamaparbox}{\parbox{65pt}{\centering\ttfamily Meta-Llama-3.1 \\ -70B-Instruct}}
+
+\newcommand{\todo}[1]{\textcolor{red}{\sffamily \textbf{TODO}: #1}}
+
+\begin{document}
+
+\maketitle{}
+
+\begin{abstract}
+	\input{abstract}
+\end{abstract}
+
+\input{introduction}
+
+\input{related_work}
+
+\input{experimental_setup}
+
+\input{experimental_results}
+
+\input{discussion}
+
+\input{conclusions}
+
+% \appendix{}
+
+% \input{appendixA}
+
+\bibliography{knowledge_grounding.bib}
+
+\end{document}
