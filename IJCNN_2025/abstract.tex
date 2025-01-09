@@ -3,7 +3,9 @@ While hallucinations remain a significant challenge when factual accuracy is cru
 However, it is unclear whether the model will rely on the retrieved evidence or on its internal knowledge.
 
 This paper conducts an empirical study of \emph{knowledge grounding} in LLMs.
-We develop a diverse dataset of short-answer questions and present them to two encoder-decoder models (\smallflan{}, \bigflan{}) and two decoder-only models (\smallllama{}, \bigllama{}) along with with added counterparametric answers in their context.
-We find that encoder-decoder models and smaller models lean more on the given context, while larger decoder-only models often ignore contradictions and rely on parametric knowledge. We also demonstrate that perplexity correlates with whether an answer is sourced from parametric memory or contextual evidence, suggesting a practical tool for detecting when re-retrieval or other interventions may be needed.
+We develop a diverse dataset of short-answer questions and present them to two encoder-decoder models, \smallflan{} and \bigflan{}, and two decoder-only models, \smallllama{} and \bigllama{}.
+We use the answers of similar types of questions to create different \emph{counterparametric answers}, which are added to the context of the question as a new query to feed to the models.
+We later classify the answer depending on whether it came from the query's context, from the model's parametric data, or from some other source.
 
-% Our findings have implications for building more reliable and grounded LLM-based systems and guide future research in mitigating hallucinations.
+We find that encoder-decoder models and smaller models lean more on the given context, while larger decoder-only models often ignore contradictions and rely on parametric knowledge.
+Our findings have implications for building more reliable and grounded LLM-based systems and guide future research in mitigating hallucinations.
