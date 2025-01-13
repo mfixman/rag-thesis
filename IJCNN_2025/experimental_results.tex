@@ -52,34 +52,38 @@ The total amount of these and composition of the 4760 questions can be found in 
 \label{framework_results}
 
 The results of running the queries created in \cref{creating_dataset} with added counterparametric context on each of the four models.
-% The four models can be found in \cref{total_table,total_results}.
 
-\begin{table}[htbp]
+\Cref{total_table} shows the total type of answers for each one of the models; this information is plotted in \cref{total_plot}.
+
+Additionally, \cref{cats_table} contains the information separated by question category.
+How the category of each answer affects the amount of \Parametric{}, \Contextual{}, and \Other{} answers is discussed in the next sections.
+
+\begin{table}[th]
 	\centering
 	\footnotesize
 	\begin{tabular}{l r r r}
 		\toprule
-			\bfseries Model & \Parametric{} & \Contextual{} & \Other{} \\
+			\bfseries Model & \Pc{} & \Cc{} & \Oc{} \\
 		\midrule
 			\smallflan{}  & 248 & 4284 & 228 \\
 			\bigflan{} & 242 & 4304 & 214 \\
 		\midrule
-			\llamaparbox{} & 745 & 3662 & 353 \\[10pt]
-			\bigllamaparbox{} & 1070 & 3303 & 387 \\[5pt]
+			\smallllama{} & 745 & 3662 & 353 \\
+			\bigllama{} & 1070 & 3303 & 387 \\
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
 	\caption{Amount of answers of each category when running our dataset on each of the four models.}
-	\label{total_table}.
+	\label{total_table}
 \end{table}
 
-\begin{figure}
+\begin{figure}[th]
 	\centering
 	\includegraphics[width=\columnwidth]{both_amount.png}
 	\caption{Amount of each answers of each category when running a context with counterparamteric information for Seq2Seq and Decoder-only models of different sizes.}
 	\label{total_plot}
 \end{figure}
 
-\begin{table*}[ht]
+\begin{table*}[t]
 	\centering
 	\footnotesize
 	\begin{tabular}{>{\bfseries}l | r r r | r r r | r r r | r r r}

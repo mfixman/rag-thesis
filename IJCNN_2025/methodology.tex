@@ -2,6 +2,8 @@
 \label{methodology_section}
 \todo{Should this be ``Methods'' or ``Methodology''?}
 
+\input{counterparametric_example}
+
 This study investigates the behavior of large language models (LLMs) when presented with context that contradicts their parametric, learned knowledge.
 To achieve this, we develop a comprehensive framework for evaluating the knowledge grounding of LLMs across different architectures and model sizes.
 
@@ -62,14 +64,14 @@ These models are listed in \cref{model_list}.
 	\centering
 	\footnotesize
 	% \renewcommand{\arraystretch}{1.2}
-	\begin{tabular}{p{100pt} l r}
+	\begin{tabular}{l l r}
 		\toprule
-			Model             & Architecture    & No of Params \\
+			Model             & Architecture    & Params \\
 		\midrule
-			\smallflan{}      & Encoder-Decoder & 3B          \\[5pt]
-			\bigflan{}        & Encoder-Decoder & 11B         \\[5pt]
-			\llamaparbox{}    & Decoder-Only    & 8B          \\[10pt]
-			\bigllamaparbox{} & Decoder-Only    & 70B         \\[10pt]
+			\smallflan{}      & Encoder-Decoder & 3B          \\
+			\bigflan{}        & Encoder-Decoder & 11B         \\
+			\smallllama{}    & Decoder-Only    & 8B          \\
+			\bigllama{} & Decoder-Only    & 70B         \\
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
 	\caption{Models evaluated in this study.}
@@ -117,7 +119,6 @@ Of the models used in this thesis, \texttt{Meta-Llama-3.1-8B-Instruct} has 8 bil
 \subsection{Understanding the source of the answer in each model}
 \label{query_design}
 
-\input{counterparametric_example}
 
 The first step to understanding the knowledge grounding of large language models is to create queries that contain data that contradicts its parametric knowledge as part of the context.
 By comparing the result to the existing answers it becomes trivial to understand whether an answer came from the model's memory, the queries' context, or neither of these.
