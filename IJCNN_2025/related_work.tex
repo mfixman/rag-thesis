@@ -2,22 +2,21 @@
 
 The success of the transformers models \cite{attention_is_all_you_need} has enabled the development of large-scale language models like GPT-3 \cite{gpt3} and Llama \cite{llama}.
 Despite their advancements, factual reliability remains a significant issue.
-Zhengbao Jiang et al.\cite{how_can_we_know} highlighted the prevalence of hallucinations across tasks, particularly in factual contexts, while other studies, such as \cite{can_rag_models_reason,gpt2}, emphasize the challenge of ensuring accuracy in generated text.
-These concerns have prompted a wave of research focused on evaluating and mitigating hallucinations.
-Building on this, Sitao Cheng et al.\cite{understanding_the_interplay} systematically explores how parametric and contextual knowledge interact, identifying scenarios where contextual knowledge can degrade performance, even when complementary.
 
-Retrieval-Augmented Generation (RAG) \cite{rag,atlas_foundational,retro} attempts to improve factual accuracy by integrating external knowledge during inference.
-However, as Jennifer Hsia et al.\cite{ragged} and Qinan Yu et al.\cite{factual_recall} demonstrate, RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge.
+Studies like ``How Can We Know When Language Models Know? On the Calibration of Language Models for Question Answering'' \cite{how_can_we_know} highlighted the prevalence of hallucinations across tasks, particularly in factual contexts.
+In other studies such as ``Can Retriever-Augmented Language Models Reason? The Blame Game Between the Retriever and the Language Model'' \cite{can_rag_models_reason}, the challenge of ensuring accuracy in generated text is emphasized.
+
+These concerns have prompted a wave of research focused on evaluating and mitigating hallucinations.
+Building on this, ``Understanding the Interplay between Parametric and Contextual Knowledge for Large Language Models'' \cite{understanding_the_interplay} systematically explores how parametric and contextual knowledge interact, identifying scenarios where contextual knowledge can degrade performance, even when complementary.
+
+Retrieval-Augmented Generation (RAG) \cite{rag} attempts to improve factual accuracy by integrating external knowledge during inference.
+However RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge \cite{ragged,factual_recall}.
 For instance, even when presented with contradictory context, models often rely on their inherent memory.
 Our study builds on these observations, examining this behavior across various model architectures and sizes.
 
 The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) has been a focal point of several studies.
-Qinan Yu et al.\cite{factual_recall} and Chenxi Whitehouse et al.\cite{knowledge_grounding_retrieval_augmented} investigated how factors like training data, architecture, and fine-tuning affect the interplay between these two knowledge sources.
-Their work suggests that Seq2Seq models, such as T5 \cite{t5,flant5}, are generally more effective at using input context compared to decoder-only models, which often struggle to override their internal knowledge.
-
-Perplexity, a measure of how "surprised" a model is by a sequence, has traditionally been used to assess language modeling quality \cite{how_can_we_know}.
-More recently, Divyansh Kaushik et al.\cite{learning_the_difference} proposed using perplexity as a signal for evaluating trustworthiness and factual grounding.
-Building on this idea, we explore how perplexity correlates with the source of a model's answers, offering a diagnostic tool for distinguishing between parametric and contextual responses.
+Qinan Yu et al. \cite{factual_recall} and Chenxi Whitehouse et al. \cite{knowledge_grounding_retrieval_augmented} investigated how factors like training data, architecture, and fine-tuning affect the interplay between these two knowledge sources.
+% Their work suggests that Seq2Seq models, such as T5 \cite{t5,flant5}, are generally more effective at using input context compared to decoder-only models, which often struggle to override their internal knowledge.
 
 Through this lens, our work contributes to the understanding of how model architecture, size, and perplexity-based metrics shape knowledge grounding in large language models.
 
