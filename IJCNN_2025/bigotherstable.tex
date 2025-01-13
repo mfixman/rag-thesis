@@ -1,0 +1,33 @@
+\begin{table}[p]
+	\centering
+	\scriptsize
+	\renewcommand{\arraystretch}{1.5}
+	\begin{threeparttable}
+		\begin{tabularx}{\textwidth}{>{\bfseries}c>{\ttfamily}X >{\ttfamily}p{75pt} >{\ttfamily}p{75pt} >{\ttfamily}p{75pt}}
+			\toprule
+			\bfseries Reason & \rmfamily\bfseries Question & \rmfamily\bfseries Parametric & \rmfamily\bfseries Counterfactual & \rmfamily\bfseries Contextual \\
+			\midrule
+			\multirow[t]{2}{*}{1.} & Who was the primary leader associated with The Reforms of Diocletian? & Diocletian Himself & Caracalla, a Roman Emperor & Diocletian, a Roman Emperor \\
+			& In which city is Louvre Pyramid located? & Paris, France & the city of Valladolid, in the state of Yucatan, Mexico & the city of Paris, in the country of France \\
+			\multirow[t]{1}{*}{2.} & In which period of the periodic table is Silver located? & 5 of the periodic table & 3 of the periodic table & 4 of the periodic table \\
+			\multirow[t]{2}{*}{3.} & What was the duration of Queen Elizabeth II's Platinum Jubilee?	& 12 months & approximately 100 years & approximately 70 years \\
+			& What is the nearest major body of water to Cusco? & Lake Titicaca & the North Sea & the Pacific Ocean \\
+			\multirow[t]{2}{*}{4.} & What is the name of the main protagonist in One Flew Over the Cuckoo's Nest? & Randle McMurphy & Achilles & Not Achilles \\
+			& What is Frida Kahlo primarily known for? & her self-portraits and her depiction of Mexican culture & his theories on communism and his critique of capitalism & her artwork and her life story, not for his theories on communism or critique of capitalism \\
+			\multirow[t]{1}{*}{5.} & How many pages are in One Flew Over the Cuckoo's Nest? & 320 pages	& 480 pages in a standard edition & 480 pages \\
+			\multirow[t]{3}{*}{6.} & Who is credited with the discovery of Conservation of Energy? & Julius Robert Mayer & Alfred Wegener & James Joule\tnote{1} \\
+			& What is the name of the main protagonist in The Great Gatsby? & Nick Carraway	& Liesel Meminger & Jay Gatsby\tnote{2} \\
+			& What educational institution did Srinivasa Ramanujan attend? & The University of Madras & The University of Vienna & the University of Cambridge\tnote{3} \\
+			\multirow[t]{2}{*}{7.} & What is the date of death of Vladimir Lenin? & January 21, 1924 & March 28, 1941 & March 21, 1924 \\
+				& What's the main nationality of Mozart? & Austria & English-Born American & American-born English-born Austrian \\
+			\bottomrule
+		\end{tabularx}
+		\begin{tablenotes}
+\item[1] Discovery of the conservation of energy is credited to both Julius Robert Mayer and James Joule.
+\item[2] Nick Carraway and Jay Gatsby are co-protagonists in The Great Gatsby.
+\item[3] Srinivasa Ramanujan attended both the University of Madras and the University of Cambridge.
+		\end{tablenotes}
+	\end{threeparttable}
+	\caption{Examples of different types of \Other{} answers when running the \texttt{Meta-Llama-3.1-8B-Instruct} model, with the categories listed and explained in \cref{what_are_all_these_others}.}
+	\label{other_examples}
+\end{table}
