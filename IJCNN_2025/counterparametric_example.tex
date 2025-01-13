@@ -2,7 +2,7 @@
 	\centering
 	\small
 
-	\newcommand{\qtbox}[1]{\parbox{130pt}{#1}}
+	\newcommand{\qtbox}[1]{\parbox{190pt}{#1}}
 	\newcommand{\qcbox}[1]{\setlength{\fboxsep}{0pt}\fbox{\colorbox{gray}{#1}}}
 
 	\newcommand{\qwbox}[2]{\setlength{\fboxsep}{0pt}\fbox{\colorbox{#1}{\strut \rule{0pt}{8pt}#2}}}
@@ -12,15 +12,24 @@
 	\newcommand{\qwatext}[1]{\qwtext{BurntOrange}{#1}}
 	\newcommand{\qwbbox}[1]{\qwbox{ForestGreen}{#1}}
 	\newcommand{\qwbtext}[1]{\qwtext{ForestGreen}{#1}}
+	\newcommand{\qwcbox}[1]{\qwbox{Thistle}{#1}}
+	\newcommand{\qwctext}[1]{\qwtext{Thistle}{#1}}
+	\newcommand{\qwdbox}[1]{\qwbox{SkyBlue}{#1}}
+	\newcommand{\qwdtext}[1]{\qwtext{SkyBlue}{#1}}
+	\newcommand{\qwebox}[1]{\qwbox{Melon}{#1}}
+	\newcommand{\qwetext}[1]{\qwtext{Melon}{#1}}
 
 	\begin{tabular}{l @{\hspace{20pt}} l @{\hspace{20pt}} l}
 		\toprule
 			\bfseries Initial Query & \bfseries Parametric Answer & \bfseries Query with Counterparamtetric Context \\
 		\midrule
-			\qtbox{Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} & \qwatext{Egypt} & \qtbox{[\qwabox{Cairo} is in \qwbtext{the United States}] \\ Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} \\[25pt]
-			\qtbox{Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} & \qwbtext{the United States} & \qtbox{[\qwbbox{New York} is in \qwatext{Egypt}] \\ Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} \\[10pt]
+			\qtbox{Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} & \qwatext{Egypt} & \qtbox{[\qwabox{Cairo} is in \qwbtext{the United States}] \\ Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} \\[20pt]
+			\qtbox{Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} & \qwbtext{the United States} & \qtbox{[\qwbbox{New York} is in \qwatext{Egypt}] \\ Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} \\[20pt]
+			\qtbox{Q: What country is \qwcbox{Bangkok} in? \\ A: \qwcbox{Bangkok} is in} & \qwctext{Thailand} & \qtbox{[\qwcbox{Bangkok} is in \qwbtext{the United States}] \\ Q: What country is \qwcbox{Bangkok} in? \\ A: \qwcbox{Bangkok} is in} \\[20pt]
+			\qtbox{Q: What is the date of birth of \qwdbox{Che Guevara}? \\ A: The date of birth of \qwdbox{Che Guevara} is} & \qwdtext{June 14, 1928} & \qtbox{[\qwdbox{Che Guevara} was born in \qwdtext{245 CE}] \\ Q: What is the date of birth of \qwdbox{Che Guevara}? \\ A: The date of birth of \qwdbox{Che Guevara} is} \\[20pt]
+			\qtbox{Q: What is the date of birth of \qwebox{Emperor Diocletian}? \\ A: The date of birth of \qwebox{Emperor Diocletian} is} & \qwdtext{245 CE} & \qtbox{[\qwebox{Emperor Diocletian} was born in \qwdtext{June 14, 1928}] \\ Q: What is the date of birth of \qwebox{Emperor Diocletian}? \\ A: The date of birth of \qwebox{Emperor Diocletian} is} \\[10pt]
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
-	\caption{Example of counterparametric context being added to a query on cities. Counterparametric answers only get added to questions of the same category. \todo{Add more examples; this table is central to the argument!}}
+	\caption{Example of counterparametric context being added to a query on cities. Counterparametric answers only get added to questions of the same category.}
 	\label{counterparametric_example}
 \end{table*}

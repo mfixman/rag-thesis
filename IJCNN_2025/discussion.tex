@@ -58,9 +58,9 @@ This is consistent with similar results found for other Decoder-only models, suc
 \subsection{Investigating the source of \Other{} answers}
 \label{what_are_all_these_others}
 
-\Cref{total_table} showed that a significant minority of responses to queries with counterfactual context are \Other{}: answers given by the model that aren't equal to either the parametric nor the contextual answer.
+By manually checking the results which are not either \Parametric{} or \Contextual{} answers, we can understand the reason why the model chose these answers.
 
-By manually checking these results, we can understand the reason why the model chose these answers comes down to one of the following seven cases.
+This normally comes down to one of the following seven cases.
 
 \begin{description}[style=nextline]
 	\item[1. Different phrasing of a parametric answer]
@@ -71,7 +71,7 @@ By manually checking these results, we can understand the reason why the model c
 		Some questions can be ambiguous or have a low probability of another answer.
 		By adding a context with a counterfactual answer, the model can misinterpret the question and answer that's correct different to both the context and the parametric answer.
 	\item[4. Negating the context]
-		This is an interesting one: if the model has an answer in its parametric knowledge that contradicts the data on its context, then it interpret the context as part of the question and adds its negation as part of the answer.
+		If the model has an answer in its parametric knowledge that contradicts the data on its context, then it interpret the context as part of the question and adds its negation as part of the answer.
 	\item[5. Different phrasing of the context]
 		Much less common than point 1, models sometimes give the same answer as provided in the query's context but in the format of the parametric answer.
 	\item[6. Correct answer, just different than the parametric answer]
@@ -79,10 +79,7 @@ By manually checking these results, we can understand the reason why the model c
 	\item[7. Mixing elements of both parametric answer and context]
 		The final answer contains elements of the parametric answer combined with elements of the given.
 		This produces an answer that's different to both the parametric and contextual answer, but with parts of both of them.
-		The cause of this is likely the greedy decoding used to find the answers, as explained in \cref{methodology_type_of_answer}.
 \end{description}
-
-Examples of each one of these types can be found in \cref{other_examples}.
 
 Does the architecture and size of the model affect the distribution of each type of \Other{} answer?
 \Cref{other_results_category} contains the amount of answers for each model.
@@ -92,10 +89,10 @@ Does the architecture and size of the model affect the distribution of each type
 	\footnotesize
 	\begin{tabular}{>{\bfseries}r | r r r r}
 		\toprule
-			\bfseries Type & \ttfamily\scriptsize Flan-T5-XL & \ttfamily\scriptsize Flan-T5-XXL & \ttfamily\scriptsize \llamaparbox{} & \ttfamily\scriptsize \bigllamaparbox{} \\
+			\bfseries Type & \ttfamily\scriptsize Flan-T5-XL & \ttfamily\scriptsize Flan-T5-XXL & \ttfamily\scriptsize llama-3B & \ttfamily\scriptsize llama-70B \\
 		\midrule
-			(\Parametric{}) & 248 & 242 & 745 & 1070 \\
-			(\Contextual{}) & 4284 & 4304 & 3662 & 3303 \\
+			(\Pc{}) & 248 & 242 & 745 & 1070 \\
+			(\Cc{}) & 4284 & 4304 & 3662 & 3303 \\
 		\midrule
 			1. & 0 & 0 & 116 & 234 \\
 			2. & 6 & 3 & 50 & 15 \\
@@ -104,19 +101,15 @@ Does the architecture and size of the model affect the distribution of each type
 			5. & 241 & 170 & 33 & 38 \\
 			6. & 7 & 16 & 63 & 23 \\
 			7. & 6 & 3 & 17 & 8 \\
-		\bottomrule
+		\bottomrule \addlinespace[4pt]
 	\end{tabular}
-	\caption{Different types of \Other{} answers per model (with amount of \Parametric{} and \Contextual{} added for comparison). The two most notable groups are \textbf{1.}, which contains parametric answers with different phrasing, and \textbf{5.}, which contains counterfactual answers with different phrasing.}
+	\caption{Different types of \Other{} answers per model, with amount of \Parametric{} and \Contextual{} added for comparison.}
 	\label{other_results_category}
 \end{table}
 
-Surprisingly, there is a large difference in the distribution of answers that don't come either from the model or from the given context.
+There is a large difference in the distribution of answers that don't come either from the model or from the given context.
 
-In the case of Seq2Seq models, the majority of \Other{} answers are \Contextual{} answers with a different format due.
-This is consistent with the previous result, where the vast majority of their answers came from the query's context.
+In the case of Seq2Seq models, the majority of \Other{} answers are \Contextual{} answers with different phrasing.
+This is consistent with the previous result, where the vast majority of their answers came from the query's context; most \Other{} answers have this source.
 
-The majority of \Other{} answers in Decoder-only models are the opposite: \Parametric{} answers expressed in the format of the context.
-However, the reasons are much more varied and this would be an interesting topic of discussion in future research.
-
-Part of the reason for many of these answers are not equal to the parametric answer coming from the model's inherent knowledge or the answer given in the query's context, particularly on the Seq2Seq models, is due to the strict comparison function we use to define answer type.
-This is an area that should be improved; \cref{other_problems} gives more information and various suggestions on how to compare results that might be relevant on future work.
+The reasons for \Other{} answers in Decoder-only models are more varied, and an interesting topic for future research.
