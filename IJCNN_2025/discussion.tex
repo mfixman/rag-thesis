@@ -1,1 +1,143 @@
 \section{Discussion}
+\label{discussion}
+
+\Cref{framework_results} presented results from generating the question dataset and running the framework to understand the role of knowledge grounding in a variety of models and their parametric knowledge in question-answering.
+This section explains these results, and discusses what they mean for our research question.
+
+\subsection{Model architecture and memorised knowledge}
+\label{model_architecture_parametric}
+
+\Cref{total_table,total_plot} show the total amount of \Parametric{}, \Contextual{}, and \Other{} answers from each model.
+\Cref{cats_table} shows these results separated by category.
+
+When taking into account model architecture, the results are clear: Seq2Seq models tend to answer questions from their contextual knowledge rather than from their inherent knowledge more often than Decoder-only models.
+These results persist across different question categories and are consistent regardless of answer types and lengths
+
+In the framework of question-answering when using RAG to fetch contextual data from an index, Seq2Seq models might tend to have fewer hallucinations that contradict this index than Decoder-only models.
+We propose two hypotheses that could explain these differences.
+
+\subsubsection{Inherent Advantages of the Encoder-Decoder Architecture}
+
+Seq2Seq models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself \cite{flant5}.
+
+\subsubsection{Different training data and fine-tuning}
+
+It's possible that these result doesn't come from the model architecture, but from the bias caused by their training methodology.
+
+The \texttt{Flan-T5} models were trained on masked token generation and later fine-tuned on question-answering about passages \cite{flant5}.
+This requires strong alignment between query and answer, which encourages the model to focus on the input context and makes it more likely to take the answer from the RAG-provided context.
+
+Llama models were trained mainly on open-ended text generation, which relies more on parametric data.
+
+It's possible that the deficiencies of knowledge grounding in Llama models might come simply to not being trained on related tasks.
+
+\subsection{Model size and memorised knowledge}
+\label{model_size_parametric}
+
+\Cref{framework_results} also shows differences in how models of different sizes process information in queries with counterparametric context.
+
+\subsubsection{Seq2Seq Models}
+
+While the average results are very similar, which is likely due to the properties of Seq2Seq models discussed in \cref{model_architecture_parametric}, there seems to be a significantly lower amount of parametric answers in the larger Flan model for the categories of \emph{Element} and \emph{Historical Event}.
+This is likely the case of the short questions answers: these categories have more questions that can be answered with answers that are 1- or 2-tokens long.
+
+However, we can conjecture that overall the size of a Seq2Seq model has little overall impact on its knowledge grounding.
+\todo{Have I defined knowledge grounding yet?}
+
+\subsubsection{Decoder-only Models}
+
+\Cref{framework_results} shows a very different result for Decoder-only models.
+The smaller model \smallllama{} has better knowledge grounding than the larger model \bigllama{}.
+
+We already established that decoder-only models rely on parametric knowledge to a greater degree than Seq2Seq models.
+Larger models have a vast internalised knowledge base accumulated from expensive training data, which can lead to increased confidence in their parametric knowledge.
+
+It's possible that larger Decoder-only models are able to use their parametric knowledge to interpret the answer to the question in more ways that contradict the contextual knowledge.
+The extra information encoded on the model's weights can produce more varied evidence against the contextual answer.
+
+With this information, we can conclude that the size of Decoder-only models \textit{does} affect its knowledge grounding, and when enhancing queries with RAG it might be preferable to use a smaller model.
+This is consistent with similar results found for other Decoder-only models, such as Pythia and GPT-2 \cite{factual_recall}.
+
+\subsection{Investigating the source of \Other{} answers}
+\label{what_are_all_these_others}
+
+\Cref{parametric_vs_contextual} showed that a significant minority of responses to queries with counterfactual context are \Other{}: answers that aren't equal to either the parametric nor the contextual data.
+The numbers of these entries, per model, are presented in \cref{others_list}.
+
+\begin{table}[h]
+	\centering
+	\scriptsize
+	\begin{tabular}{>{\bfseries}l | c c c c}
+		\toprule
+			& \ttfamily\scriptsize Flan-T5-XL & \ttfamily\scriptsize Flan-T5-XXL & \ttfamily\scriptsize \llamaparbox{} & \ttfamily\scriptsize \bigllamaparbox{} \\
+		\midrule
+			\Other{} & 260 & 192 & 312 & 387 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Amount of \Other{} entries, that is, results where the answer was not either the parametric or contextual answer.}
+	\label{others_list}
+\end{table}
+
+By manually checking these results, we can understand the reason why the model chose these answers comes down to one of the following seven cases.
+
+\begin{description}[style=nextline]
+	\item[1. Different phrasing of a parametric answer]
+		There are many answers where the model provides the parametric answer phrased with the format of the counterparametric context given in the query.
+	\item[2. Plain incorrect answers]
+		Sometimes, adding counterfactual context to the query causes the model to produce an incorrect answer, which is different the answers from both the parametric knowledge of the model and the given context.
+	\item[3. Question misinterpretation due to the context]
+		Some questions can be ambiguous or have a low probability of another answer.
+		By adding a context with a counterfactual answer, the model can misinterpret the question and answer that's correct different to both the context and the parametric answer.
+	\item[4. Negating the context]
+		This is an interesting one: if the model has an answer in its parametric knowledge that contradicts the data on its context, then it interpret the context as part of the question and adds its negation as part of the answer.
+	\item[5. Different phrasing of the context]
+		Much less common than point 1, models sometimes give the same answer as provided in the query's context but in the format of the parametric answer.
+	\item[6. Correct answer, just different than the parametric answer]
+		Some questions have multiple correct answers, and adding counterfactual context can cause the model simply choose different one from its parametric memory.
+	\item[7. Mixing elements of both parametric answer and context]
+		The final answer contains elements of the parametric answer combined with elements of the given.
+		This produces an answer that's different to both the parametric and contextual answer, but with parts of both of them.
+		The cause of this is likely the greedy decoding used to find the answers, as explained in \cref{methodology_type_of_answer}.
+\end{description}
+
+Examples of each one of these types can be found in \cref{other_examples}.
+
+Does the architecture and size of the model affect the distribution of each type of \Other{} answer?
+\Cref{other_results_category} contains the amount of answers for each model.
+
+\begin{table}[ht]
+	\centering
+	\footnotesize
+	\begin{tabular}{>{\bfseries}r | r r r r}
+		\toprule
+			\bfseries Type & \ttfamily\scriptsize Flan-T5-XL & \ttfamily\scriptsize Flan-T5-XXL & \ttfamily\scriptsize \llamaparbox{} & \ttfamily\scriptsize \bigllamaparbox{} \\
+		\midrule
+			(\Parametric{}) & 248 & 242 & 745 & 1070 \\
+			(\Contextual{}) & 4284 & 4304 & 3662 & 3303 \\
+		\midrule
+			1. & 0 & 0 & 116 & 234 \\
+			2. & 6 & 3 & 50 & 15 \\
+			3. & 0 & 0 & 13 & 8 \\
+			4. & 0 & 0 & 20 & 61 \\
+			5. & 241 & 170 & 33 & 38 \\
+			6. & 7 & 16 & 63 & 23 \\
+			7. & 6 & 3 & 17 & 8 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Different types of \Other{} answers per model (with amount of \Parametric{} and \Contextual{} added for comparison). The two most notable groups are \textbf{1.}, which contains parametric answers with different phrasing, and \textbf{5.}, which contains counterfactual answers with different phrasing.}
+	\label{other_results_category}
+\end{table}
+
+Surprisingly, there is a large difference in the distribution of answers that don't come either from the model or from the given context.
+
+In the case of Seq2Seq models, the majority of \Other{} answers are \Contextual{} answers with a different format due.
+This is consistent with the previous result, where the vast majority of their answers came from the query's context.
+
+The majority of \Other{} answers in Decoder-only models are the opposite: \Parametric{} answers expressed in the format of the context.
+However, the reasons are much more varied and this would be an interesting topic of discussion in future research.
+
+Part of the reason for many of these answers are not equal to the parametric answer coming from the model's inherent knowledge or the answer given in the query's context, particularly on the Seq2Seq models, is due to the strict comparison function we use to define answer type.
+This is an area that should be improved; \cref{other_problems} gives more information and various suggestions on how to compare results that might be relevant on future work.
+
+% \input{bigotherstable}
+

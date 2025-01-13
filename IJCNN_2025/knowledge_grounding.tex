@@ -1,9 +1,9 @@
 \documentclass[10pt,conference,a4paper]{IEEEtran}
-\usepackage{parskip}
+% \usepackage{parskip}
 \usepackage{fdsymbol}
 \usepackage{microtype}
 \usepackage[dvipsnames]{xcolor}
-\usepackage[draft]{graphicx}
+\usepackage{graphicx}
 \usepackage{url}
 \usepackage{booktabs}
 \usepackage{array}
@@ -17,11 +17,9 @@
 
 \graphicspath{{.}{./pictures}{./figures}}
 
-% Should I add this here? IEEE documentation is inconsistent with multiple references.
+% Should I add this here? IEEE documentation is inconsistent with how to handle multiple references in a single \cite.
 \def\citepunct{,\,}
 \bibliographystyle{IEEEtran}
-
-\pdfpageattr {/View [/Text /Columns]}
 
 \title{Knowledge Grounding in Large Language Models: \\ An Empirical Study}
 
