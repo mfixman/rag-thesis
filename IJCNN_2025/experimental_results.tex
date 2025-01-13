@@ -82,33 +82,20 @@ The results of running the queries created in \cref{creating_dataset} with added
 \begin{table*}[ht]
 	\centering
 	\footnotesize
-	\begin{tabular}{>{\bfseries}l | r r r | r r r}
+	\begin{tabular}{>{\bfseries}l | r r r | r r r | r r r | r r r}
 		\toprule
-			& \multicolumn{3}{|c}{\smallflan{}} & \multicolumn{3}{|c}{\bigflan{}} \\
-			& \Parametric{} & \Contextual{} & \Other{} & \Parametric{} & \Contextual{} & \Other{} \\
+			& \multicolumn{3}{c|}{\smallflan{}} & \multicolumn{3}{c|}{\bigflan{}} & \multicolumn{3}{c|}{\texttt{llama-3.1-8B}} & \multicolumn{3}{c}{\texttt{llama-3.1-70B}}  \\
+			& \Pc{} & \Cc{} & \Oc{} & \Pc{} & \Cc{} & \Oc{} & \Pc{} & \Cc{} & \Oc{} & \Pc{} & \Cc{} & \Oc{}  \\
 		\midrule
-			Person           &  32 &  900 & 37 &  23 &  890 & 56 \\
-			City             & 120 & 1030 & 40 &  78 & 1093 & 19 \\
-			Principle        &  13 &  164 &  8 &   9 &  168 &  8 \\
-			Element          &   6 &  637 &  2 & 102 &  515 & 28 \\
-			Book             &  26 &  488 & 25 &  18 &  457 & 64 \\
-			Painting         &  26 &  446 & 56 &   4 &  498 & 26 \\
-			Historical Event &  11 &  217 & 28 &   1 &  254 &  1 \\
-			Building         &  14 &  174 & 10 &   0 &  189 &  9 \\
-			Composition      &   0 &  228 & 22 &   7 &  240 &  3 \\
-		\midrule
-			& \multicolumn{3}{c|}{\smallllama{}} & \multicolumn{3}{c}{\bigllama{}} \\
-			& \Parametric{} & \Contextual{} & \Other{} & \Parametric{} & \Contextual{} & \Other{} \\
-		\midrule
-			Person           &  40 &  833 & 96 & 209 & 614 & 146 \\
-			City             & 117 & 1007 & 66 & 166 & 966 &  58 \\
-			Principle        &  44 &  118 & 23 &  44 & 117 &  24 \\
-			Element          & 218 &  385 & 42 & 275 & 347 &  23 \\
-			Book             & 135 &  344 & 60 & 154 & 318 &  67 \\
-			Painting         &  47 &  458 & 23 &  49 & 445 &  34 \\
-			Historical Event &  81 &  154 & 21 & 117 & 118 &  21 \\
-			Building         &  27 &  163 &  8 &  31 & 159 &   8 \\
-			Composition      &  36 &  200 & 14 &  25 & 219 &   6 \\
+			Person           &  32 &  900 & 37 &  23 &  890 & 56 &  40 &  833 & 96 & 209 & 614 & 146 \\
+			City             & 120 & 1030 & 40 &  78 & 1093 & 19 & 117 & 1007 & 66 & 166 & 966 &  58 \\
+			Principle        &  13 &  164 &  8 &   9 &  168 &  8 &  44 &  118 & 23 &  44 & 117 &  24 \\
+			Element          &   6 &  637 &  2 & 102 &  515 & 28 & 218 &  385 & 42 & 275 & 347 &  23 \\
+			Book             &  26 &  488 & 25 &  18 &  457 & 64 & 135 &  344 & 60 & 154 & 318 &  67 \\
+			Painting         &  26 &  446 & 56 &   4 &  498 & 26 &  47 &  458 & 23 &  49 & 445 &  34 \\
+			Historical Event &  11 &  217 & 28 &   1 &  254 &  1 &  81 &  154 & 21 & 117 & 118 &  21 \\
+			Building         &  14 &  174 & 10 &   0 &  189 &  9 &  27 &  163 &  8 &  31 & 159 &   8 \\
+			Composition      &   0 &  228 & 22 &   7 &  240 &  3 &  36 &  200 & 14 &  25 & 219 &   6 \\
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
 	\caption{Results for running each one of the 10 categories separately. \todo{Should this be a percentage? Is this relevant at all?}}
