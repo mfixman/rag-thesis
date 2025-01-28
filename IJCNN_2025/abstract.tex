@@ -1,11 +1,11 @@
-Large language models have become integral tools for a wide range of NLP tasks.
-While hallucinations remain a significant challenge when factual accuracy is crucial, RAG mitigates some issues by providing external context.
-However, it is unclear whether the model will rely on the retrieved evidence or on its internal knowledge.
+Large language models (LLMs) have seen significant advancements in quality and adoption, yet their tendency to hallucinate remains a critical issue in applications requiring precision.
+Retrieval-Augmented Generation (RAG) has emerged as a promising solution to this problem, leveraging external information to enhance response accuracy.
+However, it remains unclear when LLMs prioritize RAG-provided context over their internal parametric knowledge, raising questions about their reliability in knowledge grounding.
 
-This paper conducts an empirical study of \emph{knowledge grounding} in LLMs.
-We develop a diverse dataset of short-answer questions and present them to two encoder-decoder models, \smallflan{} and \bigflan{}, and two decoder-only models, \smallllama{} and \bigllama{}.
-We use the answers of similar types of questions to create different \emph{counterparametric answers}, which are added to the context of the question as a new query to feed to the models.
-We later classify the answer depending on whether it came from the query's context, from the model's parametric data, or from some other source.
+This paper investigates how LLMs respond to questions when contextual information contradicts with their parametric knowledge.
+We develop a diverse dataset featuring questions across a wide variety of topics, and use model-generated answers to different but similar questions to create a counterparametric answers.
+These are provided as part of the context of a new query, thus enabling us to determine whether the model sourced the answer to this question from the given context or its parametric memory.
 
-We find that encoder-decoder models and smaller models lean more on the given context, while larger decoder-only models often ignore contradictions and rely on parametric knowledge.
-Our findings have implications for building more reliable and grounded LLM-based systems and guide future research in mitigating hallucinations.
+We evaluate models of different architectures and sizes, including \smallflan{}, \bigflan{}, \smallllama{}, and \bigllama{}, analyzing their responses to determine their reliance on RAG context versus internal knowledge.
+Our findings reveal that smaller models, and encoder-decoder Seq2Seq models exhibit stronger knowledge grounding and fewer hallucinations compared to larger models and decoder-only models.
+This analysis could help develop strategies to mitigate hallucinations in RAG-augmented LLMs, ultimately improving their reliability in knowledge-intensive tasks.
