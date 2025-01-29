@@ -19,17 +19,22 @@
 	\newcommand{\qwebox}[1]{\qwbox{Melon}{#1}}
 	\newcommand{\qwetext}[1]{\qwtext{Melon}{#1}}
 
-	\begin{tabular}{l @{\hspace{20pt}} l @{\hspace{20pt}} l}
+	\begin{tabular}{l @{\hspace{20pt}} l @{\hspace{30pt}} l}
 		\toprule
 			\bfseries Initial Query & \bfseries Parametric Answer & \bfseries Query with Counterparamtetric Context \\
 		\midrule
-			\qtbox{Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} & \qwatext{Egypt} & \qtbox{[\qwabox{Cairo} is in \qwbtext{the United States}] \\ Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} \\[20pt]
-			\qtbox{Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} & \qwbtext{the United States} & \qtbox{[\qwbbox{New York} is in \qwatext{Egypt}] \\ Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} \\[20pt]
+			\qtbox{Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} & \qwatext{Egypt} \tikzmark{egyptAnswer} & \qtbox{[\qwabox{Cairo} is in \qwbtext{the United States}] \\ Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} \\[20pt]
+			\qtbox{Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} & \qwbtext{the United States} & \tikzmark{egyptCtx}\qtbox{[\qwbbox{New York} is in \qwatext{Egypt}] \\ Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} \\[20pt]
 			\qtbox{Q: What country is \qwcbox{Bangkok} in? \\ A: \qwcbox{Bangkok} is in} & \qwctext{Thailand} & \qtbox{[\qwcbox{Bangkok} is in \qwbtext{the United States}] \\ Q: What country is \qwcbox{Bangkok} in? \\ A: \qwcbox{Bangkok} is in} \\[20pt]
 			\qtbox{Q: What is the date of birth of \qwdbox{Che Guevara}? \\ A: The date of birth of \qwdbox{Che Guevara} is} & \qwdtext{June 14, 1928} & \qtbox{[\qwdbox{Che Guevara} was born in \qwetext{245 CE}] \\ Q: What is the date of birth of \qwdbox{Che Guevara}? \\ A: The date of birth of \qwdbox{Che Guevara} is} \\[20pt]
 			\qtbox{Q: What is the date of birth of \qwebox{Emperor Diocletian}? \\ A: The date of birth of \qwebox{Emperor Diocletian} is} & \qwetext{245 CE} & \qtbox{[\qwebox{Emperor Diocletian} was born in \qwdtext{June 14, 1928}] \\ Q: What is the date of birth of \qwebox{Emperor Diocletian}? \\ A: The date of birth of \qwebox{Emperor Diocletian} is} \\[10pt]
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
-	\caption{Example of counterparametric context being added to a query on cities. Counterparametric answers only get added to questions of the same category.}
+
+	\begin{tikzpicture}[remember picture, overlay, ->, >=stealth, thick]
+		\draw (pic cs:egyptAnswer) to (pic cs:egyptCtx);
+	\end{tikzpicture}
+
+	\caption{Example of counterparametric context being added to a query on cities. Counterparametric answers only get added to questions of the same category. Arrows represent the random shuffling of parametric answers to add to the counterparametric context of a new query.}
 	\label{counterparametric_example}
 \end{table*}

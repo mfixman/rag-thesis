@@ -14,11 +14,12 @@ To achieve this, we develop a comprehensive framework for evaluating the knowled
 The foundation of this work is a representative dataset of questions designed to test the interplay between parametric and contextual knowledge in LLMs.
 This dataset must satisfy three properties:
 \begin{description}[style=nextline]
-	\item[Short, unambiguous answers] Questions are constructed to elicit concise answers, enabling precise comparison and interpretation.
+	\item[1. Short, unambiguous answers] Questions must be constructed to elicit concise answers, enabling precise comparison and interpretation.
 This avoids ambiguity and minimizes variability in answers, which is critical for identifying parametric versus contextual sources.
-	\item[Coverage of diverse topics] The dataset spans a wide range of domains, from historical events to scientific concepts, to mitigate biases inherent in training data \cite{wikipedia_geographic_bias}.
+	\item[2. Coverage of diverse topics] The dataset must span a wide range of domains, from historical events to scientific concepts, to mitigate biases inherent in training data \cite{wikipedia_geographic_bias}.
 	This diversity ensures a robust evaluation of grounding across different knowledge areas.
-	\item[Conterparametric compatibility] Questions are designed to facilitate the addition of a context allowing an answer that contradicts the parametric answer.
+	\item[3. Conterparametric compatibility] Questions are designed to facilitate the addition of a context allowing an answer that contradicts the parametric answer.
+		An answer different to the parametric answer must be incorrect.
 \end{description}
 
 Existing datasets, such as the Natural Questions dataset \cite{natural_questions} and the Countries' Capitals dataset \cite{factual_recall}, provided valuable insights but fell short of meeting all three criteria.
@@ -30,10 +31,11 @@ These limitations motivated the creation of a custom dataset.
 \subsubsection{Dataset Design and Generation}
 
 The design of this dataset is inspired by the methodology designed by Yu et al.\ \cite{factual_recall}.
-In this paper, several queries of the form ``\texttt{What is the capital of \{country\}?}'' are asked and answers from different countries are used as counterfactual information.
+In this paper, several queries of the form ``\texttt{What is the capital of \{country\}?}'' are asked for a large list of countries.
+Later, these parametric answers from are used as counterparametric answers for questions relating to different countries.
 
-This paper creates a similar but larger and more varied dataset of questions and answers from a wide range of topics, assuring questions can be grouped by question pattern so that the formats of their answer are similar.
-This way we can emulate the approach used in that paper of reusing the answer from a certain question as the counterfactual context of another.
+This paper creates a similar but larger and more varied dataset of questions and answers from a wide range of topics.
+We can then emulate the approach used in that paper of reusing the answer from a certain question as the counterfactual context of another.
 
 Our dataset consists of 9 different categories, each of which has a series of manually-written questions that can be answered with short and simple answers.
 
@@ -70,10 +72,8 @@ This approach allows them to generate coherent and contextually relevant text by
 Both Seq2Seq models are based on T5 models \cite{t5}, which employ an encoder-decoder architecture: while an encoder processed the input sequence into a context vector, and an decoder generates an input sequence from this vector.
 The \texttt{Flan-T5} models are fine-tuned to follow instructions, and have improved zero-shot performance compared to the original T5 models \cite{flant5}.
 
-\texttt{Flan-T5-XL} contains approximately 3 billion parameters.
-This is considerably bigger than the base Flan-T5 model \cite{flant5}, which will provide better accuracy of its parametric answers.
-
-\texttt{Flan-T5-XXL} contains 11 billion parameters, has higher accuracy on the parametric answers as the \texttt{XL} model \cite{flant5}.
+\smallflan{} contains approximately 3 billion parameters.
+This is considerably bigger than the base Flan-T5 model \cite{flant5}, which will generally improve the accuracy accuracy of its parametric answers; \bigflan{} contains 11 billion parameters, has higher accuracy on the parametric answers as the previous model \cite{flant5}.
 
 Decoder-only models generate answers one token at a time from the input query.
 Given a sequence of tokens, they generate text one token at a time by attempting to solve the problem of predicting the following token \cite{gpt}.
