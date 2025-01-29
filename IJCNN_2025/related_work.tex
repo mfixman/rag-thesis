@@ -14,7 +14,7 @@ However RAG does not always ensure that language models prioritize the retrieved
 Our study builds on these observations, examining this behavior across various model architectures and sizes.
 
 The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) has been a focal point of several studies.
-Qinan Yu et al. \cite{factual_recall} and Chenxi Whitehouse et al. \cite{knowledge_grounding_retrieval_augmented} investigated how factors like training data, architecture, and fine-tuning affect the interplay between these two knowledge sources.
+Qinan Yu et al. \cite{factual_recall} investigated how factors like training data, architecture, and fine-tuning affect the interplay between these two knowledge sources.
 % Their work suggests that Seq2Seq models, such as T5 \cite{t5,flant5}, are generally more effective at using input context compared to decoder-only models, which often struggle to override their internal knowledge.
 
 Through this lens, our work contributes to the understanding of how model architecture, and size shape knowledge grounding in large language models.
