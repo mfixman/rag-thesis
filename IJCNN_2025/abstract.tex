@@ -6,6 +6,6 @@ This paper investigates how LLMs respond to questions when contextual informatio
 We develop a diverse dataset featuring questions across a wide variety of topics, and use model-generated answers to different but similar questions to create a counterparametric answers.
 These are provided as part of the context of a new query, thus enabling us to determine whether the model sourced the answer to this question from the given context or its parametric memory.
 
-We evaluate models of different architectures and sizes, including \smallflan{}, \bigflan{}, \smallllama{}, and \bigllama{}, analyzing their responses to determine their reliance on RAG context versus internal knowledge.
+We evaluate different architectures and sizes, including Seq2Seq encoder-decoder models \smallflan{} and \bigflan{} and decoder-only models \smallllama{} and \bigllama{}, analyzing their responses to determine their reliance on RAG context versus internal knowledge.
 Our findings reveal that smaller models, and encoder-decoder Seq2Seq models exhibit stronger knowledge grounding and fewer hallucinations compared to larger models and decoder-only models.
 This analysis could help develop strategies to mitigate hallucinations in RAG-augmented LLMs, ultimately improving their reliability in knowledge-intensive tasks.
