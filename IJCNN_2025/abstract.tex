@@ -6,7 +6,7 @@ This paper investigates how LLMs respond to questions when contextual informatio
 We develop a diverse dataset featuring questions across a wide variety of topics, and use model-generated answers to different but similar questions to create a counterparametric answers.
 These are provided as part of the context of a new query, thus enabling us to determine whether the model sourced the answer to this question from the given context or its parametric memory.
 
-We evaluate different architectures and sizes, including Seq2Seq encoder-decoder models \smallflan{} and \bigflan{} and decoder-only models \smallllama{} and \bigllama{}, analyzing their responses to determine their reliance on RAG context versus internal knowledge.
+We evaluate a variety architectures and sizes, including Seq2Seq encoder-decoder models \smallflan{} and \bigflan{} and decoder-only models \smallllama{} and \bigllama{}, analyzing their responses to determine their reliance on RAG context versus internal knowledge.
 Our findings reveal that encoder-decoder Seq2Seq models tend to exhibit stronger knowledge grounding than decoder-only models.
 Additionally, smaller decoder-only models tend to outperform larger ones in this area.
 

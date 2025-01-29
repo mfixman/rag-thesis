@@ -7,7 +7,7 @@ This section explains these results, and discusses what they mean for our resear
 \subsection{Model architecture and memorised knowledge}
 \label{model_architecture_parametric}
 
-When taking into account model architecture, the results are clear: Seq2Seq models tend to answer questions from their contextual knowledge rather than from their inherent knowledge more often than Decoder-only models.
+When taking into account model architecture, the results are clear: Seq2Seq models tend to ground their knowledge from the query's context rather than from their parametric knowledge more often than Decoder-only models.
 These results persist across different question categories and are consistent regardless of answer types and lengths
 
 In the framework of question-answering when using RAG to fetch contextual data from an index, Seq2Seq models might tend to have fewer hallucinations that contradict this index than Decoder-only models.
@@ -51,15 +51,13 @@ Larger models have a vast internalised knowledge base accumulated from expensive
 It's possible that larger Decoder-only models are able to use their parametric knowledge to interpret the answer to the question in more ways that contradict the contextual knowledge.
 The extra information encoded on the model's weights can produce more varied evidence against the contextual answer.
 
-With this information, we can conclude that the size of Decoder-only models \textit{does} affect its knowledge grounding, and when enhancing queries with RAG it might be preferable to use a smaller model.
+With this information, we can conclude that the size of Decoder-only models has a significant effect on its knowledge grounding, and when enhancing queries with RAG it might be preferable to use a smaller model.
 This is consistent with similar results found for other Decoder-only models, such as Pythia and GPT-2 \cite{factual_recall}.
 
 \subsection{Investigating the source of \Other{} answers}
 \label{what_are_all_these_others}
 
-By manually checking the results which are not either \Parametric{} or \Contextual{} answers, we can understand the reason why the model chose these answers.
-
-This normally comes down to one of the following seven cases.
+By manually checking the minority of answers which do not come either from the query's context nor from the model's parametric knowledge, we can understand the reason why the model chose them down to one of the following seven cases.
 
 \begin{description}[style=nextline]
 	\item[1. Different phrasing of a parametric answer]
@@ -72,7 +70,7 @@ This normally comes down to one of the following seven cases.
 	\item[4. Negating the context]
 		If the model has an answer in its parametric knowledge that contradicts the data on its context, then it interpret the context as part of the question and adds its negation as part of the answer.
 	\item[5. Different phrasing of the context]
-		Much less common than point 1, models sometimes give the same answer as provided in the query's context but in the format of the parametric answer.
+		Models sometimes give the same answer as provided in the query's context but in the format of the parametric answer.
 	\item[6. Correct answer, just different than the parametric answer]
 		Some questions have multiple correct answers, and adding counterfactual context can cause the model simply choose different one from its parametric memory.
 	\item[7. Mixing elements of both parametric answer and context]

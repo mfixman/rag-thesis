@@ -24,7 +24,7 @@
 
 	\begin{tabular}{l @{\hspace{-15pt}} r @{\hspace{7pt}} c @{\hspace{50pt}} c @{\hspace{5pt}} l}
 		\toprule
-			\bfseries Initial Query & \bfseries Parametric Answer && & \bfseries Query with Counterparamtetric Context \\
+			\bfseries Initial Query & \bfseries Parametric Answer && & \bfseries Query with Counterparametric Context \\
 		\midrule
 			\qtbox{Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} & \qwatext{Egypt} & \tikzmark{egyptAnswer} & \tikzmark{usaCtx} & \qtbox{[\qwabox{Cairo} is in \qwbtext{the United States}] \\ Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} \\[20pt]
 			\qtbox{Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} & \qwbtext{the United States} & \tikzmark{usaAnswer} & \tikzmark{egyptCtx} & \qtbox{[\qwbbox{New York} is in \qwatext{Egypt}] \\ Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} \\[20pt]
