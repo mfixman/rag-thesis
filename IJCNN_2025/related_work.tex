@@ -1,17 +1,16 @@
 \section{Related Work}
 
-The success of the transformers models \cite{attention_is_all_you_need} has enabled the development of large-scale language models like GPT-3 \cite{gpt3} and Llama \cite{llama}.
+The success of machine learning models based on transformer architecture \cite{attention_is_all_you_need} has enabled the development of large-scale language models such as GPT-3 \cite{gpt3} and Llama \cite{llama}.
 Despite their advancements, factual reliability remains a significant issue.
 
-Studies like ``How Can We Know When Language Models Know? On the Calibration of Language Models for Question Answering'' \cite{how_can_we_know} highlighted the prevalence of hallucinations across tasks, particularly in factual contexts.
-In other studies such as ``Can Retriever-Augmented Language Models Reason? The Blame Game Between the Retriever and the Language Model'' \cite{can_rag_models_reason}, the challenge of ensuring accuracy in generated text is emphasized.
+Recent studies such as Jiang et.\ al \cite{how_can_we_know} highlighted the prevalence of hallucinations across tasks, particularly in factual contexts.
+Other studies, such as Ghader et.\ al \cite{can_rag_models_reason}, emphasize the challenge of ensuring accuracy in generated text.
 
 These concerns have prompted a wave of research focused on evaluating and mitigating hallucinations.
-Building on this, ``Understanding the Interplay between Parametric and Contextual Knowledge for Large Language Models'' \cite{understanding_the_interplay} systematically explores how parametric and contextual knowledge interact, identifying scenarios where contextual knowledge can degrade performance, even when complementary.
+Building on this, Cheng et\. al \cite{understanding_the_interplay} systematically explores how parametric and contextual knowledge interact, identifying scenarios where contextual knowledge can degrade performance, even when complementary.
 
 Retrieval-Augmented Generation (RAG) \cite{rag} attempts to improve factual accuracy by integrating external knowledge during inference.
-However RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge \cite{ragged,factual_recall}.
-For instance, even when presented with contradictory context, models often rely on their inherent memory.
+However RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge as evidenced by the research by Yu et\. al and Hsia et\. al \cite{ragged,factual_recall}: even when presented with contradictory context, models often rely on their inherent memory.
 Our study builds on these observations, examining this behavior across various model architectures and sizes.
 
 The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) has been a focal point of several studies.
