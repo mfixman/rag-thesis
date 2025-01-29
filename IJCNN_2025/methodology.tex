@@ -70,8 +70,7 @@ All of the models used in this research leverage autoregressive attention using 
 This approach allows them to generate coherent and contextually relevant text by sampling from this learned distribution, while also capturing long-range dependencies and complex patterns in language.
 
 Both Seq2Seq models are based on T5 models \cite{t5}, which employ an encoder-decoder architecture: while an encoder processed the input sequence into a context vector, and an decoder generates an input sequence from this vector.
-The \texttt{Flan-T5} models are fine-tuned to follow instructions, and have improved zero-shot performance compared to the original T5 models \cite{flant5}.
-
+The \texttt{Flan-T5} models are fine-tuned to follow instructions, and have improved zero-shot performance compared to the original T5 models \cite{flant5}:
 \smallflan{} contains approximately 3 billion parameters.
 This is considerably bigger than the base Flan-T5 model \cite{flant5}, which will generally improve the accuracy accuracy of its parametric answers; \bigflan{} contains 11 billion parameters, has higher accuracy on the parametric answers as the previous model \cite{flant5}.
 
@@ -80,31 +79,38 @@ Given a sequence of tokens, they generate text one token at a time by attempting
 
 This paper uses the \texttt{-Instruct} versions of the latest Llama models \cite{llama3}, which use this architecture and fine-tune it to tasks of instruction-following.
 These models are specially adept at complex prompts.
-Of the models used in this paper, \texttt{Meta-Llama-3.1-8B-Instruct} has 8 billion parameters, while \texttt{Meta-Llama-3.1-70B-Instruct} has 70 billion.
+Of the models used in this paper, \texttt{Meta-Llama-3.1-8B-Instruct} has 8 billion parameters, while \texttt{Meta-Llama-3.1-70B-Instruct} has 70 billion parameters.
 
-\subsection{Understanding the source of the answer in each model}
+\subsection{Query Design}
 \label{query_design}
 
 The first step to understanding the knowledge grounding of large language models is to create queries that contain data that contradicts its parametric knowledge as part of the context.
-By comparing the result to the existing answers it becomes trivial to understand whether an answer came from the model's memory, the queries' context, or neither of these.
+By comparing the result to the existing answers it becomes possible to understand whether an answer came from the model's memory, the queries' context, or neither of these.
 
-Following the approach done by Yu et al.\ \cite{factual_recall}, for every query we randomly sample from the set of answers of the same base question for answers that are different to the parametric answer which is given by the original query.
-% An example of this random sampling can be found in \cref{counterparametric_table}.
+We follow the approach by Yu et al.\ \cite{factual_recall}: to test the knowledge grounding of each large language model, for every question generated with the procedure described in the previous subsection, we randomly sample an answer from the set of answers of the same base question for answers that are different to the parametric answer which is given by the original query.
+This ensures that this answer is different to the parametric answer to the question.
 
-We later add this \emph{counterparametric answer} to the context, to form a new query and query the same model again with the added counterparametric context.
-This is exemplified in \cref{counterparametric_example}.
+We refer to this answer as the \emph{counterparametric answer}.
 
-To ensure that the results are simple to interpret and minimise the effect of randomness, once we select the queries we follow the example of Hsia et al.\ \cite{ragged} and use Greedy Decoding to generate the answer.
+This later is later concatenated to new prompt which uses the same question to form a new query and query the same model again with the added counterparametric context.
+This process is exemplified in \cref{counterparametric_example}.
+
+\subsection{Query execution and categorisation of answers}
+
+To ensure that the results are simple to interpret and minimise the effect of randomness, we follow the example of Hsia et al.\ \cite{ragged} and use greedy decoding to generate the answer.
 While beam search with tends to produce more accurate results for long answers \cite{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that tend to produce better results \cite{text_degeneration}, this is likely to not have an effect on experiments shorter answers \cite{t5}.
 
 We compare the generated answer with the context to the previously generated parametric answer, and we categorise the answer into one of three categories depending on its equality to the possible answers.
+
+\vfill{}
+
 \begin{description}
 	\item[\Parametric{}] answers are equal to the answer given by the model when queried without context.
 		This answer would come from the parametric memory of the model, and could potentially indicate an hallucination not present in the context.
 	\item[\Contextual{}] answers are equal to the context given in the query.
-		In a RAG context, this would be the answer retrieved from the index.
+		When using a context generated by RAG, this answer would be retrieved from the index.
 	\item[\Other] answers are neither of these, and this answer comes from a mis-interpretation of the input by the model or from some other source.
 \end{description}
 
-To minimise the amount of problems caused by large language models generating extra information, we compare answers by truncating the text until the first period or \texttt{<EOS>} token, removing punctuation and stop words, and finding whether one of the answers is a subsequence of another.
+To minimise the amount of problems caused by large language models generating extra information, we truncate answers on the first period or \texttt{<EOS>} token and remove punctuation and stop words.
 
