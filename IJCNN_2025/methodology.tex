@@ -25,13 +25,12 @@ This avoids ambiguity and minimizes variability in answers, which is critical fo
 Existing datasets, such as the Natural Questions dataset \cite{natural_questions} and the Countries' Capitals dataset \cite{factual_recall}, provided valuable insights but fell short of meeting all three criteria.
 For example, while the Natural Questions dataset offers a wide range of questions, its lack of systematic categorization hinders counterparametric experiments.
 The Countries' Capitals dataset, while well-suited for counterparametric evaluation, is limited in scope.
-
 These limitations motivated the creation of a custom dataset.
 
 \subsubsection{Dataset Design and Generation}
 
 The design of this dataset is inspired by the methodology designed by Yu et al.\ \cite{factual_recall}.
-In this paper, several queries of the form ``\texttt{What is the capital of \{country\}?}'' are asked for a large list of countries.
+Several queries of the form ``\texttt{What is the capital of \{country\}?}'' are asked for a large list of countries.
 Later, these parametric answers from are used as counterparametric answers for questions relating to different countries.
 
 This paper creates a similar but larger and more varied dataset of questions and answers from a wide range of topics.
@@ -101,8 +100,6 @@ To ensure that the results are simple to interpret and minimise the effect of ra
 While beam search with tends to produce more accurate results for long answers \cite{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that tend to produce better results \cite{text_degeneration}, this is likely to not have an effect on experiments shorter answers \cite{t5}.
 
 We compare the generated answer with the context to the previously generated parametric answer, and we categorise the answer into one of three categories depending on its equality to the possible answers.
-
-\vfill{}
 
 \begin{description}
 	\item[\Parametric{}] answers are equal to the answer given by the model when queried without context.
