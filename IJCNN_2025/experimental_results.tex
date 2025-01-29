@@ -6,7 +6,9 @@
 
 As described in \cref{dataset_creation}, we require a new and diverse dataset in order to run this data and answer the research question.
 
-We manually create a set of 4760 questions into 9 different categories.
+% We manually create a set of 4760 questions into 9 different categories, where each question 
+We chose 9 different categories to ensure that the questions are varied and to study how the knowledge grounding of each model changes depending on the topic.
+From those categories we manually wrote a set of 100 base questions and 411 objects, resulting in a total of 4760 initial queries.
 
 \begin{enumerate}
 	\item \textbf{Person} Historical people living from early antiquity to the present day from all around the globe. The questions have short, unambiguous answers, such as date of birth or most famous invention.
@@ -20,9 +22,10 @@ We manually create a set of 4760 questions into 9 different categories.
 	\item \textbf{Composition} Musical works from various genres and time periods. Questions may involve composers, premiere dates, musical style, or cultural significance.
 \end{enumerate}
 
-Each one of these categories has a number of questions that are assigned one of the objects, following and enhancing the question-building approach used by (Author) \cite{factual_recall}.
+Each one of these categories has a number of questions that are assigned one of the objects, following and enhancing the question-building approach used by Yu et.\ al \cite{factual_recall}.
 
 The total amount of these and composition of the 4760 questions can be found in \cref{category_amounts}.
+The full set of questions can be found in the repository with the code used in this paper.
 
 \begin{table}[ht]
 	\centering
