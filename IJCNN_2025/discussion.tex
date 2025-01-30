@@ -15,13 +15,13 @@ We propose two hypotheses that could explain these differences.
 
 \subsubsection{Inherent Advantages of the Encoder-Decoder Architecture}
 
-Seq2Seq models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself \cite{flant5}.
+Seq2Seq models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself~\cite{flant5}.
 
 \subsubsection{Different training data and fine-tuning}
 
 It's possible that these result doesn't come from the model architecture, but from the bias caused by their training methodology.
 
-The \texttt{Flan-T5} models were trained on masked token generation and later fine-tuned on question-answering about passages \cite{flant5}.
+The \texttt{Flan-T5} models were trained on masked token generation and later fine-tuned on question-answering about passages~\cite{flant5}.
 This requires strong alignment between query and answer, which encourages the model to focus on the input context and makes it more likely to take the answer from the RAG-provided context.
 
 Llama models were trained mainly on open-ended text generation, which relies more on parametric data.
@@ -52,7 +52,7 @@ It's possible that larger Decoder-only models are able to use their parametric k
 The extra information encoded on the model's weights can produce more varied evidence against the contextual answer.
 
 With this information, we can conclude that the size of Decoder-only models has a significant effect on its knowledge grounding, and when enhancing queries with RAG it might be preferable to use a smaller model.
-This is consistent with similar results found for other Decoder-only models, such as Pythia and GPT-2 \cite{factual_recall}.
+This is consistent with similar results found for other Decoder-only models, such as Pythia and GPT-2~\cite{factual_recall}.
 
 \subsection{Investigating the source of \Other{} answers}
 \label{what_are_all_these_others}
