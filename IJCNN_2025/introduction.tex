@@ -16,6 +16,16 @@ Yet, it remains unclear under what conditions LLMs choose to source their answer
 The knowledge grounding of a model might be affected by the properties of that model, such as its architecture and size, and on the topic and context of the question.
 Any analysis must incorporate several models with a questions from a variety of topics.
 
+% To answer this question we create a diverse dataset of short-answer questions from a broad range of topics, including people, cities, scientific principles, and others.
+% This dataset is used on a variety of large language models to find the \emph{parametric answer}; later answers from different questions are used to find a \emph{counterparametric answer}.
+% This answer is added to the context of a new query to understand how each model treats this knowledge.
+% 
+% This paper presents an empirical study of knowledge grounding by answering questions from a broad range of topics and testing the answer of an LLM when presented with counterparametric context that contradicts the model's known answer.
+% By systematically injecting this contradictory context, we observe whether the model chooses the \Contextual{} answer from the prompt, a \Parametric{} answer from its ground memory, or some \Other{} answer that's different to both.
+% 
+% Our findings show that encoder-decoder models and smaller models rely more on context, significantly reducing hallucinations in contradictory scenarios.
+% Larger decoder-only models tend to ignore contradictory evidence and revert to their parametric knowledge.
+
 This study contributes to a deeper understanding of knowledge grounding in large language models, offering insights for designing more reliable RAG systems.
 By choosing architectures that better incorporate given context, developers can reduce undesired hallucinations.
 

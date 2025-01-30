@@ -7,15 +7,15 @@ This section explains these results, and discusses what they mean for our resear
 \subsection{Model architecture and memorised knowledge}
 \label{model_architecture_parametric}
 
-When taking into account model architecture, the results are clear: Seq2Seq models tend to ground their knowledge from the query's context rather than from their parametric knowledge more often than Decoder-only models.
+When taking into account model architecture, the results are clear: encoder-decoder models tend to ground their knowledge from the query's context rather than from their parametric knowledge more often than Decoder-only models.
 These results persist across different question categories and are consistent regardless of answer types and lengths
 
-In the framework of question-answering when using RAG to fetch contextual data from an index, Seq2Seq models might tend to have fewer hallucinations that contradict this index than Decoder-only models.
+In the framework of question-answering when using RAG to fetch contextual data from an index, encoder-decoder models might tend to have fewer hallucinations that contradict this index than Decoder-only models.
 We propose two hypotheses that could explain these differences.
 
 \subsubsection{Inherent Advantages of the Encoder-Decoder Architecture}
 
-Seq2Seq models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself~\cite{flant5}.
+Encoder-decoder models such as \texttt{Flan-T5} are encoder-decoder models that process the entire context of the query in the encoder component before passing it to the decoder, which could increase the weight given to the context itself~\cite{flant5}.
 
 \subsubsection{Different training data and fine-tuning}
 
@@ -33,9 +33,9 @@ It's possible that the deficiencies of knowledge grounding in Llama models might
 
 \Cref{framework_results} also shows differences in how models of different sizes process information in queries with counterparametric context.
 
-\subsubsection{Seq2Seq Models}
+\subsubsection{Encoder-decoder Models}
 
-While the average results are very similar, which is likely due to the properties of Seq2Seq models discussed in \cref{model_architecture_parametric}, there seems to be a significantly lower amount of parametric answers in the larger Flan model for the categories of \emph{Element} and \emph{Historical Event}.
+While the average results are very similar, which is likely due to the properties of encoder-decoder models discussed in \cref{model_architecture_parametric}, there seems to be a significantly lower amount of parametric answers in the larger Flan model for the categories of \emph{Element} and \emph{Historical Event}.
 This is likely the case of the short questions answers: these categories have more questions that can be answered with answers that are 1- or 2-tokens long.
 
 However, we can conjecture that overall the size of a Seq2Seq model has little overall impact on its knowledge grounding.
