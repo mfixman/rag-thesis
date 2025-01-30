@@ -1,7 +1,5 @@
 \section{Methods}
 \label{methodology_section}
-% \todo{Should this be ``Methods'' or ``Methodology''?}
-
 
 This study investigates the behavior of large language models (LLMs) when presented with context that contradicts their parametric, learned knowledge.
 To achieve this, we develop a framework for evaluating the knowledge grounding of LLMs across different architectures and model sizes.
@@ -80,9 +78,6 @@ The full set of questions, along with the code used in this study, is available 
 	\label{category_amounts}
 \end{table}
 
-% Putting this input here so LaTeX can place it in the right page.
-\input{counterparametric_example}
-
 \subsection{Query Design}
 \label{query_design}
 
@@ -100,7 +95,6 @@ This process is exemplified in \cref{counterparametric_example}.
 \subsection{Query execution and categorisation of answers}
 
 To ensure that the results are simple to interpret and minimise the effect of randomness, we follow the example of Hsia et al.~\cite{ragged} and use greedy decoding to generate the answer.
-While beam search with tends to produce more accurate results for long answers~\cite{sutskever_seq2seqlearning,wu_mltranslation} and there are many other sampling methods that tend to produce better results~\cite{text_degeneration}, this is likely to not have an effect on experiments shorter answers~\cite{t5}.
 
 We compare the generated answer with the context to the previously generated parametric answer, and we categorise the answer into one of three categories depending on its equality to the possible answers.
 

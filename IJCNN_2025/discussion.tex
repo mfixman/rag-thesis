@@ -1,7 +1,7 @@
 \section{Discussion and Analysis}
 \label{discussion}
 
-\Cref{framework_results} presented results from generating the question dataset and running the framework to understand the role of knowledge grounding in a variety of models and their parametric knowledge in question-answering.
+\Cref{results_section} presented results from generating the question dataset and running the framework to understand the role of knowledge grounding in a variety of models and their parametric knowledge in question-answering.
 This section explains these results, and discusses what they mean for our research question.
 
 \subsection{Model architecture and memorised knowledge}
@@ -31,21 +31,21 @@ It's possible that the deficiencies of knowledge grounding in Llama models might
 \subsection{Model size and memorised knowledge}
 \label{model_size_parametric}
 
-\Cref{framework_results} also shows differences in how models of different sizes process information in queries with counterparametric context.
+\Cref{results_section} also shows differences in how models of different sizes process information in queries with counterparametric context.
 
 \subsubsection{Encoder-decoder Models}
 
 While the average results are very similar, which is likely due to the properties of encoder-decoder models discussed in \cref{model_architecture_parametric}, there seems to be a significantly lower amount of parametric answers in the larger Flan model for the categories of \emph{Element} and \emph{Historical Event}.
 This is likely the case of the short questions answers: these categories have more questions that can be answered with answers that are 1- or 2-tokens long.
 
-However, we can conjecture that overall the size of a Seq2Seq model has little overall impact on its knowledge grounding.
+However, we can conjecture that overall the size of a encoder-decoder model has little overall impact on its knowledge grounding.
 
 \subsubsection{Decoder-only Models}
 
-\Cref{framework_results} shows a very different result for Decoder-only models.
-The smaller model \smallllama{} has better knowledge grounding than the larger model \bigllama{}.
+\Cref{results_section} shows a significantly different distribution of source of answers for decoder-only models when compared to encoder-decoder models.
+The smaller model \smallllama{} has a significantly larger amount of answers coming from \Contextual{} knowledge than the larger model \bigllama{}.
 
-We already established that decoder-only models rely on parametric knowledge to a greater degree than Seq2Seq models.
+We already established that decoder-only models rely on parametric knowledge to a greater degree than encoder-decoder models.
 Larger models have a vast internalised knowledge base accumulated from expensive training data, which can lead to increased confidence in their parametric knowledge.
 
 It's possible that larger Decoder-only models are able to use their parametric knowledge to interpret the answer to the question in more ways that contradict the contextual knowledge.
@@ -106,7 +106,7 @@ Does the architecture and size of the model affect the distribution of each type
 
 There is a large difference in the distribution of answers that don't come either from the model or from the given context.
 
-In the case of Seq2Seq models, the majority of \Other{} answers are \Contextual{} answers with different phrasing.
+In the case of encoder-decoder models, the majority of \Other{} answers are \Contextual{} answers with different phrasing.
 This is consistent with the previous result, where the vast majority of their answers came from the query's context; most \Other{} answers have this source.
 
 The reasons for \Other{} answers in Decoder-only models are more varied, and an interesting topic for future research.
