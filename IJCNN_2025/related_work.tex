@@ -1,4 +1,5 @@
 \section{Related Work}
+\label{related_work}
 
 The success of machine learning models based on transformer architecture~\cite{attention_is_all_you_need} has enabled the development of large-scale language models such as GPT-3~\cite{gpt3} and Llama~\cite{llama}.
 Despite their advancements, factual reliability remains a significant issue.
@@ -18,3 +19,9 @@ Yu et al.~\cite{factual_recall} investigated how factors like training data, arc
 % Their work suggests that Seq2Seq models, such as T5~\cite{t5,flant5}, are generally more effective at using input context compared to decoder-only models, which often struggle to override their internal knowledge.
 
 Through this lens, our work contributes to the understanding of how model architecture, and size shape knowledge grounding in large language models.
+
+\textbf{Existing Datasets}: There's a variety of datasets that can be used for analysis of LLMs, such as the Natural Questions dataset~\cite{natural_questions} and the Countries' Capitals dataset~\cite{factual_recall}.
+These provide valuable insights, but fall short of the criteria necessary for the experiments being run on this research.
+
+In particular, while the Natural Questions dataset offers a wide range of questions, its lack of systematic categorization hinders counterparametric experiments.
+The Countries' Capitals dataset, while well-suited for counterparametric evaluation, is limited in scope.

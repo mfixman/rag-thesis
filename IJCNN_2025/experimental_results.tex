@@ -1,56 +1,6 @@
 \section{Results}
 \label{results_section}
 
-\subsection{Creating a representative dataset of questions}
-\label{creating_dataset}
-
-As described in \cref{dataset_creation}, we require a new and diverse dataset in order to run this data and answer the research question.
-
-% We manually create a set of 4760 questions into 9 different categories, where each question 
-We chose 9 different categories to ensure that the questions are varied and to study how the knowledge grounding of each model changes depending on the topic.
-From those categories we manually wrote a set of 100 base questions and 411 objects, resulting in a total of 4760 initial queries.
-
-\begin{enumerate}
-	\item \textbf{Person} Historical people living from early antiquity to the present day from all around the globe. The questions have short, unambiguous answers, such as date of birth or most famous invention.
-	\item \textbf{City} Cities from all over the globe. Questions may include population, founding date, notable landmarks, or geographical features.
-	\item \textbf{Principle} Scientific principles, discovered from the 16th century forward. Questions about their discovery, use, and others.
-	\item \textbf{Element} Elements from the periodic table. Questions may cover discovery, atomic number, chemical properties, or common uses.
-	\item \textbf{Book} Literary works from various genres, time periods, and cultures. Questions may involve authors, publication dates, plot summaries, or literary significance.
-	\item \textbf{Painting} Famous artworks from different art movements and periods. Questions may cover artists, creation dates, styles, or current locations.
-	\item \textbf{Historical Event} Significant occurrences that shaped world history, from ancient times to the modern era. Questions may involve dates, key figures, causes, or their historical consequences.
-	\item \textbf{Building} Notable structures from around the world, including ancient monuments, modern skyscrapers, and architectural wonders. Questions may cover location, architect, construction date, or architectural style.
-	\item \textbf{Composition} Musical works from various genres and time periods. Questions may involve composers, premiere dates, musical style, or cultural significance.
-\end{enumerate}
-
-Each one of these categories has a number of questions that are assigned one of the objects, following and enhancing the question-building approach used by Yu et al.~\cite{factual_recall}.
-
-The total amount of these and composition of the 4760 questions can be found in \cref{category_amounts}.
-The full set of questions can be found in the repository with the code used in this paper.
-
-\begin{table}[ht]
-	\centering
-	\footnotesize
-	\begin{tabular}{>{\bfseries}l r r r}
-		\toprule
-			\bfseries Category & \bfseries Base Questions & \bfseries Objects & \bfseries Total Questions \\
-		\midrule
-			Person           &  17 &  57 &  969 \\
-			City             &  17 &  70 & 1190 \\
-			Principle        &   5 &  37 &  185 \\
-			Element          &  15 &  43 &  645 \\
-			Book             &  11 &  49 &  539 \\
-			Painting         &  12 &  44 &  528 \\
-			Historical Event &   4 &  64 &  256 \\
-			Building         &   9 &  22 &  198 \\
-			Composition      &  10 &  25 &  250 \\
-		\midrule
-			Total            & 100 & 411 & 4760 \\
-		\bottomrule \addlinespace[4pt]
-	\end{tabular}
-	\caption{The amount of base questions, objects, and the total amount of questions in each category on the final dataset after merging the base questions with the objects of each respective category.}
-	\label{category_amounts}
-\end{table}
-
 \subsection{Framework Results}
 \label{framework_results}
 
@@ -61,7 +11,7 @@ The results of running the queries created in \cref{creating_dataset} with added
 Additionally, \cref{cats_table} contains the information separated by question category.
 How the category of each answer affects the amount of \Parametric{}, \Contextual{}, and \Other{} answers is discussed in the next sections.
 
-\begin{table}[th]
+\begin{table}[t]
 	\centering
 	\footnotesize
 	\begin{tabular}{l r r r}
@@ -79,7 +29,7 @@ How the category of each answer affects the amount of \Parametric{}, \Contextual
 	\label{total_table}
 \end{table}
 
-\begin{figure}[th]
+\begin{figure}[t]
 	\centering
 	\includegraphics[width=\columnwidth]{both_amount.png}
 	\caption{Amount of each answers of each category when running a context with counterparamteric information for Seq2Seq and Decoder-only models of different sizes.}
