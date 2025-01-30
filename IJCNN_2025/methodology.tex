@@ -108,3 +108,10 @@ We compare the generated answer with the context to the previously generated par
 
 To minimise the amount of problems caused by large language models generating extra information, we truncate answers on the first period or \texttt{<EOS>} token and remove punctuation and stop words.
 
+
+\subsection{Experimental Setup}
+
+The code for running the framework is included along with the questions used in the Github repository in \texttt{\url{https://github.com/mfixman/knowledge-grounding-in-llms}}.
+The repository contains instructions on how to use it with different datasets and LLMs.
+
+The experiments in this research were run on a server with 48 Intel(R) Xeon(R) CPU 3GHz CPUs, 376GB of RAM, and 2 NVIDIA A100 GPUs with 80GB of VRAM each that was kindly provided to Artificial Intelligence MSc students in City, University of London.

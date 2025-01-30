@@ -3,7 +3,7 @@
 \usepackage{microtype}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{graphicx}
-\usepackage{url}
+\usepackage[hyphens]{url}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{tabularx}
@@ -12,14 +12,16 @@
 \usepackage{tikz}
 \usepackage{afterpage}
 \usepackage{enumitem}
+% \usepackage{url}
 % \usepackage{balance}
 % \usepackage{parskip}
 
-\usepackage[hypertexnames=false,hidelinks]{hyperref}
+\usepackage[hypertexnames=false,hidelinks,breaklinks]{hyperref}
 \usepackage[noabbrev,nameinlink,capitalize]{cleveref}
 
 \usetikzlibrary{positioning, fit, arrows.meta, tikzmark}
-
+\renewcommand{\UrlFont}{\ttfamily\upshape}
+\urlstyle{tt}
 \graphicspath{{.}{./pictures}{./figures}}
 
 % Should I add this here? IEEE documentation is inconsistent with how to handle multiple references in a single \cite.
