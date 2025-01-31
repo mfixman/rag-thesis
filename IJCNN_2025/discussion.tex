@@ -10,7 +10,7 @@ This section explains these results, and discusses what they mean for our resear
 When taking into account model architecture, the results are clear: encoder-decoder models tend to ground their knowledge from the query's context rather than from their parametric knowledge more often than Decoder-only models.
 These results persist across different question categories and are consistent regardless of answer types and lengths.
 
-In the framework of question-answering when using RAG to fetch contextual data from an index, encoder-decoder models might tend to have fewer hallucinations that contradict this index than Decoder-only models.
+In the framework of question-answering when using our dataset, encoder-decoder models tends to have fewer answers coming from their parametric memory that contradict their given context.
 We propose two hypotheses that could explain these differences.
 
 \subsubsection{Inherent Advantages of the Encoder-Decoder Architecture}
@@ -22,7 +22,7 @@ Encoder-decoder models such as \texttt{Flan-T5} are encoder-decoder models that 
 It is possible that these result does not come from the model architecture, but from the bias caused by their training methodology.
 
 The \texttt{Flan-T5} models were trained on masked token generation and later fine-tuned on question-answering about passages~\cite{flant5}.
-This requires strong alignment between query and answer, which encourages the model to focus on the input context and makes it more likely to take the answer from the RAG-provided context.
+This requires strong alignment between query and answer, which encourages the model to focus on the input context and makes it more likely to take the answer from the provided context.
 
 Llama models were trained mainly on open-ended text generation, which relies more on parametric data.
 

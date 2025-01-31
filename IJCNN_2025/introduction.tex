@@ -19,13 +19,13 @@ Understanding how well a model follows in its answers provided external, verifia
 Recent studies show that factors such as model architecture, size, and training method influence this interplay~\cite{factual_recall,flant5,llama}.
 Yet, it remains unclear under what conditions LLMs choose to source their answer from the query's context or from the model's knowledge.
 
-This research attempts to answer an the question: how does an LLM respond when given information that contradicts its learned parametric knowledge, and why?
+This research attempts to answer the following question: \textbf{how does an LLM respond when given information that contradicts its learned parametric knowledge, and why?}
 
 % To answer this question we create a diverse dataset of short-answer questions from a broad range of topics, including people, cities, scientific principles, and others.
 % This dataset is used on a variety of large language models to find the \emph{parametric answer}; later answers from different questions are used to find a \emph{counterparametric answer}.
 % This answer is added to the context of a new query to understand how each model treats this knowledge.
 
-This paper presents an empirical study of knowledge grounding by answering questions from a broad range of topics and testing the answer of an LLM when presented with counterparametric context that contradicts the model's known answer.
+To achieve this, we present an empirical study of knowledge grounding by answering questions from a broad range of topics and testing the answer of an LLM when presented with counterparametric context that contradicts the model's known answer.
 By systematically injecting this contradictory context, we observe whether the model chooses the \Contextual{} answer from the prompt, a \Parametric{} answer from its ground memory, or some \Other{} answer that's different to both.
 
 % Our findings show that encoder-decoder models and smaller models rely more on context, significantly reducing hallucinations in contradictory scenarios.

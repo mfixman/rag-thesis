@@ -28,5 +28,5 @@ In particular, while the Natural Questions dataset offers a wide range of questi
 The Countries' Capitals dataset, while well-suited for counterparametric evaluation, is limited in scope.
 
 \textbf{Retrieval-Augmented Generation} (RAG)~\cite{rag} attempts to improve factual accuracy by integrating external knowledge during inference.
-However RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge as evidenced by the research by Yu et al.\ and Hsia et al.~\cite{ragged,factual_recall}: even when presented with contradictory context, models often rely on their inherent memory.
+However RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge as evidenced by the research by Yu et al.~\cite{factual_recall} and Hsia et al.~\cite{ragged}: even when presented with contradictory context, models often rely on their parametric memory.
 Our study builds on these observations, examining this behavior across various model architectures and sizes.
