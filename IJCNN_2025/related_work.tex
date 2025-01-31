@@ -12,13 +12,16 @@ Recent studies such as Jiang et al.~\cite{how_can_we_know} highlighted the preva
 Other studies, such as Ghader et al.~\cite{can_rag_models_reason}, emphasize the challenge of ensuring accuracy in generated text.
 
 These concerns have prompted a wave of research focused on evaluating and mitigating hallucinations.
-Building on this, Cheng et al.~\cite{understanding_the_interplay} systematically explores how parametric and contextual knowledge interact, identifying scenarios where contextual knowledge can degrade performance, even when complementary.
-
 
 \textbf{Parametric and Contextual Knowledge} 
 The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) has been a focal point of several studies~\cite{knowledge}.
+
 Yu et al.~\cite{factual_recall} investigated how factors like training data, architecture, and fine-tuning affect the interplay between these two knowledge sources.
+Similarly, Tuan et al.\cite{when_context_leads} explored how language models balance parametric and contextual knowledge when answering open-ended questions by systematically varying context sizes to analyze when models prioritize provided context over their internal knowledge.
+Their findings suggest that while LLMs are capable of incorporating contextual information, they often default to their parametric memory when faced with ambiguous or conflicting inputs.
 % Their work suggests that encoder-decoder models, such as T5~\cite{t5,flant5}, are generally more effective at using input context compared to decoder-only models, which often struggle to override their internal knowledge.
+
+Building on this, Cheng et al.~\cite{understanding_the_interplay} systematically explores how parametric and contextual knowledge interact, identifying scenarios where contextual knowledge can degrade performance, even when complementary.
 
 Through this lens, our work contributes to the understanding of how model architecture, and size shape knowledge grounding in large language models.
 
