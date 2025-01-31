@@ -5,7 +5,10 @@ We showed that encoder-decoder architectures and smaller models better integrate
 
 Answers that are neither \Parametric{} nor \Contextual{} tend to have a source that follows a similar distribution for these models.
 
-These insights can inform the selection of models and inference strategies for tasks where factual accuracy is important, and will be helpful on models which add RAG to ensure that the model's parametric knowledge does not override it.
+These insights can inform the selection of models and inference strategies for tasks where factual accuracy is important and the contextual knowledge added to the query is more reliable than the parametric knowledge of the LLM.
+
+This is particularly useful in the framework of question-answering when using Retrieval-Augmented Generation (RAG) to fetch contextual data from an index.
+Understanding the knowledge grounding of LLMs is crucial for preventing hallucinations when enhancing queries with a RAG-generated index.
 
 \subsection{Future Work}
 
