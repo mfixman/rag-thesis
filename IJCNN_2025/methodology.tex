@@ -7,6 +7,30 @@ To achieve this, we develop a framework for evaluating the knowledge grounding o
 \subsection{Dataset Creation}
 \label{dataset_creation}
 
+\begin{table}[t]
+	\caption{The number of base questions, objects, and total questions in each category of the final dataset.}
+	\label{category_amounts}
+	\centering
+	\footnotesize
+	\begin{tabular}{>{\bfseries}l r r r}
+		\toprule
+			\bfseries Category & \bfseries Base Questions & \bfseries Objects & \bfseries Total Questions \\
+		\midrule
+			Person & 17 & 57 & 969 \\
+			City & 17 & 70 & 1190 \\
+			Principle & 5 & 37 & 185 \\
+			Element & 15 & 43 & 645 \\
+			Book & 11 & 49 & 539 \\
+			Painting & 12 & 44 & 528 \\
+			Historical Event & 4 & 64 & 256 \\
+			Building & 9 & 22 & 198 \\
+			Music & 10 & 25 & 250 \\
+		\midrule
+			Total & 100 & 411 & 4760 \\
+		\bottomrule \addlinespace[4pt]
+	\end{tabular}
+\end{table}
+
 \subsubsection{Rationale and comparison to prior datasets}
 
 The foundation of this work is a representative dataset of questions designed to test the interplay between parametric and contextual knowledge in LLMs.
@@ -54,29 +78,40 @@ Each category's base questions were systematically paired with the corresponding
 The total number of questions per category, along with the breakdown of base questions and objects, is detailed in \cref{category_amounts}.
 The full set of questions, along with the code used in this study, is available in the accompanying repository.
 
+\subsection{Model Selection}
+\label{model_selection}
+
+In order to understand the knowledge grounding of a wide variety of large language
+models, the queries in the dataset we previously generated are tested into models of various architectures and sizes, which are listed in \cref{model_list}.
+
 \begin{table}[t]
-	\caption{The number of base questions, objects, and total questions in each category of the final dataset. The totals are derived by combining each base question with the objects in its respective category.}
-	\label{category_amounts}
+	\caption{Models evaluated in this study.}
+	\label{model_list}
 	\centering
 	\footnotesize
-	\begin{tabular}{>{\bfseries}l r r r}
+	% \renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{l l r}
 		\toprule
-			\bfseries Category & \bfseries Base Questions & \bfseries Objects & \bfseries Total Questions \\
+			Model             & Architecture    & Params \\
 		\midrule
-			Person & 17 & 57 & 969 \\
-			City & 17 & 70 & 1190 \\
-			Principle & 5 & 37 & 185 \\
-			Element & 15 & 43 & 645 \\
-			Book & 11 & 49 & 539 \\
-			Painting & 12 & 44 & 528 \\
-			Historical Event & 4 & 64 & 256 \\
-			Building & 9 & 22 & 198 \\
-			Music & 10 & 25 & 250 \\
-		\midrule
-			Total & 100 & 411 & 4760 \\
+			\smallflan{}      & Encoder-Decoder & 3B          \\
+			\bigflan{}        & Encoder-Decoder & 11B         \\
+			\smallllama{}    & Decoder-Only    & 8B          \\
+			\bigllama{} & Decoder-Only    & 70B         \\
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
 \end{table}
+
+Both encoder-decoder models are based on T5 models~\cite{t5}, which employ an encoder-decoder architecture: while an encoder processed the input sequence into a context vector, and an decoder generates an input sequence from this vector.
+They are fine-tuned to follow instructions to improve zero-shot performance~\cite{flant5}.
+\smallflan{} contains approximately 3 billion parameters, while \bigflan{} contains 11 billion parameters.
+
+Decoder-only models generate answers one token at a time from the input query.
+Given a sequence of tokens, they generate text one token at a time by attempting to solve the problem of predicting the following token~\cite{gpt}.
+
+This paper uses the \texttt{-Instruct} versions of the latest Llama models~\cite{llama3}, which use this architecture and fine-tune it to tasks of instruction-following.
+These models are specially adept at complex prompts.
+Of the models used in this paper, \texttt{Meta-Llama-3.1-8B-Instruct} has 8 billion parameters, while \texttt{Meta-Llama-3.1-70B-Instruct} has 70 billion parameters.
 
 \subsection{Query Design}
 \label{query_design}
