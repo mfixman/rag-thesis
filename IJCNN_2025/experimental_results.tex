@@ -42,17 +42,17 @@
 			Painting         &  26 &  446 & 56 &   4 &  498 & 26 &  47 &  458 & 23 &  49 & 445 &  34 \\
 			Historical Event &  11 &  217 & 28 &   1 &  254 &  1 &  81 &  154 & 21 & 117 & 118 &  21 \\
 			Building         &  14 &  174 & 10 &   0 &  189 &  9 &  27 &  163 &  8 &  31 & 159 &   8 \\
-			Composition      &   0 &  228 & 22 &   7 &  240 &  3 &  36 &  200 & 14 &  25 & 219 &   6 \\
+			Music      &   0 &  228 & 22 &   7 &  240 &  3 &  36 &  200 & 14 &  25 & 219 &   6 \\
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
 	\caption{Results for each model tested on queries with counterparametric context in each one of the 10 given categories.}
 	\label{cats_table}
 \end{table*}
 
-The results of running the queries with the questions created in \cref{dataset_creation} with added counterparametric context on each of the four models.
-
-\Cref{total_table} shows the total type of answers for each one of the models.
-These numbers represent the amount of answers with a particular source for each one of the models when asking queries for all 4760 questions.
+The results of running the queries with the questions created in \cref{dataset_creation} with added counterparametric context on each of the four models are shown in 
+\Cref{total_table}. 
+It shows the frequency of each type of answer for each one of the models,
+i.e. the number of answers with a particular source for each one of the models when asking queries for all 4760 questions.
 
 % Of the encoder-decoder models, \smallflan{} has $248$ answers from \Parametric{} knowledge ($5.21\%$), $4284$ answers from \Contextual{} knowledge ($90\%$), and $228$ answers from \Other{} source ($4.79\%$).
 % \bigflan{} has a similar distribution of answers with $242$ \Parametric{} answers ($5.08\%$), $4304$ \Contextual{} answers ($90.42\%$), and $214$ \Other{} answers ($4.5\%$).
@@ -60,8 +60,8 @@ These numbers represent the amount of answers with a particular source for each 
 % The decoder-only models also have a majority of \Contextual{} answers, but have an otherwise different distribution with a smaller majority.
 % \smallllama{} has $745$ answers from \Parametic{} knowledge ($15.65\%$), $3662$ answers from \Contextual{} knowledge ($76.93\%$), and $353$ answers from some \Other{} source ($7.42\%$).
 % Unlike the previous architecture, the larger model \bigllama{} has a significantly different result with $1070$ \Parametric{} answers ($22.48\%$), $3303$ \Contextual{} answers ($69.39\%$), and $387$ \Other{} answers ($8.13\%$).
-
-This information is plotted in \cref{total_plot}, where the differences between architectures and sizes can be better appreciated.
+This information is also plotted in \cref{total_plot}, where the differences between %architectures and sizes
+values can be visually appreciated.
 
 \Cref{cats_table} contains the information separated by question category.
 That is, for each model being tested with counterparametric data added to the context, how many questions in each category have answers from the \Parametric{} knowledge of the model, the \Contextual{} information in the query, and some \Other{} source.

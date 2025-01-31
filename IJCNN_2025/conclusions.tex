@@ -5,20 +5,19 @@ We showed that encoder-decoder architectures and smaller models better integrate
 
 Answers that are neither \Parametric{} nor \Contextual{} tend to have a source that follows a similar distribution for these models.
 
-These insights can inform the selection of models and inference strategies for tasks where factual accuracy is crucial, and will be helpful on models which add a RAG to ensure that the model's parametric knowledge does not override it.
-
-By deepening our understanding of knowledge grounding, we take a step closer to building more trustworthy and reliable language models.
+These insights can inform the selection of models and inference strategies for tasks where factual accuracy is important, and will be helpful on models which add RAG to ensure that the model's parametric knowledge does not override it.
 
 \subsection{Future Work}
 
 \subsubsection{Better categorisation of \Other{} answers}
 A cursory glance to the answers marked as \Other{} in \cref{what_are_all_these_others} shows that several of them came from the model's \Parametric{} knowledge (categories 1 and 6, which represent $3.79\%$ and $5.40\%$ of the answers in decoder-only models) and others from the \Contextual{} data in the query (category 5, which represents $5.03\%$ and $3.59\%$ of the answers in the encoder-decoder-models).
-
-The algorithm used to understand the source of the knowledge of an answer is currently simple, and could be improving to provide better understanding.
+The algorithm used to understand the source of the knowledge of an answer is currently simple, and could be improved to provide better understanding.
 
 \subsubsection{Knowledge grounding in retrieval-augmented LLMs}
-Running this program on retrieval-augmented LLMs such as Atlas~\cite{atlas_foundational} and Retro~\cite{retro} and creating a full evaluation framework that specifically focuses on their grounding might help understanding the capability of these models to adapt its generation to their provided context.
+Running this program on retrieval-augmented LLMs such as Atlas~\cite{atlas_foundational} and Retro~\cite{retro} and creating a full evaluation framework that specifically focuses on their grounding might help understanding the capability of these models to adapt their generation to their provided context.
 
 \subsubsection{Using perplexity data to guide the answers}
 The perplexity of a response has been used to understand and calibrate the knowledge grounding of large language models~\cite{how_can_we_know}.
 Using it as an extra parameter of this research might provide extra insights.
+
+Overall, we can take a step closer to building more trustworthy and reliable language models by deepening our understanding of knowledge grounding.

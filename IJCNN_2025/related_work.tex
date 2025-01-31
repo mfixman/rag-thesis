@@ -16,19 +16,17 @@ Building on this, Cheng et al.~\cite{understanding_the_interplay} systematically
 
 
 \textbf{Parametric and Contextual Knowledge} 
-The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) has been a focal point of several studies.
+The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) has been a focal point of several studies~\cite{knowledge}.
 Yu et al.~\cite{factual_recall} investigated how factors like training data, architecture, and fine-tuning affect the interplay between these two knowledge sources.
 % Their work suggests that encoder-decoder models, such as T5~\cite{t5,flant5}, are generally more effective at using input context compared to decoder-only models, which often struggle to override their internal knowledge.
 
 Through this lens, our work contributes to the understanding of how model architecture, and size shape knowledge grounding in large language models.
 
-\textbf{Existing Datasets}: There's a variety of datasets that can be used for analysis of LLMs, such as the Natural Questions dataset~\cite{natural_questions} and the Countries' Capitals dataset~\cite{factual_recall}.
-These provide valuable insights, but fall short of the criteria necessary for the experiments being run on this research.
+\textbf{Knowledge Probing Datasets}: Prior work has developed datasets to evaluate LLMs' factual knowledge, including Natural Questions~\cite{natural_questions} and Countries' Capitals~\cite{factual_recall}. However, these datasets are not designed to analyze how models arbitrate between their parametric knowledge and contradictory contextual information, which is the focus of our study.
 
 In particular, while the Natural Questions dataset offers a wide range of questions, its lack of systematic categorization hinders counterparametric experiments.
 The Countries' Capitals dataset, while well-suited for counterparametric evaluation, is limited in scope.
 
-\textbf{RAG}
-Retrieval-Augmented Generation (RAG)~\cite{rag} attempts to improve factual accuracy by integrating external knowledge during inference.
+\textbf{Retrieval-Augmented Generation} (RAG)~\cite{rag} attempts to improve factual accuracy by integrating external knowledge during inference.
 However RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge as evidenced by the research by Yu et al.\ and Hsia et al.~\cite{ragged,factual_recall}: even when presented with contradictory context, models often rely on their inherent memory.
 Our study builds on these observations, examining this behavior across various model architectures and sizes.
