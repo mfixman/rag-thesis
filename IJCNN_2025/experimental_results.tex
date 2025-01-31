@@ -2,6 +2,8 @@
 \label{results_section}
 
 \begin{table}[t]
+	\caption{Amount of answers of each category when running our dataset on each of the four models.}
+	\label{total_table}
 	\centering
 	\footnotesize
 	\begin{tabular}{l r r r}
@@ -15,8 +17,6 @@
 			\bigllama{} & 1070 & 3303 & 387 \\
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
-	\caption{Amount of answers of each category when running our dataset on each of the four models.}
-	\label{total_table}
 \end{table}
 
 \begin{figure}[t]
@@ -27,6 +27,8 @@
 \end{figure}
 
 \begin{table*}[t]
+	\caption{Results for each model tested on queries with counterparametric context in each one of the 10 given categories.}
+	\label{cats_table}
 	\centering
 	\footnotesize
 	\begin{tabular}{>{\bfseries}l | r r r | r r r | r r r | r r r}
@@ -45,8 +47,6 @@
 			Music      &   0 &  228 & 22 &   7 &  240 &  3 &  36 &  200 & 14 &  25 & 219 &   6 \\
 		\bottomrule \addlinespace[4pt]
 	\end{tabular}
-	\caption{Results for each model tested on queries with counterparametric context in each one of the 10 given categories.}
-	\label{cats_table}
 \end{table*}
 
 The results of running the queries with the questions created in \cref{dataset_creation} with added counterparametric context on each of the four models are shown in 
