@@ -5,7 +5,7 @@ Despite their impressive capabilities, hallucinations continue to pose serious p
 For tasks where precision is paramount, such as factual QA or medical and legal domains, reducing hallucinations is critical\cite{mitigating_hallucinations}.
 
 \emph{Knowledge grounding} refers to the extent to which a language model bases its responses on external, verifiable sources rather than relying solely on the parametric knowledge encoded in its weights. 
-A well-grounded model should prioritize provided context when available, ensuring that its outputs align with the given evidence rather than hallucinated or outdated information. 
+A well-grounded model should prioritise provided context when available, ensuring that its outputs align with the given evidence rather than hallucinated or outdated information. 
 This concept is particularly important in applications requiring factual accuracy, as models that fail to properly ground their responses may generate misleading or incorrect information despite being given reliable context~\cite{rag,factual_recall}.
 Understanding how different models balance parametric and contextual knowledge is important for improving their reliability in real-world scenarios.
 
@@ -19,7 +19,7 @@ Understanding how well a model follows in its answers provided external, verifia
 Recent studies show that factors such as model architecture, size, and training method influence this interplay~\cite{factual_recall,flant5,llama}.
 Yet, it remains unclear under what conditions LLMs choose to source their answer from the query's context or from the model's knowledge.
 
-This research attempts to answer the following question: \textbf{how does an LLM respond when given information that contradicts its learned parametric knowledge, and why?}
+This research attempts to answer the following key question: \textbf{How does an LLM respond when given information that contradicts its learned parametric knowledge, and why?}
 
 % To answer this question we create a diverse dataset of short-answer questions from a broad range of topics, including people, cities, scientific principles, and others.
 % This dataset is used on a variety of large language models to find the \emph{parametric answer}; later answers from different questions are used to find a \emph{counterparametric answer}.

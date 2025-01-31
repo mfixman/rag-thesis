@@ -14,10 +14,10 @@ Other studies, such as Ghader et al.~\cite{can_rag_models_reason}, emphasize the
 These concerns have prompted a wave of research focused on evaluating and mitigating hallucinations.
 
 \textbf{Parametric and Contextual Knowledge} 
-The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) has been a focal point of several studies~\cite{knowledge}.
+The distinction between parametric knowledge (stored in the model's weights) and contextual knowledge (provided in the input) is central in understanding hallucinations~\cite{knowledge}.
 
 Yu et al.~\cite{factual_recall} investigated how factors like training data, architecture, and fine-tuning affect the interplay between these two knowledge sources.
-Similarly, Tuan et al.\cite{when_context_leads} explored how language models balance parametric and contextual knowledge when answering open-ended questions by systematically varying context sizes to analyze when models prioritize provided context over their internal knowledge.
+Similarly, Tuan et al.\cite{when_context_leads} explored how language models balance parametric and contextual knowledge when answering open-ended questions by systematically varying context sizes to analyse when models prioritise provided context over their internal knowledge.
 Their findings suggest that while LLMs are capable of incorporating contextual information, they often default to their parametric memory when faced with ambiguous or conflicting inputs.
 % Their work suggests that encoder-decoder models, such as T5~\cite{t5,flant5}, are generally more effective at using input context compared to decoder-only models, which often struggle to override their internal knowledge.
 
@@ -25,11 +25,11 @@ Building on this, Cheng et al.~\cite{understanding_the_interplay} systematically
 
 Through this lens, our work contributes to the understanding of how model architecture, and size shape knowledge grounding in large language models.
 
-\textbf{Knowledge Probing Datasets}: Prior work has developed datasets to evaluate LLMs' factual knowledge, including Natural Questions~\cite{natural_questions} and Countries' Capitals~\cite{factual_recall}. However, these datasets are not designed to analyze how models arbitrate between their parametric knowledge and contradictory contextual information, which is the focus of our study.
+\textbf{Knowledge Probing Datasets}: Prior work has developed datasets to evaluate LLMs' factual knowledge, including Natural Questions~\cite{natural_questions} and Countries' Capitals~\cite{factual_recall}. However, these datasets are not designed to analyse how models arbitrate between their parametric knowledge and contradictory contextual information, which is the focus of our study.
 
-In particular, while the Natural Questions dataset offers a wide range of questions, its lack of systematic categorization hinders counterparametric experiments.
+In particular, while the Natural Questions dataset offers a wide range of questions, its lack of systematic categorisation hinders counterparametric experiments.
 The Countries' Capitals dataset, while well-suited for counterparametric evaluation, is limited in scope.
 
 \textbf{Retrieval-Augmented Generation} (RAG)~\cite{rag} attempts to improve factual accuracy by integrating external knowledge during inference.
-However RAG does not always ensure that language models prioritize the retrieved evidence over their parametric knowledge as evidenced by the research by Yu et al.~\cite{factual_recall} and Hsia et al.~\cite{ragged}: even when presented with contradictory context, models often rely on their parametric memory.
+However RAG does not always ensure that language models prioritise the retrieved evidence over their parametric knowledge as evidenced by the research by Yu et al.~\cite{factual_recall} and Hsia et al.~\cite{ragged}: even when presented with contradictory context, models often rely on their parametric memory.
 Our study builds on these observations, examining this behavior across various model architectures and sizes.

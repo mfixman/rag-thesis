@@ -2,15 +2,14 @@ Large language models (LLMs) have seen significant advancements in quality and a
 This paper investigates how LLMs respond to questions when contextual information contradicts with their parametric knowledge acquired during training.
 
 We first develop a diverse dataset featuring questions across a wide variety of topics on a group of LLMs of various architectures and sizes.
-These questions to these models to generate a set of parametric answers, which are shuffled among the answers to similar questions to create counterparametric answers.
-These are provided as part of the context of a new query to feed to the same LLM, thus enabling us to determine whether the model sourced the answer to this question from the given context or its parametric memory.
+These questions to these models to generate a set of ``parametric'' answers, which are shuffled among the answers to similar questions to create ``counterparametric'' answers.
+These are provided as part of the context of a new query to feed to the same LLM, enabling us to determine whether the model sourced the answer to this question from the given context or its parametric memory.
 
-This allows us to understand the knowledge grounding of different models in use-case specific data that's not necessarily available in the LLM's trained knowledge.
+Our approach sheds light on understand the knowledge grounding of different models when handling use-case specific data that's not necessarily available in the LLM's trained knowledge.
 This can be used to understand the sensitivity to the context in Retrieval-Augmented Generation (RAG), which can reduce hallucinations by leveraging external information to enhance response accuracy.
 
-We evaluate encoder-decoder and decoder-only models of various sizes and analyze their responses to determine their reliance on context versus internal parametric knowledge.
+We evaluate encoder-decoder and decoder-only models of various sizes and analyse their responses to determine their reliance on context versus internal parametric knowledge.
 We find that encoder-decoder models tend to exhibit stronger knowledge grounding than decoder-only models.
-This effect is %also 
-stronger in smaller decoder-only models than on larger ones.
+This effect is stronger in smaller decoder-only models than on larger ones.
 
-This analysis can help develop strategies to mitigate hallucinations in RAG-augmented LLMs, ultimately improving their reliability in knowledge-intensive tasks.
+These findings can help develop strategies to mitigate hallucinations in RAG-augmented LLMs, ultimately improving their reliability in knowledge-intensive tasks.

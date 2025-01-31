@@ -59,10 +59,8 @@ The experiments in this research were run on a server with 48 Intel(R) Xeon(R) C
 	\end{tabular}
 \end{table*}
 
-The results of running the queries with the questions created in \cref{dataset_creation} with added counterparametric context on each of the four models are shown in 
-\Cref{total_table}. 
-It shows the frequency of each type of answer for each one of the models,
-i.e. the number of answers with a particular source for each one of the models when asking queries for all 4760 questions.
+\Cref{total_table} shows the frequency of each type of answer for each one of the models when running the queries with the questions created in \cref{dataset_creation} with added counterparametric context on each of the four models.
+This represents the number of answers with a particular source for each one of the models when asking queries for all 4760 questions.
 
 % Of the encoder-decoder models, \smallflan{} has $248$ answers from \Parametric{} knowledge ($5.21\%$), $4284$ answers from \Contextual{} knowledge ($90\%$), and $228$ answers from \Other{} source ($4.79\%$).
 % \bigflan{} has a similar distribution of answers with $242$ \Parametric{} answers ($5.08\%$), $4304$ \Contextual{} answers ($90.42\%$), and $214$ \Other{} answers ($4.5\%$).
@@ -70,8 +68,7 @@ i.e. the number of answers with a particular source for each one of the models w
 % The decoder-only models also have a majority of \Contextual{} answers, but have an otherwise different distribution with a smaller majority.
 % \smallllama{} has $745$ answers from \Parametic{} knowledge ($15.65\%$), $3662$ answers from \Contextual{} knowledge ($76.93\%$), and $353$ answers from some \Other{} source ($7.42\%$).
 % Unlike the previous architecture, the larger model \bigllama{} has a significantly different result with $1070$ \Parametric{} answers ($22.48\%$), $3303$ \Contextual{} answers ($69.39\%$), and $387$ \Other{} answers ($8.13\%$).
-This information is also plotted in \cref{total_plot}, where the differences between %architectures and sizes
-values can be visually appreciated.
+This information also appears in \cref{total_plot}, where the differences between the values among different architectures and sizes can be visually appreciated.
 
 \Cref{cats_table} contains the information separated by question category.
 That is, for each model being tested with counterparametric data added to the context, how many questions in each category have answers from the \Parametric{} knowledge of the model, the \Contextual{} information in the query, and some \Other{} source.

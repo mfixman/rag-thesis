@@ -1,13 +1,16 @@
 \section{Conclusions}
 
-We presented an empirical study on knowledge grounding in LLMs, probing how models respond when provided with contradictory context.
-We showed that encoder-decoder architectures and smaller models better integrate new evidence, while large decoder-only models often revert to their \Parametric{} knowledge.  Additionally, model size does not have a large impact on encoder-decoder models, while it tends to push answers in Decoder-only models towards answers that use more \Parametric{} knowledge.
+We presented an empirical study on how knowledge grounding in large language models, probing how they respond when provided with contradictory context.
+Our experiments show that encoder-decoder architectures and smaller models better integrate new evidence, while large decoder-only models often revert to their parametric knowledge.
+Additionally, we show model size does not have a large impact on encoder-decoder models, while larger Decoder-only models tend to have a higher rate of answers answers that sourced from their parametric knowledge.
 
 Answers that are neither \Parametric{} nor \Contextual{} tend to have a source that follows a similar distribution for these models.
 
 These insights can inform the selection of models and inference strategies for tasks where factual accuracy is important and the contextual knowledge added to the query is more reliable than the parametric knowledge of the LLM.
 
-This is particularly useful in the framework of question-answering when using Retrieval-Augmented Generation (RAG) to fetch contextual data from an index.
+These findings carry implications for models using retrieval-augmented generation that get factual contextual data from an index: if external context is more trustworthy than a model's memorised content, then an encoder–decoder setup or smaller decoder-only models may be preferable.
+Conversely, larger decoder-only models might offer greater breadth of knowledge but risk overriding crucial contextual updates.
+% This is particularly useful in the framework of question-answering when using Retrieval-Augmented Generation (RAG) to fetch contextual data from an index.
 Understanding the knowledge grounding of LLMs is crucial for preventing hallucinations when enhancing queries with a RAG-generated index.
 
 \subsection{Future Work}
