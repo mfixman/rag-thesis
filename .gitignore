@@ -171,3 +171,7 @@ cython_debug/
 *.toc
 *.bbl
 *.blg
+
+wandb/
+rest/
+*/.jupyter/
