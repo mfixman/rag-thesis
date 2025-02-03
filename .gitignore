@@ -171,6 +171,8 @@ cython_debug/
 *.toc
 *.bbl
 *.blg
+*.bcf
+*.run.xml
 
 wandb/
 rest/

@@ -1,0 +1,46 @@
+\begin{table}
+	\centering
+	\tiny
+	\ttfamily
+
+	\newcommand{\qtbox}[1]{\parbox{100pt}{#1}}
+	\newcommand{\qwbox}[2]{\setlength{\fboxsep}{0pt}\fbox{\colorbox{#1}{\strut \rule{0pt}{1pt}\hspace{1pt}#2\hspace{1pt}}}}
+	\newcommand{\qwtext}[2]{\textbf{\color{#1}{#2}}}
+
+	\newcommand{\qwabox}[1]{\qwbox{BurntOrange}{#1}}
+	\newcommand{\qwatext}[1]{\qwtext{BurntOrange}{#1}}
+	\newcommand{\qwbbox}[1]{\qwbox{ForestGreen}{#1}}
+	\newcommand{\qwbtext}[1]{\qwtext{ForestGreen}{#1}}
+	\newcommand{\qwcbox}[1]{\qwbox{Thistle}{#1}}
+	\newcommand{\qwctext}[1]{\qwtext{Thistle}{#1}}
+	\newcommand{\qwdbox}[1]{\qwbox{SkyBlue}{#1}}
+	\newcommand{\qwdtext}[1]{\qwtext{SkyBlue}{#1}}
+	\newcommand{\qwebox}[1]{\qwbox{Melon}{#1}}
+	\newcommand{\qwetext}[1]{\qwtext{Melon}{#1}}
+
+	\newcommand{\qwfbox}[1]{\qwbox{Dandelion}{#1}}
+	\newcommand{\qwftext}[1]{\qwtext{Dandelion}{#1}}
+
+	\hspace{-5pt}
+	\begin{tabular}{l @{\hspace{10pt}} r @{\hspace{5pt}} c @{\hspace{40pt}} c @{\hspace{2pt}} l}
+		\toprule
+			\bfseries Initial Query & \bfseries Parametric Answer && & \bfseries Query with Counterparametric Context \\
+		\midrule
+			\qtbox{Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} & \qwatext{Egypt} & \tikzmark{egyptAnswer} & \tikzmark{usaCtx} & \qtbox{[\qwabox{Cairo} is in \qwbtext{the United States}] \\ Q: What country is \qwabox{Cairo} in? \\ A: \qwabox{Cairo} is in} \\[20pt]
+			\qtbox{Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} & \qwbtext{the United States} & \tikzmark{usaAnswer} & \tikzmark{egyptCtx} & \qtbox{[\qwbbox{New York} is in \qwatext{Egypt}] \\ Q: What country is \qwbbox{New York} in? \\ A: \qwbbox{New York} is in} \\[20pt]
+			\qtbox{Q: What country is \qwcbox{Bangkok} in? \\ A: \qwcbox{Bangkok} is in} & \qwctext{Thailand} & \tikzmark{thailandAnswer} & \tikzmark{usaCtx2} & \qtbox{[\qwcbox{Bangkok} is in \qwbtext{the United States}] \\ Q: What country is \qwcbox{Bangkok} in? \\ A: \qwcbox{Bangkok} is in} \\[20pt]
+			\qtbox{Q: What country is \qwfbox{San Francisco} in? \\ A: \qwfbox{San Francisco} is in} & \qwftext{the United States} & & \tikzmark{thailandCtx} & \qtbox{[\qwfbox{San Francisco} is in \qwctext{Thailand}] \\ Q: What country is \qwfbox{San Francisco} in? \\ A: \qwfbox{San Francisco} is in} \\
+			% \qtbox{Q: What is the date of birth of \qwdbox{Che Guevara}? \\ A: The date of birth of \qwdbox{Che Guevara} is} & \qwdtext{June 14, 1928} & \tikzmark{guevaraAnswer} & \tikzmark{diocletianCtx} & \qtbox{[\qwdbox{Che Guevara} was born in \qwetext{245 CE}] \\ Q: What is the date of birth of \qwdbox{Che Guevara}? \\ A: The date of birth of \qwdbox{Che Guevara} is} \\
+			% \qtbox{Q: What is the date of birth of \qwebox{Emperor Diocletian}? \\ A: The date of birth of \qwebox{Emperor Diocletian} is} & \qwetext{245 CE} & \tikzmark{diocletianAnswer} & \tikzmark{guevaraCtx} & \qtbox{[\qwebox{Emperor Diocletian} was born in \qwdtext{June 14, 1928}] \\ Q: What is the date of birth of \qwebox{Emperor Diocletian}? \\ A: The date of birth of \qwebox{Emperor Diocletian} is} \\[10pt]
+		\bottomrule
+	\end{tabular}
+
+	\begin{tikzpicture}[remember picture, overlay, ->, >=stealth, thick]
+		\draw (pic cs:egyptAnswer) +(0pt, 2pt) to (pic cs:egyptCtx);
+		\draw (pic cs:usaAnswer) +(0pt,  4pt)  to (pic cs:usaCtx);
+		\draw (pic cs:usaAnswer) +(0pt, 0pt) to (pic cs:usaCtx2);
+		% \draw (pic cs:guevaraAnswer) +(0pt, 2pt) to (pic cs:guevaraCtx);
+		% \draw (pic cs:diocletianAnswer) +(0pt, 2pt) to (pic cs:diocletianCtx);
+		\draw (pic cs:thailandAnswer) +(0pt, 2pt) to (pic cs:thailandCtx);
+	\end{tikzpicture}
+\end{table}

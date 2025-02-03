@@ -1,23 +1,34 @@
 \documentclass[10pt]{beamer}
 
-\usepackage{enumitem}
+% \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tikz}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[sorting=none]{biblatex}
+% \usepackage[hyphens]{url}
 
 \usetheme{Copenhagen}
 
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{headline}{}
+% \setbeamertemplate{enumerate items}[default]
+% \setbeamercolor{enumerate item}{fg=black}
+% \setbeamercolor{enumerate subitem}{fg=black}
+% \setbeamercolor{enumerate subsubitem}{fg=black}
 
-\setbeamertemplate{enumerate items}[default]
-\setbeamercolor{enumerate item}{fg=black}
-\setbeamercolor{enumerate subitem}{fg=black}
-\setbeamercolor{enumerate subsubitem}{fg=black}
+\setbeamerfont{footnote}{size=\scriptsize}
+\setbeamerfont{bibliography item}{size=\tiny}
+\setbeamerfont{bibliography entry}{size=\tiny}
+
+% \renewcommand{\thefootnote}{\fnsymbol{footnote}}
 
 \newcommand{\Parametric}{\textbf{\textcolor{ForestGreen}{Parametric}}}
 \newcommand{\Contextual}{\textbf{\textcolor{Maroon}{Contextual}}}
 \newcommand{\Other}{\textbf{\textcolor{MidnightBlue}{Other}}}
+\newcommand{\Pc}{\textbf{\textcolor{ForestGreen}{P'tric}}}
+\newcommand{\Cc}{\textbf{\textcolor{Maroon}{C'tual}}}
+\newcommand{\Oc}{\textbf{\textcolor{MidnightBlue}{Other}}}
 
 \newcommand{\smallflan}{\texttt{flan-t5-xl}}
 \newcommand{\bigflan}{\texttt{flan-t5-xxl}}
@@ -26,10 +37,14 @@
 \newcommand{\llamaparbox}{\parbox{60pt}{\centering\ttfamily Meta-Llama-3.1 \\ -8B-Instruct}}
 \newcommand{\bigllamaparbox}{\parbox{65pt}{\centering\ttfamily Meta-Llama-3.1 \\ -70B-Instruct}}
 
+\newcommand{\codelike}[1]{\colorbox{lightgray}{\parbox{\linewidth}{\scriptsize\ttfamily #1}}}
+
 \usetikzlibrary{positioning, fit, arrows.meta, tikzmark}
 \renewcommand{\UrlFont}{\ttfamily\upshape}
 \urlstyle{tt}
 \graphicspath{{.}{./pictures}{./figures}}
+
+\addbibresource{knowledge_grounding.bib}
 
 \title{Knowledge Grounding in Large Language models: An Empirical Study}
 \author{Martin Fixman}
@@ -60,6 +75,215 @@
 		\column{.25\textwidth}
 		\includegraphics[width=\columnwidth]{city_st_georges_logo.png}
 	\end{columns}
+\end{frame}
+
+\begin{frame}{Introduction}
+	How do we know what (large) language models know? \\
+	\pause{}
+	\textcolor{gray}{Still an open problem!}
+
+	\vfill{}
+
+	Hallucinations are a major problem, \\ specially when \emph{factual knowledge} is required~\footfullcite{how_can_we_know}. \\[1em]
+	\centering
+	\includegraphics[width=150pt]{robotic_surgery_2.png}
+\end{frame}
+
+\begin{frame}{Introduction: RAG}
+	Possible solution: Retrieval Augmented Generation (RAG), which searches data from an index and adds it to the context~\footfullcite{rag}.
+
+	\vfill{}
+
+	\alt<1>{
+		\centering
+		\scriptsize
+		\ttfamily
+		\colorbox{lightgray}{
+			\parbox{\linewidth}{
+				[The James Webb Space Telescope (JWST) was launched on December 25, 2021. It is designed to observe infrared light and has provided new insights into exoplanets, star formation, and distant galaxies] \\
+				Q: What year was the James Webb Space Telescope launched? \\ A: \\[1em]
+				[Metformin is a medication commonly used to treat type 2 diabetes. It helps lower blood sugar levels by improving insulin sensitivity. Some side effects include gastrointestinal discomfort, but it is generally considered safe] \\ Q: Can metformin cure diabetes? \\ A: \\[1em]
+				[The capital of Russia is Moscow] Q: What is the capital of Russia? \\ A:
+			}
+		}
+	}{}
+	\alt<2>{
+		However, it can still hallucinate!\footfullcite{rag_hallucinations}
+		\centering
+		\includegraphics[height=.5\textheight]{rag_fails.png}
+	}{}
+\end{frame}
+
+\begin{frame}{Research Objectives}
+	Research question: \textbf{How do different architectures and sizes of large language models handle knowledge that contradicts its parametric knowledge?}
+
+	\vfill{}
+
+	\small
+	A few definitions:
+	\begin{itemize}
+		\item \textbf{Parametric Knowledge} What the model ``knows'' from its training data.
+		\item \textbf{Contextual Knowledge} What the model infers from the RAG context.
+		\item \textbf{Counterparametric Knowledge} Knowledge that contradicts the parametric knowledge of a model.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Methods \textrm{I}: Dataset Creation}
+	\begin{enumerate}
+		\item \textbf{Short, Unambiguous Answers} \\
+			Questions should have concise answers to avoid ambiguity and enable precise comparison.
+		\item \textbf{Coverage of Diverse Topics} \\
+			Datasets must span a wide range of domains to mitigate biases inherent in some NLP training data\footfullcite{wikipedia_geographic_bias}
+		\item \textbf{Counteparametric Compatibility} \\
+			Questions should have an easy way to create counterparametric answers.
+	\end{enumerate}
+
+	\vfill{}
+
+	None of the commonly used datasets have these property, so we create our own. \\[1ex]
+
+	The final dataset has \textbf{4760 questions} about 411 objects among 9 different categories.
+\end{frame}
+
+\begin{frame}{Methods \textrm{II}: Query Generation}
+	We want to prompt queries of the following form.
+
+	\codelike{
+		[Counterparametric Answer] Q: Question? A:
+	}
+
+	\vfill{}
+
+	Questions are taken from a ``template'', and counterparametric answers are taken from similar questions.
+\end{frame}
+
+\begin{frame}{Methods \textrm{II}: Query Generation}
+	\input{counterparametric_example}
+\end{frame}
+
+\begin{frame}{Methods \textrm{II}: Query Generation}
+	\begin{itemize}
+		\item \Parametric{}: Answer is equal to parametric answer.
+		\item \Contextual{}: Answer is equal to context.
+		\item \Other{}: Answer is something different.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Methods \textrm{III}: Model Selection}
+	\centering
+	\small
+	\begin{tabular}{l l r}
+		\toprule
+			\bfseries Model Name & \bfseries Architecture & \bfseries No of Params \\
+		\midrule
+			\smallflan{} & Encoder-Decoder & 3 Billion \\
+			\bigflan{} & Encoder-Decoder & 11 Billion \\
+		\midrule
+			\smallllama{} & Decoder-Only & 8 Billion \\
+			\bigllama{} & Decoder-Only & 70 Billion \\
+		\bottomrule
+	\end{tabular}
+\end{frame}
+
+% \begin{frame}{Methods \textrm{IV}: Perplexity Score}
+% 	The \emph{Perplexity Score} codifies the ``surprise'' of a model's answer.
+% 
+% 	\vfill{}
+% 
+% 	\begin{align*}
+% 		\text{NLL} \left( x_1, \dots, x_n \mid Q \right) &= - \frac{1}{n} \sum^n_{i = 1} \log_2 P \left( x_i \mid Q, x_1, \dots, x_{i - 1} \right) \\
+% 		\text{PPL} \left( x_1, \dots, x_n \mid Q \right) &= 2 ^ {\text{NLL} \left( x_1, \dots, x_n \mid Q \right)}
+% 	\end{align*}
+% 
+% 	\vfill{}
+% \end{frame}
+
+\begin{frame}{Results}
+	\centering
+	\small
+	\begin{tabular}{l r r r}
+		\toprule
+			\bfseries Model & \Parametric{} & \Contextual{} & \Other{} \\
+		\midrule
+			\smallflan{}  & 248 & 4284 & 228 \\
+			\bigflan{} & 242 & 4304 & 214 \\
+		\midrule
+			\smallllama{} & 745 & 3662 & 353 \\
+			\bigllama{} & 1070 & 3303 & 387 \\
+		\bottomrule
+	\end{tabular}
+
+	\vfill{}
+
+	\includegraphics[width=\textwidth]{both_amount_alt.png}
+\end{frame}
+
+\begin{frame}{Discussion \& Analysis: Model Architecture}
+	Encoder-decoder models seem to choose answer from the query's context, while decoder-only models almost never do.
+
+	\vfill{}
+
+	\begin{enumerate}
+		\item \emph{Inherent Advantages of the Encoder-Decoder Architecture} \\
+			Encoder-decoder models such as \texttt{Flan-T5} process the entire context of the query in the encoder component before passing it to the decoder.
+			This increases the weight given to the context itself~\footfullcite{flant5}.
+		\item \emph{Different training data and fine-tuning} \\
+			\texttt{Flan-T5} models were trained on masked token generation and later fine-tuned on question-answering about passages\textsuperscript{5}. \\
+			Higher alignment between query and answer.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Discussion \& Analysis: Model Size}
+	\includegraphics[width=\textwidth]{both_amount_alt.png}
+
+	\vfill{}
+
+	Larger decoder-only models are \emph{more} likely to disregard information from the query's context! \\
+	The ``strength'' of a piece of knowledge depends on how often it appears in the training data\footfullcite{factual_recall}.
+\end{frame}
+
+\begin{frame}{Conclusions}
+	\begin{enumerate}
+		\item Encoder-decoder models tend to use contextual information more often than decoder-only models.
+		\item In decoder-only models, larger models have a \emph{disadvantage} against smaller ones.
+		\item More analysis is needed before blindly using RAG.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Conclusions (of experiments not in this presentation)}
+	\begin{enumerate}
+		\setcounter{enumi}{4}
+	\item The distribution of answer stays constant among \emph{most} categories of questions.
+		\begin{itemize}
+			\item Categories with generally shorter answer tend to have more \Contextual{} answers.
+		\end{itemize}
+	\item The majority of \Other{} answers come from the way we interpret the results.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Conclusions (of experiments not in this presentation)}
+	\begin{enumerate}
+		\setcounter{enumi}{6}
+		\item We can use the average perplexity score of the answer to predict whether an answer came from \Parametric{} or \Contextual{} memory.
+	\end{enumerate}
+
+
+	\vfill{}
+
+	This is could be useful to try to ``regenerate'' the RAG index!
+
+	\vfill{}
+
+	\centering
+	\includegraphics[height=132pt]{roc_auc.png}
+\end{frame}
+
+\begin{frame}{\phantom{a}}
+	\centering
+	\huge
+	Thank you! \\[1em]
+
+	Any questions?
 \end{frame}
 
 \end{document}
