@@ -1,0 +1,65 @@
+\documentclass[10pt]{beamer}
+
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\usetheme{Copenhagen}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+
+\setbeamertemplate{enumerate items}[default]
+\setbeamercolor{enumerate item}{fg=black}
+\setbeamercolor{enumerate subitem}{fg=black}
+\setbeamercolor{enumerate subsubitem}{fg=black}
+
+\newcommand{\Parametric}{\textbf{\textcolor{ForestGreen}{Parametric}}}
+\newcommand{\Contextual}{\textbf{\textcolor{Maroon}{Contextual}}}
+\newcommand{\Other}{\textbf{\textcolor{MidnightBlue}{Other}}}
+
+\newcommand{\smallflan}{\texttt{flan-t5-xl}}
+\newcommand{\bigflan}{\texttt{flan-t5-xxl}}
+\newcommand{\smallllama}{\texttt{Meta-Llama-3.1-8B-Instruct}}
+\newcommand{\bigllama}{\texttt{Meta-Llama-3.1-70B-Instruct}}
+\newcommand{\llamaparbox}{\parbox{60pt}{\centering\ttfamily Meta-Llama-3.1 \\ -8B-Instruct}}
+\newcommand{\bigllamaparbox}{\parbox{65pt}{\centering\ttfamily Meta-Llama-3.1 \\ -70B-Instruct}}
+
+\usetikzlibrary{positioning, fit, arrows.meta, tikzmark}
+\renewcommand{\UrlFont}{\ttfamily\upshape}
+\urlstyle{tt}
+\graphicspath{{.}{./pictures}{./figures}}
+
+\title{Knowledge Grounding in Large Language models: An Empirical Study}
+\author{Martin Fixman}
+
+\begin{document}
+	
+\begin{frame}{}
+	\raggedleft
+	\includegraphics[width=80pt]{ucl_medical_logo}
+
+	\vfill{}
+
+	\centering
+	{
+		\Large\bfseries
+		Knowledge Grounding in Language Models: \\ An Empirical Study	
+	}
+
+	\vfill{}
+
+	\begin{columns}[c]
+		\column{.75\textwidth}
+		{\large \textbf{Martin Fixman}}, \\
+		Thesis Supervisor: Tillman Weyde \\
+		Collaborators: Chenxi Whitehouse, Pranava Maharasta \\[1em]
+		City St Georges', University of London
+
+		\column{.25\textwidth}
+		\includegraphics[width=\columnwidth]{city_st_georges_logo.png}
+	\end{columns}
+\end{frame}
+
+\end{document}
